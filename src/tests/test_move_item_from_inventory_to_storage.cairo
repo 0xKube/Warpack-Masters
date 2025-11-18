@@ -1,46 +1,47 @@
 #[cfg(test)]
 mod tests {
-    use dojo::model::{ModelStorage};
+    use dojo::model::ModelStorage;
     use dojo::world::WorldStorageTrait;
-    use dojo_cairo_test::{spawn_test_world, NamespaceDef, TestResource, ContractDefTrait, ContractDef, WorldStorageTestTrait};
-
-    use warpack_masters::{
-        systems::{actions::{actions, IActionsDispatcher, IActionsDispatcherTrait}},
-        systems::{item::{item_system, IItemDispatcher}},
-        systems::{shop::{shop_system, IShopDispatcher, IShopDispatcherTrait}},
-        models::backpack::{BackpackGrids, m_BackpackGrids},
-        models::Item::{m_Item, m_ItemsCounter},
-        models::CharacterItem::{
-            CharacterItemStorage, m_CharacterItemStorage, CharacterItemsStorageCounter,
-            m_CharacterItemsStorageCounter, CharacterItemInventory, m_CharacterItemInventory,
-            CharacterItemsInventoryCounter, m_CharacterItemsInventoryCounter
-        },
-        models::Character::{Characters, m_Characters, m_NameRecord, WMClass},
-        models::Shop::{Shop, m_Shop}, utils::{test_utils::{add_items}}
+    use dojo_cairo_test::{
+        ContractDef, ContractDefTrait, NamespaceDef, TestResource, WorldStorageTestTrait,
+        spawn_test_world,
     };
+    use warpack_masters::models::Character::{Character, WMClass, m_Character, m_CharacterName};
+    use warpack_masters::models::CharacterItem::{
+        InventoryCounter, InventoryItem, StorageCounter, StorageItem, m_InventoryCounter,
+        m_InventoryItem, m_StorageCounter, m_StorageItem,
+    };
+    use warpack_masters::models::Item::{m_Item, m_ItemsCounter};
+    use warpack_masters::models::Shop::{Shop, m_Shop};
+    use warpack_masters::models::backpack::{BackpackGrids, m_BackpackGrids};
+    use warpack_masters::systems::actions::{IActionsDispatcher, IActionsDispatcherTrait, actions};
+    use warpack_masters::systems::item::{IItemDispatcher, item_system};
+    use warpack_masters::systems::shop::{IShopDispatcher, IShopDispatcherTrait, shop_system};
+    use warpack_masters::utils::test_utils::add_items;
 
     fn namespace_def() -> NamespaceDef {
         let ndef = NamespaceDef {
-            namespace: "Warpacks", 
+            namespace: "Warpacks",
             resources: [
                 TestResource::Model(m_BackpackGrids::TEST_CLASS_HASH.try_into().unwrap()),
                 TestResource::Model(m_Item::TEST_CLASS_HASH.try_into().unwrap()),
                 TestResource::Model(m_ItemsCounter::TEST_CLASS_HASH.try_into().unwrap()),
                 TestResource::Model(m_CharacterItemStorage::TEST_CLASS_HASH.try_into().unwrap()),
-                TestResource::Model(m_CharacterItemsStorageCounter::TEST_CLASS_HASH.try_into().unwrap()),
-                TestResource::Model(m_CharacterItemInventory::TEST_CLASS_HASH.try_into().unwrap()),
-                TestResource::Model(m_CharacterItemsInventoryCounter::TEST_CLASS_HASH.try_into().unwrap()),
-                TestResource::Model(m_Characters::TEST_CLASS_HASH.try_into().unwrap()),
-                TestResource::Model(m_NameRecord::TEST_CLASS_HASH.try_into().unwrap()),
+                TestResource::Model(m_StorageCounter::TEST_CLASS_HASH.try_into().unwrap()),
+                TestResource::Model(m_InventoryItem::TEST_CLASS_HASH.try_into().unwrap()),
+                TestResource::Model(m_InventoryCounter::TEST_CLASS_HASH.try_into().unwrap()),
+                TestResource::Model(m_Character::TEST_CLASS_HASH.try_into().unwrap()),
+                TestResource::Model(m_CharacterName::TEST_CLASS_HASH.try_into().unwrap()),
                 TestResource::Model(m_Shop::TEST_CLASS_HASH.try_into().unwrap()),
                 TestResource::Contract(actions::TEST_CLASS_HASH),
                 TestResource::Contract(item_system::TEST_CLASS_HASH),
                 TestResource::Contract(shop_system::TEST_CLASS_HASH),
                 TestResource::Event(actions::e_BuyItem::TEST_CLASS_HASH),
                 TestResource::Event(actions::e_SellItem::TEST_CLASS_HASH),
-            ].span()
+            ]
+                .span(),
         };
- 
+
         ndef
     }
 
@@ -52,7 +53,8 @@ mod tests {
                 .with_writer_of([dojo::utils::bytearray_hash(@"Warpacks")].span()),
             ContractDefTrait::new(@"Warpacks", @"shop_system")
                 .with_writer_of([dojo::utils::bytearray_hash(@"Warpacks")].span()),
-        ].span()
+        ]
+            .span()
     }
 
     #[test]
@@ -68,16 +70,16 @@ mod tests {
         let (contract_address, _) = world.dns(@"item_system").unwrap();
         let mut item_system = IItemDispatcher { contract_address };
 
-        let alice = starknet::contract_address_const::<0x0>();
+        let alice = warpack_masters::utils::address::zero_address();
 
         add_items(ref item_system);
 
         action_system.spawn('Alice', WMClass::Warlock);
 
-        let mut player_data: Characters = world.read_model(alice);
+        let mut player_data: Character = world.read_model(alice);
         player_data.gold = 100;
         world.write_model(@player_data);
-        
+
         let mut shop_data: Shop = world.read_model(alice);
         shop_data.item1 = 5;
         shop_data.item2 = 6;
@@ -91,13 +93,13 @@ mod tests {
 
         action_system.move_item_from_inventory_to_storage(3);
 
-        let storageItemCounter: CharacterItemsStorageCounter = world.read_model(alice);
+        let storageItemCounter: StorageCounter = world.read_model(alice);
         assert(storageItemCounter.count == 2, 'storage item count mismatch');
 
         let storageItem: CharacterItemStorage = world.read_model((alice, 2));
         assert(storageItem.itemId == 5, 'item id should equal 5');
 
-        let inventoryItemCounter: CharacterItemsInventoryCounter = world.read_model(alice);
+        let inventoryItemCounter: InventoryCounter = world.read_model(alice);
         assert(inventoryItemCounter.count == 3, 'inventory item count mismatch');
 
         let invetoryItem: CharacterItemInventory = world.read_model((alice, 3));
@@ -137,7 +139,7 @@ mod tests {
 
         action_system.move_item_from_inventory_to_storage(3);
 
-        let storageItemCounter: CharacterItemsStorageCounter = world.read_model(alice);
+        let storageItemCounter: StorageCounter = world.read_model(alice);
         assert(storageItemCounter.count == 2, 'storage item count mismatch');
 
         let storageItem: CharacterItemStorage = world.read_model((alice, 2));
@@ -145,7 +147,7 @@ mod tests {
         let storageItem: CharacterItemStorage = world.read_model((alice, 1));
         assert(storageItem.itemId == 6, 'item id should equal 6');
 
-        let inventoryItemCounter: CharacterItemsInventoryCounter = world.read_model(alice);
+        let inventoryItemCounter: InventoryCounter = world.read_model(alice);
         assert(inventoryItemCounter.count == 3, 'inventory item count mismatch');
 
         let invetoryItem: CharacterItemInventory = world.read_model((alice, 3));
@@ -193,7 +195,7 @@ mod tests {
 
         action_system.move_item_from_inventory_to_storage(3);
 
-        let storageItemCounter: CharacterItemsStorageCounter = world.read_model(alice);
+        let storageItemCounter: StorageCounter = world.read_model(alice);
         assert(storageItemCounter.count == 3, 'storage item count mismatch');
 
         let storageItem: CharacterItemStorage = world.read_model((alice, 3));
@@ -202,7 +204,7 @@ mod tests {
         assert(storageItem.itemId == 5, 'item id should equal 4');
         let storageItem: CharacterItemStorage = world.read_model((alice, 1));
         assert(storageItem.itemId == 6, 'item id should equal 6');
-        let inventoryItemCounter: CharacterItemsInventoryCounter = world.read_model(alice);
+        let inventoryItemCounter: InventoryCounter = world.read_model(alice);
         assert(inventoryItemCounter.count == 3, 'inventory item count mismatch');
 
         let invetoryItem: CharacterItemInventory = world.read_model((alice, 3));
@@ -226,7 +228,7 @@ mod tests {
 
         action_system.move_item_from_inventory_to_storage(4);
 
-        let storageItemCounter: CharacterItemsStorageCounter = world.read_model(alice);
+        let storageItemCounter: StorageCounter = world.read_model(alice);
         assert(storageItemCounter.count == 3, 'storage item count mismatch');
 
         let storageItem: CharacterItemStorage = world.read_model((alice, 1));
@@ -236,7 +238,7 @@ mod tests {
         let storageItem: CharacterItemStorage = world.read_model((alice, 3));
         assert(storageItem.itemId == 6, 'item id should equal 6');
 
-        let inventoryItemCounter: CharacterItemsInventoryCounter = world.read_model(alice);
+        let inventoryItemCounter: InventoryCounter = world.read_model(alice);
         assert(inventoryItemCounter.count == 5, 'inventory item count mismatch');
 
         let invetoryItem: CharacterItemInventory = world.read_model((alice, 3));
@@ -297,14 +299,14 @@ mod tests {
         let (contract_address, _) = world.dns(@"shop_system").unwrap();
         let mut shop_system = IShopDispatcher { contract_address };
 
-        let alice = starknet::contract_address_const::<0x0>();
+        let alice = warpack_masters::utils::address::zero_address();
 
         add_items(ref item_system);
 
         action_system.spawn('Alice', WMClass::Warlock);
         shop_system.reroll_shop();
 
-        let mut player_data: Characters = world.read_model(alice);
+        let mut player_data: Character = world.read_model(alice);
         player_data.gold = 100;
         world.write_model(@player_data);
 
@@ -321,17 +323,17 @@ mod tests {
         action_system.move_item_from_shop_to_storage(7);
         // place a sword on (4,2)
         action_system.move_item_from_storage_to_inventory(2, 4, 2, 0);
-        
+
         action_system.move_item_from_shop_to_storage(17);
         action_system.move_item_from_storage_to_inventory(2, 2, 2, 0);
 
         action_system.move_item_from_inventory_to_storage(3);
-        let storageItemCounter: CharacterItemsStorageCounter = world.read_model(alice);
+        let storageItemCounter: StorageCounter = world.read_model(alice);
         assert(storageItemCounter.count == 2, 'storage item count mismatch');
         let storageItem: CharacterItemStorage = world.read_model((alice, 2));
         assert(storageItem.itemId == 13, 'item id should equal 7');
-        
-        let inventoryItemCounter: CharacterItemsInventoryCounter = world.read_model(alice);
+
+        let inventoryItemCounter: InventoryCounter = world.read_model(alice);
         assert(inventoryItemCounter.count == 5, 'inventory item count mismatch');
         let invetoryItem: CharacterItemInventory = world.read_model((alice, 3));
         assert(invetoryItem.itemId == 0, 'item id should equal 0');
@@ -348,12 +350,12 @@ mod tests {
         assert(*invetoryItem.plugins.at(0) == (6, 80, 3), 'plugin length mismatch');
 
         action_system.move_item_from_inventory_to_storage(4);
-        let storageItemCounter: CharacterItemsStorageCounter = world.read_model(alice);
+        let storageItemCounter: StorageCounter = world.read_model(alice);
         assert(storageItemCounter.count == 2, 'storage item count mismatch');
         let storageItem: CharacterItemStorage = world.read_model((alice, 1));
         assert(storageItem.itemId == 7, 'item id should equal 7');
 
-        let inventoryItemCounter: CharacterItemsInventoryCounter = world.read_model(alice);
+        let inventoryItemCounter: InventoryCounter = world.read_model(alice);
         assert(inventoryItemCounter.count == 5, 'inventory item count mismatch');
         let invetoryItem: CharacterItemInventory = world.read_model((alice, 4));
         assert(invetoryItem.itemId == 0, 'item id should equal 0');
@@ -363,12 +365,12 @@ mod tests {
         assert(invetoryItem.plugins.len() == 0, 'plugins length mismatch');
 
         action_system.move_item_from_storage_to_inventory(1, 4, 2, 0);
-        let storageItemCounter: CharacterItemsStorageCounter = world.read_model(alice);
+        let storageItemCounter: StorageCounter = world.read_model(alice);
         assert(storageItemCounter.count == 2, 'storage item count mismatch');
         let storageItem: CharacterItemStorage = world.read_model((alice, 1));
         assert(storageItem.itemId == 0, 'item id should equal 0');
 
-        let inventoryItemCounter: CharacterItemsInventoryCounter = world.read_model(alice);
+        let inventoryItemCounter: InventoryCounter = world.read_model(alice);
         assert(inventoryItemCounter.count == 5, 'inventory item count mismatch');
         let invetoryItem: CharacterItemInventory = world.read_model((alice, 4));
         assert(invetoryItem.itemId == 7, 'item id should equal 7');

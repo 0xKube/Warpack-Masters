@@ -1,14 +1,14 @@
 use starknet::ContractAddress;
 
-#[derive(Copy, Drop, Serde, Introspect)]
+#[derive(Copy, Drop, Serde, Introspect, DojoStore)]
 pub struct Position {
     pub x: u32,
-    pub y: u32
+    pub y: u32,
 }
 
-#[derive(Drop, Serde)]
+#[derive(Drop, Serde, Introspect, DojoStore)]
 #[dojo::model]
-pub struct CharacterItemStorage {
+pub struct StorageItem {
     #[key]
     pub player: ContractAddress,
     #[key]
@@ -16,17 +16,17 @@ pub struct CharacterItemStorage {
     pub itemId: u32,
 }
 
-#[derive(Drop, Serde)]
+#[derive(Drop, Serde, Introspect, DojoStore)]
 #[dojo::model]
-pub struct CharacterItemsStorageCounter {
+pub struct StorageCounter {
     #[key]
     pub player: ContractAddress,
     pub count: u32,
 }
 
-#[derive(Drop, Serde)]
+#[derive(Drop, Serde, Introspect, DojoStore)]
 #[dojo::model]
-pub struct CharacterItemInventory {
+pub struct InventoryItem {
     #[key]
     pub player: ContractAddress,
     #[key]
@@ -39,15 +39,34 @@ pub struct CharacterItemInventory {
     pub plugins: Array<(u8, u32, u32)>,
 }
 
-#[derive(Drop, Serde)]
+#[derive(Drop, Serde, Introspect, DojoStore)]
 #[dojo::model]
-pub struct CharacterItemsInventoryCounter {
+pub struct InventoryCounter {
     #[key]
     pub player: ContractAddress,
     pub count: u32,
 }
 
-pub fn are_items_nearby(pos1: Position, width1: u32, height1: u32, rotation1: u32, pos2: Position, width2: u32, height2: u32, rotation2: u32) -> bool {
+pub type CharacterItemInventory = InventoryItem;
+pub type CharacterItemStorage = StorageItem;
+pub type CharInventoryCount = InventoryCounter;
+pub type CharStorageCount = StorageCounter;
+
+pub use m_InventoryItem as m_CharacterItemInventory;
+pub use m_StorageItem as m_CharacterItemStorage;
+pub use m_InventoryCounter as m_CharInventoryCount;
+pub use m_StorageCounter as m_CharStorageCount;
+
+pub fn are_items_nearby(
+    pos1: Position,
+    width1: u32,
+    height1: u32,
+    rotation1: u32,
+    pos2: Position,
+    width2: u32,
+    height2: u32,
+    rotation2: u32,
+) -> bool {
     // Calculate item dimensions considering rotation
     let (final_width1, final_height1) = if rotation1 == 90 || rotation1 == 270 {
         (height1, width1)
@@ -74,12 +93,13 @@ pub fn are_items_nearby(pos1: Position, width1: u32, height1: u32, rotation1: u3
     let y2_max = pos2.y + final_height2 - 1;
 
     // Check if the items are adjacent horizontally or vertically
-    let horizontally_adjacent = (x1_max + 1 == x2_min || x2_max + 1 == x1_min) && (y1_min <= y2_max && y1_max >= y2_min);
-    let vertically_adjacent = (y1_max + 1 == y2_min || y2_max + 1 == y1_min) && (x1_min <= x2_max && x1_max >= x2_min);
+    let horizontally_adjacent = (x1_max + 1 == x2_min || x2_max + 1 == x1_min)
+        && (y1_min <= y2_max && y1_max >= y2_min);
+    let vertically_adjacent = (y1_max + 1 == y2_min || y2_max + 1 == y1_min)
+        && (x1_min <= x2_max && x1_max >= x2_min);
 
     horizontally_adjacent || vertically_adjacent
 }
-
 // #[cfg(test)]
 // mod tests {
 //     use super::*;
@@ -91,3 +111,5 @@ pub fn are_items_nearby(pos1: Position, width1: u32, height1: u32, rotation1: u3
 //         assert!(are_items_nearby(pos1, 2, 2, 0, pos2, 2, 2, 0));
 //     }
 // }
+
+

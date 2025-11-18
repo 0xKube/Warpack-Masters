@@ -1,4 +1,4 @@
-#[derive(Drop, Serde)]
+#[derive(Drop, Serde, Introspect, DojoStore)]
 #[dojo::model]
 pub struct RecipeV2 {
     #[key]
@@ -9,7 +9,7 @@ pub struct RecipeV2 {
     pub enabled: bool,
 }
 
-#[derive(Drop, Serde)]
+#[derive(Drop, Serde, Introspect, DojoStore)]
 #[dojo::model]
 pub struct RecipesCounter {
     #[key]

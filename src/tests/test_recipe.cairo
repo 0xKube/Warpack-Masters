@@ -1,37 +1,39 @@
 #[cfg(test)]
 mod tests {
-    use starknet::testing::{set_contract_address};
-
-    use dojo::model::{ModelStorage};
+    use dojo::model::ModelStorage;
     use dojo::world::WorldStorageTrait;
-    use dojo_cairo_test::{spawn_test_world, NamespaceDef, TestResource, ContractDefTrait, ContractDef, WorldStorageTestTrait};
-
-    use warpack_masters::{
-        systems::{recipe::{recipe_system, IRecipeDispatcher, IRecipeDispatcherTrait}},
-        systems::{actions::{actions, IActionsDispatcher, IActionsDispatcherTrait}},
-        systems::{item::{item_system, IItemDispatcher}},
-        models::Item::{m_Item, m_ItemsCounter},
-        models::CharacterItem::{
-            CharacterItemStorage, m_CharacterItemStorage, CharacterItemsStorageCounter, m_CharacterItemsStorageCounter
-        },
-        models::Recipe::{RecipeV2, m_Recipe, m_RecipesCounter},
-        utils::test_utils::add_items
+    use dojo_cairo_test::{
+        ContractDef, ContractDefTrait, NamespaceDef, TestResource, WorldStorageTestTrait,
+        spawn_test_world,
     };
+    use starknet::testing::set_contract_address;
+    use warpack_masters::models::CharacterItem::{
+        StorageCounter, CharacterItemStorage, m_StorageCounter, m_StorageItem,
+    };
+    use warpack_masters::models::Item::{m_Item, m_ItemsCounter};
+    use warpack_masters::models::Recipe::{RecipeV2, m_Recipe, m_RecipesCounter};
+    use warpack_masters::systems::actions::{IActionsDispatcher, IActionsDispatcherTrait, actions};
+    use warpack_masters::systems::item::{IItemDispatcher, item_system};
+    use warpack_masters::systems::recipe::{
+        IRecipeDispatcher, IRecipeDispatcherTrait, recipe_system,
+    };
+    use warpack_masters::utils::test_utils::add_items;
 
     fn namespace_def() -> NamespaceDef {
         let ndef = NamespaceDef {
-            namespace: "Warpacks", 
+            namespace: "Warpacks",
             resources: [
                 TestResource::Model(m_Item::TEST_CLASS_HASH.try_into().unwrap()),
                 TestResource::Model(m_ItemsCounter::TEST_CLASS_HASH.try_into().unwrap()),
-                TestResource::Model(m_CharacterItemStorage::TEST_CLASS_HASH.try_into().unwrap()),
-                TestResource::Model(m_CharacterItemsStorageCounter::TEST_CLASS_HASH.try_into().unwrap()),
+                TestResource::Model(m_StorageItem::TEST_CLASS_HASH.try_into().unwrap()),
+                TestResource::Model(m_StorageCounter::TEST_CLASS_HASH.try_into().unwrap()),
                 TestResource::Model(m_Recipe::TEST_CLASS_HASH.try_into().unwrap()),
                 TestResource::Model(m_RecipesCounter::TEST_CLASS_HASH.try_into().unwrap()),
                 TestResource::Contract(item_system::TEST_CLASS_HASH),
                 TestResource::Contract(recipe_system::TEST_CLASS_HASH),
                 TestResource::Contract(actions::TEST_CLASS_HASH),
-            ].span()
+            ]
+                .span(),
         };
         ndef
     }
@@ -44,7 +46,8 @@ mod tests {
                 .with_writer_of([dojo::utils::bytearray_hash(@"Warpacks")].span()),
             ContractDefTrait::new(@"Warpacks", @"actions")
                 .with_writer_of([dojo::utils::bytearray_hash(@"Warpacks")].span()),
-        ].span()
+        ]
+            .span()
     }
 
     #[test]
@@ -115,7 +118,7 @@ mod tests {
 
         add_items(ref item_system);
 
-        let alice = starknet::contract_address_const::<0x1>();
+        let alice = warpack_masters::utils::address::address_from(0x1);
         set_contract_address(alice);
         recipe_system.add_recipe(array![1, 2], array![1, 1], 3);
     }
@@ -197,10 +200,10 @@ mod tests {
 
         recipe_system.add_recipe(array![1, 2], array![1, 1], 3);
 
-        let alice = starknet::contract_address_const::<0x1>();
-        world.write_model(@CharacterItemStorage { player: alice, id: 1, itemId: 1});
-        world.write_model(@CharacterItemStorage { player: alice, id: 2, itemId: 2});
-        world.write_model(@CharacterItemsStorageCounter { player: alice, count: 2});
+        let alice = warpack_masters::utils::address::address_from(0x1);
+        world.write_model(@CharacterItemStorage { player: alice, id: 1, itemId: 1 });
+        world.write_model(@CharacterItemStorage { player: alice, id: 2, itemId: 2 });
+        world.write_model(@StorageCounter { player: alice, count: 2 });
 
         set_contract_address(alice);
         actions.craft_item(1, array![1, 2]);
@@ -222,7 +225,7 @@ mod tests {
         let (contract_address, _) = world.dns(@"actions").unwrap();
         let mut actions = IActionsDispatcher { contract_address };
 
-        let alice = starknet::contract_address_const::<0x1>();
+        let alice = warpack_masters::utils::address::address_from(0x1);
         set_contract_address(alice);
         actions.craft_item(999, array![1, 2]);
     }
@@ -248,10 +251,13 @@ mod tests {
 
         recipe_system.add_recipe(array![1, 2], array![2, 1], 3); // Requires 2 of item 1
 
-        let alice = starknet::contract_address_const::<0x1>();
-        world.write_model(@CharacterItemStorage { player: alice, id: 1, itemId: 1}); // Only 1 of item 1
-        world.write_model(@CharacterItemStorage { player: alice, id: 2, itemId: 2});
-        world.write_model(@CharacterItemsStorageCounter { player: alice, count: 2});
+        let alice = warpack_masters::utils::address::address_from(0x1);
+        world
+            .write_model(
+                @CharacterItemStorage { player: alice, id: 1, itemId: 1 },
+            ); // Only 1 of item 1
+        world.write_model(@CharacterItemStorage { player: alice, id: 2, itemId: 2 });
+        world.write_model(@StorageCounter { player: alice, count: 2 });
 
         set_contract_address(alice);
         actions.craft_item(1, array![1, 2]);

@@ -1,10 +1,10 @@
 #[starknet::contract]
 pub mod ERC20Token {
     use openzeppelin_access::ownable::OwnableComponent;
-    use openzeppelin_token::erc20::{ERC20Component, ERC20HooksEmptyImpl};
+    use openzeppelin_interfaces::upgrades::IUpgradeable;
+    use openzeppelin_token::erc20::{DefaultConfig, ERC20Component, ERC20HooksEmptyImpl};
     use openzeppelin_upgrades::UpgradeableComponent;
-    use openzeppelin_upgrades::interface::IUpgradeable;
-    use starknet::{ContractAddress, ClassHash};
+    use starknet::{ClassHash, ContractAddress};
 
     component!(path: OwnableComponent, storage: ownable, event: OwnableEvent);
     component!(path: ERC20Component, storage: erc20, event: ERC20Event);
@@ -30,7 +30,7 @@ pub mod ERC20Token {
         #[substorage(v0)]
         erc20: ERC20Component::Storage,
         #[substorage(v0)]
-        upgradeable: UpgradeableComponent::Storage
+        upgradeable: UpgradeableComponent::Storage,
     }
 
     #[event]
@@ -41,7 +41,7 @@ pub mod ERC20Token {
         #[flat]
         ERC20Event: ERC20Component::Event,
         #[flat]
-        UpgradeableEvent: UpgradeableComponent::Event
+        UpgradeableEvent: UpgradeableComponent::Event,
     }
 
     #[constructor]
@@ -51,7 +51,7 @@ pub mod ERC20Token {
         symbol: ByteArray,
         fixed_supply: u256,
         recipient: ContractAddress,
-        owner: ContractAddress
+        owner: ContractAddress,
     ) {
         self.ownable.initializer(owner);
         self.erc20.initializer(name, symbol);

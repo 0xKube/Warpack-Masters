@@ -1,6 +1,6 @@
 use starknet::ContractAddress;
 
-#[derive(Copy, Drop, Serde)]
+#[derive(Copy, Drop, Serde, Introspect)]
 #[dojo::event(historical: true)]
 pub struct BattleLogDetail {
     #[key]
@@ -12,7 +12,8 @@ pub struct BattleLogDetail {
     pub whoTriggered: felt252,
     pub whichItem: u32,
     pub isDodged: bool,
-    // // 0 - None, 1 - Damage, 2 - Cleanse Poison, 3 - Armor, 4 - Regen, 5 - Reflect, 6 - Poison, 7 - Empower, 8 - Vampirism, 9 - Expand pack
+    // // 0 - None, 1 - Damage, 2 - Cleanse Poison, 3 - Armor, 4 - Regen, 5 - Reflect, 6 - Poison, 7
+    // - Empower, 8 - Vampirism, 9 - Expand pack
     pub effectType: u8,
     pub effectStacks: u32,
     pub player_remaining_health: u32,
@@ -24,7 +25,7 @@ pub struct BattleLogDetail {
     pub dummy_stacks: (u32, u32, u32, u32, u32, u32),
 }
 
-#[derive(Copy, Drop, Serde)]
+#[derive(Copy, Drop, Serde, Introspect)]
 pub struct CharStatus {
     pub hp: u32,
     pub stamina: u8,
@@ -36,7 +37,7 @@ pub struct CharStatus {
     pub vampirism: u32,
 }
 
-#[derive(Drop, Serde)]
+#[derive(Drop, Serde, Introspect)]
 pub struct AttackStatus {
     pub player: ContractAddress,
     pub curr_item_belongs: felt252,
@@ -50,7 +51,7 @@ pub struct AttackStatus {
     pub char_health_flag: u32,
 }
 
-#[derive(Drop, Serde)]
+#[derive(Drop, Serde, Introspect, DojoStore)]
 #[dojo::model]
 pub struct BattleLog {
     #[key]
@@ -59,7 +60,8 @@ pub struct BattleLog {
     pub id: u32,
     pub dummyLevel: u32,
     pub dummyCharId: u32,
-    // Player/Dummy, itemId, itemType, effectType, chance, effectStacks, cooldown, energyCost, plugins
+    // Player/Dummy, itemId, itemType, effectType, chance, effectStacks, cooldown, energyCost,
+    // plugins
     pub sorted_items: Span<(felt252, u32, u8, u8, u32, u32, u8, u8, Span<(u8, u32, u32)>)>,
     pub items_length: u32,
     // armor, regen, reflect, empower, poison, vampirism
@@ -72,11 +74,11 @@ pub struct BattleLog {
     pub dummy_on_attack_items: Span<(u8, u32, u32)>,
     // dummy or player
     pub winner: felt252,
-    pub seconds: u8
+    pub seconds: u8,
 }
 
 
-#[derive(Drop, Serde)]
+#[derive(Drop, Serde, Introspect, DojoStore)]
 #[dojo::model]
 pub struct BattleLogCounter {
     #[key]

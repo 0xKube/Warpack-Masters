@@ -1,7 +1,7 @@
 use starknet::ContractAddress;
 
 
-#[derive(Drop, Serde)]
+#[derive(Drop, Serde, Introspect, DojoStore)]
 #[dojo::model]
 pub struct BackpackGrids {
     #[key]
@@ -21,14 +21,23 @@ pub struct BackpackGrids {
 
 #[cfg(test)]
 mod tests {
-    use super::{BackpackGrids};
+    use core::traits::TryInto;
+    use super::BackpackGrids;
 
     #[test]
     #[available_gas(100000)]
     fn test_grids_occupy() {
-        let player = starknet::contract_address_const::<0x0>();
+        let player: ContractAddress = 0.try_into().unwrap();
         let backpack_grids = BackpackGrids {
-            player: player, x: 0, y: 0, enabled: true, occupied: true, inventoryItemId: 0, itemId: 0, isWeapon: false, isPlugin: false,
+            player: player,
+            x: 0,
+            y: 0,
+            enabled: true,
+            occupied: true,
+            inventoryItemId: 0,
+            itemId: 0,
+            isWeapon: false,
+            isPlugin: false,
         };
         assert(backpack_grids.occupied, 'not occupy');
     }
@@ -36,9 +45,17 @@ mod tests {
     #[test]
     #[available_gas(100000)]
     fn test_grids_not_occupy() {
-        let player = starknet::contract_address_const::<0x0>();
+        let player: ContractAddress = 0.try_into().unwrap();
         let backpack_grids = BackpackGrids {
-            player: player, x: 0, y: 0, enabled: true, occupied: false, inventoryItemId: 0, itemId: 0, isWeapon: false, isPlugin: false,
+            player: player,
+            x: 0,
+            y: 0,
+            enabled: true,
+            occupied: false,
+            inventoryItemId: 0,
+            itemId: 0,
+            isWeapon: false,
+            isPlugin: false,
         };
         assert(!backpack_grids.occupied, 'occupy');
     }

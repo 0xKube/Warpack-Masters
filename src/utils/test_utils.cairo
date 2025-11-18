@@ -1,8 +1,8 @@
-use warpack_masters::prdefined_dummies::Dummy0;
+use warpack_masters::items;
 use warpack_masters::models::Character::WMClass;
-use warpack_masters::systems::item::{IItemDispatcher, IItemDispatcherTrait};
+use warpack_masters::prdefined_dummies::Dummy0;
 use warpack_masters::systems::dummy::{IDummyDispatcher, IDummyDispatcherTrait};
-use warpack_masters::{items};
+use warpack_masters::systems::item::{IItemDispatcher, IItemDispatcherTrait};
 
 pub fn add_items(ref item_system: IItemDispatcher) {
     item_system
@@ -328,7 +328,7 @@ pub fn add_items(ref item_system: IItemDispatcher) {
             items::MailArmor::energyCost,
             items::MailArmor::isPlugin,
         );
-    
+
     item_system
         .add_item(
             items::Buckler::id,
@@ -544,7 +544,7 @@ pub fn add_items(ref item_system: IItemDispatcher) {
             items::Club::energyCost,
             items::Club::isPlugin,
         );
-    
+
     item_system
         .add_item(
             items::Fang::id,

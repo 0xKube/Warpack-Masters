@@ -1,28 +1,25 @@
 #[starknet::interface]
 pub trait IRecipe<T> {
-    fn add_recipe(
-        ref self: T, item_ids: Array<u32>, item_amounts: Array<u32>, result_item_id: u32
-    );
+    fn add_recipe(ref self: T, item_ids: Array<u32>, item_amounts: Array<u32>, result_item_id: u32);
 }
 
 #[dojo::contract]
 mod recipe_system {
-    use super::{IRecipe};
-
-    use starknet::{get_caller_address};
-    use warpack_masters::models::{
-        Item::Item,
-        Recipe::{RecipeV2, RecipesCounter},
-    };
-    use warpack_masters::constants::constants::{RECIPES_COUNTER_ID};
-
-    use dojo::model::{ModelStorage};
-    use dojo::world::{IWorldDispatcherTrait};
+    use dojo::model::ModelStorage;
+    use dojo::world::IWorldDispatcherTrait;
+    use starknet::get_caller_address;
+    use warpack_masters::constants::constants::RECIPES_COUNTER_ID;
+    use warpack_masters::models::Item::Item;
+    use warpack_masters::models::Recipe::{RecipeV2, RecipesCounter};
+    use super::IRecipe;
 
     #[abi(embed_v0)]
     impl RecipeImpl of IRecipe<ContractState> {
-    fn add_recipe(
-            ref self: ContractState, item_ids: Array<u32>, item_amounts: Array<u32>, result_item_id: u32
+        fn add_recipe(
+            ref self: ContractState,
+            item_ids: Array<u32>,
+            item_amounts: Array<u32>,
+            result_item_id: u32,
         ) {
             let mut world = self.world(@"Warpacks");
 
@@ -40,7 +37,7 @@ mod recipe_system {
 
                 let item: Item = world.read_model(item_id);
                 assert(item.enabled, 'item is not enabled');
-            };
+            }
 
             let result_item: Item = world.read_model(result_item_id);
             assert(result_item.enabled, 'result item is not enabled');
@@ -49,13 +46,10 @@ mod recipe_system {
             let new_id = recipes_counter.count + 1;
             recipes_counter.count = new_id;
 
-            world.write_model(@RecipeV2 {
-                id: new_id,
-                item_ids,
-                item_amounts,
-                result_item_id,
-                enabled: true,
-            });
+            world
+                .write_model(
+                    @RecipeV2 { id: new_id, item_ids, item_amounts, result_item_id, enabled: true },
+                );
 
             world.write_model(@recipes_counter);
         }

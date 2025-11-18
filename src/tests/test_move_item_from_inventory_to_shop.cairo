@@ -1,48 +1,48 @@
 #[cfg(test)]
 mod tests {
-    use dojo::model::{ModelStorage};
+    use dojo::model::ModelStorage;
     use dojo::world::WorldStorageTrait;
-    use dojo_cairo_test::{spawn_test_world, NamespaceDef, TestResource, ContractDefTrait, ContractDef, WorldStorageTestTrait};
-
-    use warpack_masters::{
-        systems::{actions::{actions, IActionsDispatcher, IActionsDispatcherTrait}},
-        systems::{item::{item_system, IItemDispatcher}},
-        systems::{shop::{shop_system, IShopDispatcher, IShopDispatcherTrait}},
-        models::backpack::{BackpackGrids, m_BackpackGrids},
-        models::Item::{m_Item, ItemsCounter, m_ItemsCounter},
-        models::CharacterItem::{
-            m_CharacterItemStorage,
-            m_CharacterItemsStorageCounter, CharacterItemInventory, m_CharacterItemInventory,
-            m_CharacterItemsInventoryCounter
-        },
-        models::Character::{Characters, m_Characters, m_NameRecord, WMClass},
-        models::Shop::{Shop, m_Shop}, utils::{test_utils::{add_items}}
+    use dojo_cairo_test::{
+        ContractDef, ContractDefTrait, NamespaceDef, TestResource, WorldStorageTestTrait,
+        spawn_test_world,
     };
-
     use warpack_masters::constants::constants::ITEMS_COUNTER_ID;
+    use warpack_masters::models::Character::{Character, WMClass, m_Character, m_CharacterName};
+    use warpack_masters::models::CharacterItem::{
+        CharacterItemInventory, m_InventoryCounter, m_InventoryItem, m_StorageCounter,
+        m_StorageItem,
+    };
+    use warpack_masters::models::Item::{ItemsCounter, m_Item, m_ItemsCounter};
+    use warpack_masters::models::Shop::{Shop, m_Shop};
+    use warpack_masters::models::backpack::{BackpackGrids, m_BackpackGrids};
+    use warpack_masters::systems::actions::{IActionsDispatcher, IActionsDispatcherTrait, actions};
+    use warpack_masters::systems::item::{IItemDispatcher, item_system};
+    use warpack_masters::systems::shop::{IShopDispatcher, IShopDispatcherTrait, shop_system};
+    use warpack_masters::utils::test_utils::add_items;
 
     fn namespace_def() -> NamespaceDef {
         let ndef = NamespaceDef {
-            namespace: "Warpacks", 
+            namespace: "Warpacks",
             resources: [
                 TestResource::Model(m_BackpackGrids::TEST_CLASS_HASH.try_into().unwrap()),
                 TestResource::Model(m_Item::TEST_CLASS_HASH.try_into().unwrap()),
                 TestResource::Model(m_ItemsCounter::TEST_CLASS_HASH.try_into().unwrap()),
                 TestResource::Model(m_CharacterItemStorage::TEST_CLASS_HASH.try_into().unwrap()),
-                TestResource::Model(m_CharacterItemsStorageCounter::TEST_CLASS_HASH.try_into().unwrap()),
-                TestResource::Model(m_CharacterItemInventory::TEST_CLASS_HASH.try_into().unwrap()),
-                TestResource::Model(m_CharacterItemsInventoryCounter::TEST_CLASS_HASH.try_into().unwrap()),
-                TestResource::Model(m_Characters::TEST_CLASS_HASH.try_into().unwrap()),
-                TestResource::Model(m_NameRecord::TEST_CLASS_HASH.try_into().unwrap()),
+                TestResource::Model(m_StorageCounter::TEST_CLASS_HASH.try_into().unwrap()),
+                TestResource::Model(m_InventoryItem::TEST_CLASS_HASH.try_into().unwrap()),
+                TestResource::Model(m_InventoryCounter::TEST_CLASS_HASH.try_into().unwrap()),
+                TestResource::Model(m_Character::TEST_CLASS_HASH.try_into().unwrap()),
+                TestResource::Model(m_CharacterName::TEST_CLASS_HASH.try_into().unwrap()),
                 TestResource::Model(m_Shop::TEST_CLASS_HASH.try_into().unwrap()),
                 TestResource::Contract(actions::TEST_CLASS_HASH),
                 TestResource::Contract(item_system::TEST_CLASS_HASH),
                 TestResource::Contract(shop_system::TEST_CLASS_HASH),
                 TestResource::Event(actions::e_BuyItem::TEST_CLASS_HASH),
                 TestResource::Event(actions::e_SellItem::TEST_CLASS_HASH),
-            ].span()
+            ]
+                .span(),
         };
- 
+
         ndef
     }
 
@@ -54,7 +54,8 @@ mod tests {
                 .with_writer_of([dojo::utils::bytearray_hash(@"Warpacks")].span()),
             ContractDefTrait::new(@"Warpacks", @"shop_system")
                 .with_writer_of([dojo::utils::bytearray_hash(@"Warpacks")].span()),
-        ].span()
+        ]
+            .span()
     }
 
     #[test]
@@ -73,17 +74,17 @@ mod tests {
         let (contract_address, _) = world.dns(@"shop_system").unwrap();
         let mut shop_system = IShopDispatcher { contract_address };
 
-        let alice = starknet::contract_address_const::<0x0>();
+        let alice = warpack_masters::utils::address::zero_address();
 
         add_items(ref item_system);
-        let item: ItemsCounter = world.read_model(ITEMS_COUNTER_ID); 
+        let item: ItemsCounter = world.read_model(ITEMS_COUNTER_ID);
         assert(item.count == 34, 'total item count mismatch');
 
         action_system.spawn('Alice', WMClass::Warlock);
         shop_system.reroll_shop();
 
         // Mock player gold for testing
-        let mut player_data: Characters = world.read_model(alice);
+        let mut player_data: Character = world.read_model(alice);
         player_data.gold = 100;
         world.write_model(@player_data);
 
@@ -105,7 +106,7 @@ mod tests {
         assert(inventoryItem.position.y == 2, 'y position mismatch');
 
         // Verify initial gold after purchase (100 - 2 = 98)
-        let player_data: Characters = world.read_model(alice);
+        let player_data: Character = world.read_model(alice);
         assert(player_data.gold == 98, 'gold after purchase mismatch');
 
         // Sell the sword from inventory
@@ -133,7 +134,7 @@ mod tests {
         assert(!backpack_grid_data.occupied, '(4,4) should not be occupied');
 
         // Verify gold is increased by sell price (price / 2 = 2 / 2 = 1)
-        let player_data: Characters = world.read_model(alice);
+        let player_data: Character = world.read_model(alice);
         assert(player_data.gold == 99, 'gold after sale mismatch'); // 98 + 1 = 99
     }
 
@@ -153,7 +154,7 @@ mod tests {
         let (contract_address, _) = world.dns(@"shop_system").unwrap();
         let mut shop_system = IShopDispatcher { contract_address };
 
-        let alice = starknet::contract_address_const::<0x0>();
+        let alice = warpack_masters::utils::address::zero_address();
 
         add_items(ref item_system);
 
@@ -161,7 +162,7 @@ mod tests {
         shop_system.reroll_shop();
 
         // Mock player gold for testing
-        let mut player_data: Characters = world.read_model(alice);
+        let mut player_data: Character = world.read_model(alice);
         player_data.gold = 100;
         world.write_model(@player_data);
 
@@ -193,10 +194,10 @@ mod tests {
             assert(!backpack_grid_data.occupied, 'grid should not be occupied');
             assert(backpack_grid_data.itemId == 0, 'itemId should be reset');
             i += 1;
-        };
+        }
 
         // Verify gold calculation (100 - 3 + 1 = 98) since sell price is price/2 = 3/2 = 1
-        let player_data: Characters = world.read_model(alice);
+        let player_data: Character = world.read_model(alice);
         assert(player_data.gold == 98, 'gold calculation mismatch');
     }
 
@@ -216,7 +217,7 @@ mod tests {
         let (contract_address, _) = world.dns(@"shop_system").unwrap();
         let mut shop_system = IShopDispatcher { contract_address };
 
-        let alice = starknet::contract_address_const::<0x0>();
+        let alice = warpack_masters::utils::address::zero_address();
 
         add_items(ref item_system);
 
@@ -224,7 +225,7 @@ mod tests {
         shop_system.reroll_shop();
 
         // Mock player gold for testing
-        let mut player_data: Characters = world.read_model(alice);
+        let mut player_data: Character = world.read_model(alice);
         player_data.gold = 100;
         world.write_model(@player_data);
 
@@ -241,7 +242,7 @@ mod tests {
         assert(inventoryItem.itemId == 8, 'Spike should be in inventory');
 
         // Verify gold after purchase (100 - 2 = 98)
-        let player_data: Characters = world.read_model(alice);
+        let player_data: Character = world.read_model(alice);
         assert(player_data.gold == 98, 'gold after purchase mismatch');
 
         // Sell the Spike from inventory
@@ -256,7 +257,7 @@ mod tests {
         assert(!backpack_grid_data.occupied, '(5,2) should not be occupied');
 
         // Verify gold after sale (98 + 1 = 99) since sell price is 1/2 = 0 (integer division)
-        let player_data: Characters = world.read_model(alice);
+        let player_data: Character = world.read_model(alice);
         assert(player_data.gold == 99, 'gold after sale mismatch');
     }
 
@@ -276,7 +277,7 @@ mod tests {
         let (contract_address, _) = world.dns(@"shop_system").unwrap();
         let mut shop_system = IShopDispatcher { contract_address };
 
-        let alice = starknet::contract_address_const::<0x0>();
+        let alice = warpack_masters::utils::address::zero_address();
 
         add_items(ref item_system);
 
@@ -284,7 +285,7 @@ mod tests {
         shop_system.reroll_shop();
 
         // Mock player gold for testing
-        let mut player_data: Characters = world.read_model(alice);
+        let mut player_data: Character = world.read_model(alice);
         player_data.gold = 100;
         world.write_model(@player_data);
 
@@ -371,7 +372,7 @@ mod tests {
         let (contract_address, _) = world.dns(@"shop_system").unwrap();
         let mut shop_system = IShopDispatcher { contract_address };
 
-        let alice = starknet::contract_address_const::<0x0>();
+        let alice = warpack_masters::utils::address::zero_address();
 
         add_items(ref item_system);
 
@@ -379,7 +380,7 @@ mod tests {
         shop_system.reroll_shop();
 
         // Mock player gold for testing
-        let mut player_data: Characters = world.read_model(alice);
+        let mut player_data: Character = world.read_model(alice);
         player_data.gold = 100;
         world.write_model(@player_data);
 
@@ -412,7 +413,7 @@ mod tests {
         let (contract_address, _) = world.dns(@"shop_system").unwrap();
         let mut shop_system = IShopDispatcher { contract_address };
 
-        let alice = starknet::contract_address_const::<0x0>();
+        let alice = warpack_masters::utils::address::zero_address();
 
         add_items(ref item_system);
 
@@ -420,7 +421,7 @@ mod tests {
         shop_system.reroll_shop();
 
         // Mock player gold for testing
-        let mut player_data: Characters = world.read_model(alice);
+        let mut player_data: Character = world.read_model(alice);
         player_data.gold = 100;
         world.write_model(@player_data);
 
@@ -455,7 +456,7 @@ mod tests {
         let (contract_address, _) = world.dns(@"shop_system").unwrap();
         let mut shop_system = IShopDispatcher { contract_address };
 
-        let alice = starknet::contract_address_const::<0x0>();
+        let alice = warpack_masters::utils::address::zero_address();
 
         add_items(ref item_system);
 
@@ -463,7 +464,7 @@ mod tests {
         shop_system.reroll_shop();
 
         // Mock player gold for testing
-        let mut player_data: Characters = world.read_model(alice);
+        let mut player_data: Character = world.read_model(alice);
         player_data.gold = 100;
         world.write_model(@player_data);
 
@@ -477,18 +478,18 @@ mod tests {
 
         // Buy multiple items
         action_system.move_item_from_shop_to_inventory(7, 4, 2, 0); // sword - inventory id 3
-        
+
         // Reset shop to buy more items
         let mut shop_data: Shop = world.read_model(alice);
         shop_data.item1 = 8; // potion
         shop_data.item2 = 9; // shield
         world.write_model(@shop_data);
-        
+
         action_system.move_item_from_shop_to_inventory(8, 5, 2, 0); // potion - inventory id 4
         action_system.move_item_from_shop_to_inventory(9, 2, 2, 0); // shield - inventory id 5
 
         // Check gold after purchases: 100 - 2 - 1 - 3 = 94
-        let player_data: Characters = world.read_model(alice);
+        let player_data: Character = world.read_model(alice);
         assert(player_data.gold == 93, 'gold after purchases mismatch');
 
         // Sell items one by one
@@ -497,7 +498,7 @@ mod tests {
         action_system.move_item_from_inventory_to_shop(5); // sell shield (+1 gold)
 
         // Check final gold: 94 + 1 + 0 + 1 = 96
-        let player_data: Characters = world.read_model(alice);
+        let player_data: Character = world.read_model(alice);
         assert(player_data.gold == 96, 'gold after sales mismatch');
 
         // Verify all items are removed from inventory
@@ -510,4 +511,4 @@ mod tests {
         let inventoryItem5: CharacterItemInventory = world.read_model((alice, 5));
         assert(inventoryItem5.itemId == 0, 'shield should be removed');
     }
-} 
+}

@@ -1,30 +1,28 @@
 #[cfg(test)]
 mod tests {
-    use core::option::OptionTrait;
     use core::array::ArrayTrait;
-    use starknet::testing::set_contract_address;
-
-    use dojo::model::{ModelStorage};
+    use core::option::OptionTrait;
+    use dojo::model::ModelStorage;
     use dojo::world::WorldStorageTrait;
-    use dojo_cairo_test::{spawn_test_world, NamespaceDef, TestResource, ContractDefTrait, ContractDef, WorldStorageTestTrait};
-
-    use warpack_masters::{
-        systems::{dummy::{dummy_system, IDummyDispatcher, IDummyDispatcherTrait}},
-        systems::{item::{item_system, IItemDispatcher}},
-        models::backpack::{m_BackpackGrids},
-        models::Character::{m_NameRecord, WMClass},
-        models::DummyCharacter::{
-            DummyCharacter, m_DummyCharacter, DummyCharacterCounter, m_DummyCharacterCounter
-        },
-        models::DummyCharacterItem::{
-            DummyCharacterItem, m_DummyCharacterItem, DummyCharacterItemsCounter,
-            m_DummyCharacterItemsCounter
-        },
-        models::Item::{m_Item, m_ItemsCounter},
-        utils::{test_utils::{add_items}}
+    use dojo_cairo_test::{
+        ContractDef, ContractDefTrait, NamespaceDef, TestResource, WorldStorageTestTrait,
+        spawn_test_world,
     };
-
-    use warpack_masters::prdefined_dummies::{Dummy0};
+    use starknet::testing::set_contract_address;
+    use warpack_masters::models::Character::{WMClass, m_NameRecord};
+    use warpack_masters::models::DummyCharacter::{
+        DummyCharacter, DummyCharacterCounter, m_DummyCharacter, m_DummyCharacterCounter,
+    };
+    use warpack_masters::models::DummyCharacterItem::{
+        DummyCharacterItem, DummyCharacterItemsCounter, m_DummyCharacterItem,
+        m_DummyCharacterItemsCounter,
+    };
+    use warpack_masters::models::Item::{m_Item, m_ItemsCounter};
+    use warpack_masters::models::backpack::m_BackpackGrids;
+    use warpack_masters::prdefined_dummies::Dummy0;
+    use warpack_masters::systems::dummy::{IDummyDispatcher, IDummyDispatcherTrait, dummy_system};
+    use warpack_masters::systems::item::{IItemDispatcher, item_system};
+    use warpack_masters::utils::test_utils::add_items;
 
     fn namespace_def() -> NamespaceDef {
         let ndef = NamespaceDef {
@@ -36,11 +34,14 @@ mod tests {
                 TestResource::Model(m_DummyCharacter::TEST_CLASS_HASH.try_into().unwrap()),
                 TestResource::Model(m_DummyCharacterCounter::TEST_CLASS_HASH.try_into().unwrap()),
                 TestResource::Model(m_DummyCharacterItem::TEST_CLASS_HASH.try_into().unwrap()),
-                TestResource::Model(m_DummyCharacterItemsCounter::TEST_CLASS_HASH.try_into().unwrap()),
+                TestResource::Model(
+                    m_DummyCharacterItemsCounter::TEST_CLASS_HASH.try_into().unwrap(),
+                ),
                 TestResource::Model(m_NameRecord::TEST_CLASS_HASH.try_into().unwrap()),
                 TestResource::Contract(item_system::TEST_CLASS_HASH),
                 TestResource::Contract(dummy_system::TEST_CLASS_HASH),
-            ].span()
+            ]
+                .span(),
         };
         ndef
     }
@@ -51,15 +52,16 @@ mod tests {
                 .with_writer_of([dojo::utils::bytearray_hash(@"Warpacks")].span()),
             ContractDefTrait::new(@"Warpacks", @"dummy_system")
                 .with_writer_of([dojo::utils::bytearray_hash(@"Warpacks")].span()),
-        ].span()
+        ]
+            .span()
     }
 
     #[test]
     #[available_gas(3000000000000000)]
     #[should_panic(expected: ('player not world owner', 'ENTRYPOINT_FAILED'))]
     fn test_prefine_dummy_non_admin() {
-        let alice = starknet::contract_address_const::<0x1>();
-        
+        let alice = warpack_masters::utils::address::address_from(0x1);
+
         let ndef = namespace_def();
         let mut world = spawn_test_world([ndef].span());
         world.sync_perms_and_inits(contract_defs());
@@ -105,11 +107,13 @@ mod tests {
         assert(dummyChar.wmClass == WMClass::Warrior, 'Should be equal Warrior');
         assert(dummyChar.health == Dummy0::health, 'Should be equal Dummy0::health');
         assert(
-            dummyChar.player == starknet::contract_address_const::<0x1>(), 'Should be equal 0x0'
+            dummyChar.player == warpack_masters::utils::address::address_from(0x1),
+            'Should be equal 0x0',
         );
         assert(dummyChar.rating == 0, 'Should be equal 0');
 
-        let dummyCharItemsCounter: DummyCharacterItemsCounter = world.read_model((level, dummyChar.id));
+        let dummyCharItemsCounter: DummyCharacterItemsCounter = world
+            .read_model((level, dummyChar.id));
         let mut items = Dummy0::get_items();
         assert(dummyCharItemsCounter.count == items.len(), 'Should be equal items length');
 

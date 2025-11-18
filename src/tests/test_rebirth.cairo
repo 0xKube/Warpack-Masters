@@ -1,51 +1,51 @@
 #[cfg(test)]
 mod tests {
-    use starknet::testing::{set_contract_address, set_block_timestamp};
-
-    use dojo::model::{ModelStorage};
+    use dojo::model::ModelStorage;
     use dojo::world::WorldStorageTrait;
-    use dojo_cairo_test::{spawn_test_world, NamespaceDef, TestResource, ContractDefTrait, ContractDef, WorldStorageTestTrait, deploy_contract};
-
-    use warpack_masters::{
-        systems::{actions::{actions, IActionsDispatcher, IActionsDispatcherTrait}},
-        systems::{item::{item_system, IItemDispatcher}},
-        models::backpack::{BackpackGrids, m_BackpackGrids},
-        models::Item::{m_Item, m_ItemsCounter},
-        models::CharacterItem::{
-            CharacterItemStorage, m_CharacterItemStorage, CharacterItemsStorageCounter,
-            m_CharacterItemsStorageCounter, CharacterItemInventory, m_CharacterItemInventory,
-            CharacterItemsInventoryCounter, m_CharacterItemsInventoryCounter
-        },
-        models::Character::{Characters, m_Characters, NameRecord, m_NameRecord, WMClass},
-        models::Shop::{Shop, m_Shop}, utils::{test_utils::{add_items}},
-        models::Game::{GameConfig, m_GameConfig},
-        externals::erc20::{ERC20Token}
+    use dojo_cairo_test::{
+        ContractDef, ContractDefTrait, NamespaceDef, TestResource, WorldStorageTestTrait,
+        deploy_contract, spawn_test_world,
     };
-
-    use warpack_masters::constants::constants::{INIT_HEALTH, INIT_GOLD, GAME_CONFIG_ID};
-
-    use openzeppelin_token::erc20::interface::{IERC20Dispatcher, IERC20DispatcherTrait};
+    use openzeppelin_interfaces::erc20::{IERC20Dispatcher, IERC20DispatcherTrait};
+    use starknet::testing::{set_block_timestamp, set_contract_address};
+    use warpack_masters::constants::constants::{GAME_CONFIG_ID, INIT_GOLD, INIT_HEALTH};
+    use warpack_masters::externals::erc20::ERC20Token;
+    use warpack_masters::models::Character::{
+        Character, CharacterName, WMClass, m_Character, m_CharacterName,
+    };
+    use warpack_masters::models::CharacterItem::{
+        InventoryCounter, InventoryItem, StorageCounter, StorageItem, m_InventoryCounter,
+        m_InventoryItem, m_StorageCounter, m_StorageItem,
+    };
+    use warpack_masters::models::Game::{GameConfig, m_GameConfig};
+    use warpack_masters::models::Item::{m_Item, m_ItemsCounter};
+    use warpack_masters::models::Shop::{Shop, m_Shop};
+    use warpack_masters::models::backpack::{BackpackGrids, m_BackpackGrids};
+    use warpack_masters::systems::actions::{IActionsDispatcher, IActionsDispatcherTrait, actions};
+    use warpack_masters::systems::item::{IItemDispatcher, item_system};
+    use warpack_masters::utils::test_utils::add_items;
 
     fn namespace_def() -> NamespaceDef {
         let ndef = NamespaceDef {
-            namespace: "Warpacks", 
+            namespace: "Warpacks",
             resources: [
                 TestResource::Model(m_BackpackGrids::TEST_CLASS_HASH.try_into().unwrap()),
                 TestResource::Model(m_Item::TEST_CLASS_HASH.try_into().unwrap()),
                 TestResource::Model(m_ItemsCounter::TEST_CLASS_HASH.try_into().unwrap()),
-                TestResource::Model(m_CharacterItemStorage::TEST_CLASS_HASH.try_into().unwrap()),
-                TestResource::Model(m_CharacterItemsStorageCounter::TEST_CLASS_HASH.try_into().unwrap()),
-                TestResource::Model(m_CharacterItemInventory::TEST_CLASS_HASH.try_into().unwrap()),
-                TestResource::Model(m_CharacterItemsInventoryCounter::TEST_CLASS_HASH.try_into().unwrap()),
-                TestResource::Model(m_Characters::TEST_CLASS_HASH.try_into().unwrap()),
-                TestResource::Model(m_NameRecord::TEST_CLASS_HASH.try_into().unwrap()),
+                TestResource::Model(m_StorageItem::TEST_CLASS_HASH.try_into().unwrap()),
+                TestResource::Model(m_StorageCounter::TEST_CLASS_HASH.try_into().unwrap()),
+                TestResource::Model(m_InventoryItem::TEST_CLASS_HASH.try_into().unwrap()),
+                TestResource::Model(m_InventoryCounter::TEST_CLASS_HASH.try_into().unwrap()),
+                TestResource::Model(m_Character::TEST_CLASS_HASH.try_into().unwrap()),
+                TestResource::Model(m_CharacterName::TEST_CLASS_HASH.try_into().unwrap()),
                 TestResource::Model(m_Shop::TEST_CLASS_HASH.try_into().unwrap()),
                 TestResource::Model(m_GameConfig::TEST_CLASS_HASH.try_into().unwrap()),
                 TestResource::Contract(actions::TEST_CLASS_HASH),
                 TestResource::Contract(item_system::TEST_CLASS_HASH),
                 TestResource::Event(actions::e_BuyItem::TEST_CLASS_HASH),
                 TestResource::Event(actions::e_SellItem::TEST_CLASS_HASH),
-            ].span()
+            ]
+                .span(),
         };
         ndef
     }
@@ -56,14 +56,15 @@ mod tests {
                 .with_writer_of([dojo::utils::bytearray_hash(@"Warpacks")].span()),
             ContractDefTrait::new(@"Warpacks", @"item_system")
                 .with_writer_of([dojo::utils::bytearray_hash(@"Warpacks")].span()),
-        ].span()
+        ]
+            .span()
     }
 
     #[test]
     #[available_gas(3000000000000000)]
     fn test_rebirth() {
-        let alice = starknet::contract_address_const::<'alice'>();
-        let default_address = starknet::contract_address_const::<0x0>();
+        let alice = warpack_masters::utils::address::address_from('alice');
+        let default_address = warpack_masters::utils::address::zero_address();
 
         let ndef = namespace_def();
         let mut world = spawn_test_world([ndef].span());
@@ -76,13 +77,18 @@ mod tests {
         let mut item_system = IItemDispatcher { contract_address: item_contract_address };
 
         let mock_erc20_calldata: Array<felt252> = array![
-            0, 'stark', 1, 0, 'strk', 1, 10000000000000000000, 0, alice.into(), alice.into()
+            0, 'stark', 1, 0, 'strk', 1, 10000000000000000000, 0, alice.into(), alice.into(),
         ];
-        let erc20_address = deploy_contract(ERC20Token::TEST_CLASS_HASH, mock_erc20_calldata.span());
-        world.write_model(@GameConfig {
-            id: GAME_CONFIG_ID,
-            strk_address: erc20_address,
-        });
+        let erc20_address = deploy_contract(
+            ERC20Token::TEST_CLASS_HASH, mock_erc20_calldata.span(),
+        );
+        world.write_model(
+            @GameConfig {
+                id: GAME_CONFIG_ID,
+                strk_address: erc20_address,
+                treasury_address: warpack_masters::utils::address::zero_address(),
+            },
+        );
 
         add_items(ref item_system);
 
@@ -111,7 +117,7 @@ mod tests {
         action_system.move_item_from_storage_to_inventory(3, 5, 2, 0);
 
         set_contract_address(default_address);
-        let mut char: Characters = world.read_model(alice);
+        let mut char: Character = world.read_model(alice);
         char.loss = 5;
         char.rating = 300;
         char.totalWins = 10;
@@ -127,9 +133,9 @@ mod tests {
         action_system.rebirth();
 
         set_contract_address(default_address);
-        let char: Characters = world.read_model(alice);
-        let inventoryItemsCounter: CharacterItemsInventoryCounter = world.read_model(alice);
-        let storageItemsCounter: CharacterItemsStorageCounter = world.read_model(alice);
+        let char: Character = world.read_model(alice);
+        let inventoryItemsCounter: InventoryCounter = world.read_model(alice);
+        let storageItemsCounter: StorageCounter = world.read_model(alice);
         let playerShopData: Shop = world.read_model(alice);
 
         assert(char.wins == 0, 'wins count should be 0');
@@ -154,20 +160,20 @@ mod tests {
         assert(playerShopData.item3 == 0, 'item 3 should be 0');
         assert(playerShopData.item4 == 0, 'item 4 should be 0');
 
-        let storageItem: CharacterItemStorage = world.read_model((alice, 1));
+        let storageItem: StorageItem = world.read_model((alice, 1));
         assert(storageItem.itemId == 0, 'item 1 should be 0');
 
-        let storageItem: CharacterItemStorage = world.read_model((alice, 2));
+        let storageItem: StorageItem = world.read_model((alice, 2));
         assert(storageItem.itemId == 0, 'item 2 should be 0');
 
-        let inventoryItem: CharacterItemInventory = world.read_model((alice, 1));
+        let inventoryItem: InventoryItem = world.read_model((alice, 1));
         assert(inventoryItem.itemId == 1, 'item 1 should be 1');
         assert(inventoryItem.position.x == 4, 'item 1 x should be 4');
         assert(inventoryItem.position.y == 2, 'item 1 y should be 2');
         assert(inventoryItem.rotation == 0, 'item 1 rotation should be 0');
         assert(inventoryItem.plugins.len() == 0, 'item 1 plugins should be empty');
 
-        let inventoryItem: CharacterItemInventory = world.read_model((alice, 2));
+        let inventoryItem: InventoryItem = world.read_model((alice, 2));
         assert(inventoryItem.itemId == 2, 'item 2 should be 2');
         assert(inventoryItem.position.x == 2, 'item 2 x should be 4');
         assert(inventoryItem.position.y == 2, 'item 2 y should be 3');
@@ -259,7 +265,7 @@ mod tests {
     #[available_gas(3000000000000000)]
     #[should_panic(expected: ('loss not reached', 'ENTRYPOINT_FAILED'))]
     fn test_loss_not_reached() {
-        let alice = starknet::contract_address_const::<0x0>();
+        let alice = warpack_masters::utils::address::zero_address();
 
         let ndef = namespace_def();
         let mut world = spawn_test_world([ndef].span());
@@ -275,7 +281,7 @@ mod tests {
 
         action_system.spawn('alice', WMClass::Warlock);
 
-        let mut char: Characters = world.read_model(alice);
+        let mut char: Character = world.read_model(alice);
         char.loss = 4;
         world.write_model(@char);
 
@@ -286,10 +292,10 @@ mod tests {
     #[available_gas(3000000000000000)]
     #[should_panic(expected: ('name already exists', 'ENTRYPOINT_FAILED'))]
     fn test_name_already_exists() {
-        let default_address = starknet::contract_address_const::<0x0>();
-        let alice = starknet::contract_address_const::<'alice'>();
-        let bob = starknet::contract_address_const::<'bob'>();
-        
+        let default_address = warpack_masters::utils::address::zero_address();
+        let alice = warpack_masters::utils::address::address_from('alice');
+        let bob = warpack_masters::utils::address::address_from('bob');
+
         let ndef = namespace_def();
         let mut world = spawn_test_world([ndef].span());
         world.sync_perms_and_inits(contract_defs());
@@ -306,7 +312,7 @@ mod tests {
         action_system.spawn('alice', WMClass::Warlock);
 
         set_contract_address(default_address);
-        let mut char: Characters = world.read_model(alice);
+        let mut char: Character = world.read_model(alice);
         char.loss = 5;
         world.write_model(@char);
 
@@ -317,7 +323,7 @@ mod tests {
     #[test]
     #[available_gas(3000000000000000)]
     fn test_rebirth_with_same_name() {
-        let default_address = starknet::contract_address_const::<0x0>();
+        let default_address = warpack_masters::utils::address::zero_address();
 
         let ndef = namespace_def();
         let mut world = spawn_test_world([ndef].span());
@@ -329,21 +335,26 @@ mod tests {
         let (item_contract_address, _) = world.dns(@"item_system").unwrap();
         let mut item_system = IItemDispatcher { contract_address: item_contract_address };
 
-        let alice = starknet::contract_address_const::<'alice'>();
+        let alice = warpack_masters::utils::address::address_from('alice');
 
         let mock_erc20_calldata: Array<felt252> = array![
-            0, 'stark', 1, 0, 'strk', 1, 10000000000000000000, 0, alice.into(), alice.into()
+            0, 'stark', 1, 0, 'strk', 1, 10000000000000000000, 0, alice.into(), alice.into(),
         ];
 
-        let erc20_address = deploy_contract(ERC20Token::TEST_CLASS_HASH, mock_erc20_calldata.span());
+        let erc20_address = deploy_contract(
+            ERC20Token::TEST_CLASS_HASH, mock_erc20_calldata.span(),
+        );
 
-        world.write_model(@GameConfig {
-            id: GAME_CONFIG_ID,
-            strk_address: erc20_address,
-        });
+        world.write_model(
+            @GameConfig {
+                id: GAME_CONFIG_ID,
+                strk_address: erc20_address,
+                treasury_address: warpack_masters::utils::address::zero_address(),
+            },
+        );
 
         add_items(ref item_system);
-        
+
         set_contract_address(alice);
         let erc20_dispatcher = IERC20Dispatcher { contract_address: erc20_address };
         erc20_dispatcher.approve(actions_contract_address, 10000000000000000000);
@@ -355,7 +366,7 @@ mod tests {
 
         set_contract_address(default_address);
 
-        let mut char: Characters = world.read_model(alice);
+        let mut char: Character = world.read_model(alice);
         char.loss = 5;
         world.write_model(@char);
 
@@ -369,8 +380,8 @@ mod tests {
     #[test]
     #[available_gas(3000000000000000)]
     fn test_rebirth_with_different_name() {
-        let alice = starknet::contract_address_const::<'alice'>();
-        let default_address = starknet::contract_address_const::<0x0>();
+        let alice = warpack_masters::utils::address::address_from('alice');
+        let default_address = warpack_masters::utils::address::zero_address();
 
         let ndef = namespace_def();
         let mut world = spawn_test_world([ndef].span());
@@ -384,13 +395,18 @@ mod tests {
         add_items(ref item_system);
 
         let mock_erc20_calldata: Array<felt252> = array![
-            0, 'stark', 1, 0, 'strk', 1, 10000000000000000000, 0, alice.into(), alice.into()
+            0, 'stark', 1, 0, 'strk', 1, 10000000000000000000, 0, alice.into(), alice.into(),
         ];
-        let erc20_address = deploy_contract(ERC20Token::TEST_CLASS_HASH, mock_erc20_calldata.span());
-        world.write_model(@GameConfig {
-            id: GAME_CONFIG_ID,
-            strk_address: erc20_address,
-        });
+        let erc20_address = deploy_contract(
+            ERC20Token::TEST_CLASS_HASH, mock_erc20_calldata.span(),
+        );
+        world.write_model(
+            @GameConfig {
+                id: GAME_CONFIG_ID,
+                strk_address: erc20_address,
+                treasury_address: warpack_masters::utils::address::zero_address(),
+            },
+        );
 
         set_contract_address(alice);
         let erc20_dispatcher = IERC20Dispatcher { contract_address: erc20_address };
@@ -403,7 +419,7 @@ mod tests {
         let nameRecord: NameRecord = world.read_model('alice');
         assert(nameRecord.player == alice, 'player should be alice');
 
-        let mut char: Characters = world.read_model(alice);
+        let mut char: Character = world.read_model(alice);
         char.loss = 5;
         world.write_model(@char);
 
@@ -415,10 +431,7 @@ mod tests {
         assert(nameRecord.player == alice, 'player should be alice');
 
         let nameRecord: NameRecord = world.read_model('alice');
-        assert(
-            nameRecord.player == alice, 
-            'player should be alice'
-        );
+        assert(nameRecord.player == alice, 'player should be alice');
     }
 }
 

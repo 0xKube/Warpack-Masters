@@ -1,5 +1,5 @@
-use core::traits::Into;
 use core::box::BoxTrait;
+use core::traits::Into;
 
 pub fn pseudo_seed() -> (u128, u128, u128, u128) {
     let txinfo = starknet::get_tx_info().unbox();
@@ -27,10 +27,10 @@ mod tests {
     // #[test]
     // #[available_gas(100000)]
     // fn test_grid_is_zero() {
-        // let (seed1, seed2, seed3, seed4) = pseudo_seed();
-        // seed1.print();
-        // seed2.print();
-        // seed3.print();
-        // seed4.print();
+    // let (seed1, seed2, seed3, seed4) = pseudo_seed();
+    // seed1.print();
+    // seed2.print();
+    // seed3.print();
+    // seed4.print();
     // }
 }

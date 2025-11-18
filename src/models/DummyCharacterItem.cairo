@@ -1,6 +1,6 @@
 use warpack_masters::models::CharacterItem::Position;
 
-#[derive(Drop, Serde)]
+#[derive(Drop, Serde, Introspect, DojoStore)]
 #[dojo::model]
 pub struct DummyCharacterItem {
     #[key]
@@ -17,7 +17,7 @@ pub struct DummyCharacterItem {
     pub plugins: Span<(u8, u32, u32)>,
 }
 
-#[derive(Drop, Serde)]
+#[derive(Drop, Serde, Introspect, DojoStore)]
 #[dojo::model]
 pub struct DummyCharacterItemsCounter {
     #[key]

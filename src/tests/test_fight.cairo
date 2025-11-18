@@ -1,57 +1,63 @@
 #[cfg(test)]
 mod tests {
-    use starknet::testing::{set_contract_address};
-
-    use dojo::model::{ModelStorage};
+    use dojo::model::ModelStorage;
     use dojo::world::WorldStorageTrait;
-    use dojo_cairo_test::{spawn_test_world, NamespaceDef, TestResource, ContractDefTrait, ContractDef, WorldStorageTestTrait};
-
-    use warpack_masters::{
-        systems::{actions::{actions, IActionsDispatcher, IActionsDispatcherTrait}},
-        systems::{item::{item_system, IItemDispatcher}},
-        systems::{fight::{fight_system, IFightDispatcher, IFightDispatcherTrait}},
-        systems::{dummy::{dummy_system, IDummyDispatcher}},
-        models::backpack::{m_BackpackGrids},
-        models::Item::{m_Item, m_ItemsCounter},
-        models::Character::{Characters, m_Characters, m_NameRecord, WMClass, PLAYER},
-        models::DummyCharacter::{m_DummyCharacter, m_DummyCharacterCounter},
-        models::DummyCharacterItem::{
-            m_DummyCharacterItem, m_DummyCharacterItemsCounter
-        },
-        models::CharacterItem::{CharacterItemInventory, CharacterItemsInventoryCounter, m_CharacterItemInventory, m_CharacterItemsInventoryCounter, 
-            m_CharacterItemStorage, m_CharacterItemsStorageCounter,
-            Position
-        },
-        models::Fight::{BattleLog, m_BattleLog, m_BattleLogCounter, e_BattleLogDetail},
-        utils::{test_utils::{add_items, add_dummy}},
-        constants::constants::{INIT_GOLD, INIT_HEALTH}
+    use dojo_cairo_test::{
+        ContractDef, ContractDefTrait, NamespaceDef, TestResource, WorldStorageTestTrait,
+        spawn_test_world,
     };
+    use starknet::testing::set_contract_address;
+    use warpack_masters::constants::constants::{INIT_GOLD, INIT_HEALTH};
+    use warpack_masters::models::Character::{
+        Character, CharacterName, PLAYER, WMClass, m_Character, m_CharacterName,
+    };
+    use warpack_masters::models::CharacterItem::{
+        InventoryCounter, InventoryItem, Position, m_InventoryCounter, m_InventoryItem,
+        m_StorageCounter, m_StorageItem,
+    };
+    use warpack_masters::models::DummyCharacter::{m_DummyCharacter, m_DummyCharacterCounter};
+    use warpack_masters::models::DummyCharacterItem::{
+        m_DummyCharacterItem, m_DummyCharacterItemsCounter,
+    };
+    use warpack_masters::models::Fight::{
+        BattleLog, e_BattleLogDetail, m_BattleLog, m_BattleLogCounter,
+    };
+    use warpack_masters::models::Item::{m_Item, m_ItemsCounter};
+    use warpack_masters::models::backpack::m_BackpackGrids;
+    use warpack_masters::systems::actions::{IActionsDispatcher, IActionsDispatcherTrait, actions};
+    use warpack_masters::systems::dummy::{IDummyDispatcher, dummy_system};
+    use warpack_masters::systems::fight::{IFightDispatcher, IFightDispatcherTrait, fight_system};
+    use warpack_masters::systems::item::{IItemDispatcher, item_system};
+    use warpack_masters::utils::test_utils::{add_dummy, add_items};
 
     fn namespace_def() -> NamespaceDef {
         let ndef = NamespaceDef {
-            namespace: "Warpacks", 
+            namespace: "Warpacks",
             resources: [
                 TestResource::Model(m_BackpackGrids::TEST_CLASS_HASH.try_into().unwrap()),
                 TestResource::Model(m_Item::TEST_CLASS_HASH.try_into().unwrap()),
                 TestResource::Model(m_ItemsCounter::TEST_CLASS_HASH.try_into().unwrap()),
-                TestResource::Model(m_Characters::TEST_CLASS_HASH.try_into().unwrap()),
-                TestResource::Model(m_NameRecord::TEST_CLASS_HASH.try_into().unwrap()),
+                TestResource::Model(m_Character::TEST_CLASS_HASH.try_into().unwrap()),
+                TestResource::Model(m_CharacterName::TEST_CLASS_HASH.try_into().unwrap()),
                 TestResource::Model(m_DummyCharacter::TEST_CLASS_HASH.try_into().unwrap()),
                 TestResource::Model(m_DummyCharacterCounter::TEST_CLASS_HASH.try_into().unwrap()),
                 TestResource::Model(m_DummyCharacterItem::TEST_CLASS_HASH.try_into().unwrap()),
-                TestResource::Model(m_DummyCharacterItemsCounter::TEST_CLASS_HASH.try_into().unwrap()),
+                TestResource::Model(
+                    m_DummyCharacterItemsCounter::TEST_CLASS_HASH.try_into().unwrap(),
+                ),
                 TestResource::Model(m_BattleLog::TEST_CLASS_HASH.try_into().unwrap()),
                 TestResource::Model(m_BattleLogCounter::TEST_CLASS_HASH.try_into().unwrap()),
-                TestResource::Model(m_CharacterItemInventory::TEST_CLASS_HASH.try_into().unwrap()),
-                TestResource::Model(m_CharacterItemsInventoryCounter::TEST_CLASS_HASH.try_into().unwrap()),
-                TestResource::Model(m_CharacterItemStorage::TEST_CLASS_HASH.try_into().unwrap()),
-                TestResource::Model(m_CharacterItemsStorageCounter::TEST_CLASS_HASH.try_into().unwrap()),
+                TestResource::Model(m_InventoryItem::TEST_CLASS_HASH.try_into().unwrap()),
+                TestResource::Model(m_InventoryCounter::TEST_CLASS_HASH.try_into().unwrap()),
+                TestResource::Model(m_StorageItem::TEST_CLASS_HASH.try_into().unwrap()),
+                TestResource::Model(m_StorageCounter::TEST_CLASS_HASH.try_into().unwrap()),
                 TestResource::Event(e_BattleLogDetail::TEST_CLASS_HASH),
                 TestResource::Contract(actions::TEST_CLASS_HASH),
                 TestResource::Contract(item_system::TEST_CLASS_HASH),
                 TestResource::Contract(fight_system::TEST_CLASS_HASH),
                 TestResource::Contract(dummy_system::TEST_CLASS_HASH),
-            ].span()
+            ]
+                .span(),
         };
         ndef
     }
@@ -66,7 +72,8 @@ mod tests {
                 .with_writer_of([dojo::utils::bytearray_hash(@"Warpacks")].span()),
             ContractDefTrait::new(@"Warpacks", @"dummy_system")
                 .with_writer_of([dojo::utils::bytearray_hash(@"Warpacks")].span()),
-        ].span()
+        ]
+            .span()
     }
 
     #[test]
@@ -147,7 +154,7 @@ mod tests {
 
         action_system.spawn('alice', WMClass::Warlock);
 
-        let bob = starknet::contract_address_const::<0x1>();
+        let bob = warpack_masters::utils::address::address_from(0x1);
         set_contract_address(bob);
         action_system.spawn('bob', WMClass::Warlock);
 
@@ -178,12 +185,12 @@ mod tests {
         add_items(ref item_system);
         add_dummy(ref dummy_system);
 
-        let alice = starknet::contract_address_const::<0x0>();
+        let alice = warpack_masters::utils::address::zero_address();
 
         action_system.spawn('alice', WMClass::Warlock);
 
         // Update character loss count
-        let mut char: Characters = world.read_model(alice);
+        let mut char: Character = world.read_model(alice);
         char.loss = 5;
         world.write_model(@char);
 
@@ -209,7 +216,7 @@ mod tests {
         let (contract_address, _) = world.dns(@"dummy_system").unwrap();
         let mut dummy_system = IDummyDispatcher { contract_address };
 
-        let alice = starknet::contract_address_const::<0x0>();
+        let alice = warpack_masters::utils::address::zero_address();
 
         add_items(ref item_system);
         add_dummy(ref dummy_system);
@@ -217,8 +224,8 @@ mod tests {
         action_system.spawn('alice', WMClass::Warlock);
 
         // Add items for Alice
-        let mut inventoryCounter: CharacterItemsInventoryCounter = world.read_model(alice);
-        
+        let mut inventoryCounter: InventoryCounter = world.read_model(alice);
+
         // add Herb id 5, on start +1 regen
         inventoryCounter.count += 1;
         let item1 = CharacterItemInventory {
@@ -229,7 +236,7 @@ mod tests {
             rotation: 0,
             plugins: array![],
         };
-        
+
         // add Dagger id 6, damage 3, cooldown 4
         inventoryCounter.count += 1;
         let item2 = CharacterItemInventory {
@@ -240,7 +247,7 @@ mod tests {
             rotation: 0,
             plugins: array![],
         };
-        
+
         // add Spike id 8, on start +1 reflect
         inventoryCounter.count += 1;
         let item3 = CharacterItemInventory {
@@ -251,7 +258,7 @@ mod tests {
             rotation: 0,
             plugins: array![],
         };
-        
+
         // add SpikeShield id 16, chance 75, on hit +2 reflect
         inventoryCounter.count += 1;
         let item4 = CharacterItemInventory {
@@ -270,12 +277,12 @@ mod tests {
         world.write_model(@item4);
 
         // Add items for Bob
-        let bob = starknet::contract_address_const::<0x1>();
+        let bob = warpack_masters::utils::address::address_from(0x1);
         set_contract_address(bob);
         action_system.spawn('bob', WMClass::Warlock);
 
-        let mut inventoryCounter: CharacterItemsInventoryCounter = world.read_model(bob);
-        
+        let mut inventoryCounter: InventoryCounter = world.read_model(bob);
+
         // add Sword id 7, damage 5, cooldown 5
         inventoryCounter.count += 1;
         let item1 = CharacterItemInventory {
@@ -286,7 +293,7 @@ mod tests {
             rotation: 0,
             plugins: array![],
         };
-        
+
         // add Shield id 9, on start +15 armor
         inventoryCounter.count += 1;
         let item2 = CharacterItemInventory {
@@ -297,7 +304,7 @@ mod tests {
             rotation: 0,
             plugins: array![],
         };
-        
+
         // add Helmet id 10, chance 50, on hit +3 armor
         inventoryCounter.count += 1;
         let item3 = CharacterItemInventory {
@@ -308,7 +315,7 @@ mod tests {
             rotation: 0,
             plugins: array![],
         };
-        
+
         // add Poison id 13, on start +2 posion
         inventoryCounter.count += 1;
         let item4 = CharacterItemInventory {
@@ -319,7 +326,7 @@ mod tests {
             rotation: 0,
             plugins: array![],
         };
-        
+
         // add Dagger id 6, damage 3, cooldown 4
         inventoryCounter.count += 1;
         let item5 = CharacterItemInventory {
@@ -347,7 +354,7 @@ mod tests {
         assert(battleLog.winner != 0, 'winner should not be 0');
         assert(battleLog.seconds > 0, 'seconds be greater than 0');
 
-        let char: Characters = world.read_model(bob);
+        let char: Character = world.read_model(bob);
 
         if battleLog.winner == PLAYER {
             assert(char.wins == 1, 'wins should be 1');

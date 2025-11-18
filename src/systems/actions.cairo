@@ -1,23 +1,19 @@
-use warpack_masters::models::Character::WMClass;
 use starknet::ContractAddress;
+use warpack_masters::models::Character::WMClass;
 
 #[starknet::interface]
 pub trait IActions<T> {
-    fn spawn(
-        ref self: T,
-        name: felt252,
-        wmClass: WMClass,
-    );
-    fn rebirth(
-        ref self: T,
-    );
+    fn spawn(ref self: T, name: felt252, wmClass: WMClass);
+    fn rebirth(ref self: T);
     fn move_item_from_storage_to_inventory(
-        ref self: T, storage_item_id: u32, x: u32, y: u32, rotation: u32
+        ref self: T, storage_item_id: u32, x: u32, y: u32, rotation: u32,
     );
     fn move_item_from_inventory_to_storage(ref self: T, inventory_item_id: u32);
     fn get_balance(self: @T) -> u256;
     fn withdraw_strk(ref self: T, amount: u256, recipient: ContractAddress);
-    fn move_item_within_inventory(ref self: T, inventory_item_id: u32, x: u32, y: u32, rotation: u32);
+    fn move_item_within_inventory(
+        ref self: T, inventory_item_id: u32, x: u32, y: u32, rotation: u32,
+    );
     fn move_item_from_shop_to_storage(ref self: T, item_id: u32);
     fn move_item_from_storage_to_shop(ref self: T, storage_item_id: u32);
     fn move_item_from_shop_to_inventory(ref self: T, item_id: u32, x: u32, y: u32, rotation: u32);
@@ -29,39 +25,38 @@ pub trait IActions<T> {
 
 #[dojo::contract]
 mod actions {
-    use super::{IActions, WMClass};
-    use starknet::ContractAddress;
-    use core::dict::Felt252Dict;
-    use core::array::Array;
+    use core::array::{Array, ArrayTrait, SpanTrait};
     use core::bytes_31::bytes31;
-
-    use starknet::{get_caller_address, get_block_timestamp};
-    use warpack_masters::models::{backpack::{BackpackGrids}};
-    use warpack_masters::models::{
-        CharacterItem::{
-            Position, CharacterItemsStorageCounter, CharacterItemStorage, CharacterItemInventory,
-            CharacterItemsInventoryCounter
-        },
-        Item::{Item},
-        Character::{Characters, NameRecord},
-        Shop::Shop,
-        Fight::{BattleLog, BattleLogCounter},
-        Game::GameConfig,
-        Recipe::RecipeV2,
-        TokenRegistry::{TokenRegistry},
-    };
-
-    use warpack_masters::items::{Backpack, Pack};
-    use warpack_masters::constants::constants::{GRID_X, GRID_Y, INIT_GOLD, INIT_HEALTH, INIT_STAMINA, REBIRTH_FEE, GAME_CONFIG_ID, GOLD_ITEM_ID};
-
-    use dojo::model::{ModelStorage};
-
-    use openzeppelin_token::erc20::interface::{IERC20Dispatcher, IERC20DispatcherTrait};
-    use warpack_masters::externals::interface::{IERC20MINTABLEDispatcher, IERC20MINTABLEDispatcherTrait};
-
-    use dojo::world::{IWorldDispatcherTrait};
-
+    use core::dict::Felt252Dict;
+    use dojo::array::ArrayTraitExt;
+    use core::traits::TryInto;
     use dojo::event::EventStorage;
+    use dojo::model::ModelStorage;
+    use dojo::world::{WorldDispatcherTrait, WorldStorageTrait};
+    use openzeppelin_interfaces::erc20::{IERC20Dispatcher, IERC20DispatcherTrait};
+    use starknet::{ContractAddress, get_block_timestamp, get_caller_address};
+    use warpack_masters::constants::constants::{
+        GAME_CONFIG_ID, GOLD_ITEM_ID, GRID_X, GRID_Y, INIT_GOLD, INIT_HEALTH, INIT_STAMINA,
+        REBIRTH_FEE,
+    };
+    use warpack_masters::externals::interface::{
+        IERC20MINTABLEDispatcher, IERC20MINTABLEDispatcherTrait,
+    };
+    use warpack_masters::items::{Backpack, Pack};
+    use warpack_masters::models::Character::{Character, CharacterName, Characters};
+    use warpack_masters::models::CharacterItem::{
+        InventoryCounter, InventoryItem, Position, StorageCounter, StorageItem,
+    };
+    use warpack_masters::models::Fight::{BattleLog, BattleLogCounter};
+    use warpack_masters::models::Game::GameConfig;
+    use warpack_masters::models::Item::Item;
+    use warpack_masters::models::Recipe::RecipeV2;
+    use warpack_masters::models::Shop::Shop;
+    use warpack_masters::models::TokenRegistry::TokenRegistry;
+    use warpack_masters::models::backpack::BackpackGrids;
+    use warpack_masters::utils::address::zero_address;
+    use warpack_masters::utils::storage_pointers as ptrs;
+    use super::{IActions, WMClass};
 
     #[derive(Copy, Drop, Serde)]
     #[dojo::event(historical: true)]
@@ -85,13 +80,16 @@ mod actions {
         birthCount: u32,
     }
 
+    #[derive(Copy, Drop)]
+    struct FeeBreakdown {
+        total: u256,
+        burn: u256,
+        treasury: u256,
+    }
+
     #[abi(embed_v0)]
     impl ActionsImpl of IActions<ContractState> {
-        fn spawn(
-            ref self: ContractState,
-            name: felt252,
-            wmClass: WMClass,
-        ) {
+        fn spawn(ref self: ContractState, name: felt252, wmClass: WMClass) {
             let mut world = self.world(@"Warpacks");
 
             let player = get_caller_address();
@@ -104,19 +102,20 @@ mod actions {
                     break;
                 }
                 len += 1;
-            };
+            }
             assert(len <= 12 && len >= 3, 'name size is invalid');
 
-            let nameRecord: NameRecord = world.read_model(name);
+            let name_ptr = ptrs::character_name(name);
+            let nameRecord: CharacterName = world.read_model((name,));
+            let zero_address: ContractAddress = 0.try_into().unwrap();
             assert(
-                nameRecord.player == starknet::contract_address_const::<0>()
-                    || nameRecord.player == player,
-                'name already exists'
+                nameRecord.player == zero_address || nameRecord.player == player,
+                'name already exists',
             );
 
-            world.write_model(@NameRecord { name, player });
+            world.write_member(name_ptr, selector!("player"), player);
 
-            let player_exists: Characters = world.read_model(player);
+            let player_exists: Character = world.read_model(player);
             assert(player_exists.name == '', 'player already exists');
 
             // Default the player has 2 Backpacks
@@ -126,9 +125,13 @@ mod actions {
             let item: Item = world.read_model(Pack::id);
             assert(item.itemType == 4, 'Invalid item type');
 
-            world.write_model(@CharacterItemStorage { player, id: 1, itemId: Backpack::id });
-            world.write_model(@CharacterItemStorage { player, id: 2, itemId: Pack::id });
-            world.write_model(@CharacterItemsStorageCounter { player, count: 2 });
+            let storage_item_one_ptr = ptrs::storage_item(player, 1);
+            let storage_item_two_ptr = ptrs::storage_item(player, 2);
+            let storage_counter_ptr = ptrs::storage_counter(player);
+
+            world.write_member(storage_item_one_ptr, selector!("itemId"), Backpack::id);
+            world.write_member(storage_item_two_ptr, selector!("itemId"), Pack::id);
+            world.write_member(storage_counter_ptr, selector!("count"), 2);
 
             self.move_item_from_storage_to_inventory(1, 4, 2, 0);
             self.move_item_from_storage_to_inventory(2, 2, 2, 0);
@@ -143,83 +146,77 @@ mod actions {
             self._mint_gold(player, INIT_GOLD.into() + 1);
 
             // add one gold for reroll shop
-            world.write_model(@Characters { 
-                player,
-                name,
-                wmClass,
-                // gold: INIT_GOLD + 1,
-                gold: 0,
-                health: INIT_HEALTH,
-                wins: 0,
-                loss: 0,
-                rating: prev_rating,
-                totalWins: prev_total_wins,
-                totalLoss: prev_total_loss,
-                winStreak: 0,
-                birthCount: prev_birth_count + 1,
-                stamina: INIT_STAMINA,
-                updatedAt, 
-            });
+            let character_ptr = ptrs::character(player);
+            world.write_member(character_ptr, selector!("name"), name);
+            world.write_member(character_ptr, selector!("wmClass"), wmClass);
+            world.write_member(character_ptr, selector!("gold"), 0);
+            world.write_member(character_ptr, selector!("health"), INIT_HEALTH);
+            world.write_member(character_ptr, selector!("wins"), 0);
+            world.write_member(character_ptr, selector!("loss"), 0);
+            world.write_member(character_ptr, selector!("rating"), prev_rating);
+            world.write_member(character_ptr, selector!("totalWins"), prev_total_wins);
+            world.write_member(character_ptr, selector!("totalLoss"), prev_total_loss);
+            world.write_member(character_ptr, selector!("winStreak"), 0);
+            world.write_member(character_ptr, selector!("birthCount"), prev_birth_count + 1);
+            world.write_member(character_ptr, selector!("stamina"), INIT_STAMINA);
+            world.write_member(character_ptr, selector!("updatedAt"), updatedAt);
         }
 
-        fn rebirth(
-            ref self: ContractState,
-        ) {
+        fn rebirth(ref self: ContractState) {
             let mut world = self.world(@"Warpacks");
 
             let player = get_caller_address();
 
-            let mut char: Characters = world.read_model(player);
+            let char_ptr = ptrs::character(player);
+            let mut char: Character = world.read_model(player);
 
             assert(char.loss >= 5, 'loss not reached');
-            
+
             let gameConfig: GameConfig = world.read_model(GAME_CONFIG_ID);
             let STRK_ADDRESS: ContractAddress = gameConfig.strk_address;
-            
+
             IERC20Dispatcher { contract_address: STRK_ADDRESS }
                 .transfer_from(player, starknet::get_contract_address(), REBIRTH_FEE);
 
             let prev_name = char.name;
             // required to calling spawn doesn't fail
-            char.name = '';
+            world
+                .write_member(
+                    char_ptr,
+                    selector!("name"),
+                    '',
+                );
 
-            let mut inventoryItemsCounter: CharacterItemsInventoryCounter = world.read_model(player);
-            let mut count = inventoryItemsCounter.count;
-
-            loop {
-                if count == 0 {
-                    break;
-                }
-
-                let mut inventoryItem: CharacterItemInventory = world.read_model((player, count));
-
-                inventoryItem.itemId = 0;
-                inventoryItem.position.x = 0;
-                inventoryItem.position.y = 0;
-                inventoryItem.rotation = 0;
-                inventoryItem.plugins = array![];
-                
-                world.write_model(@inventoryItem);
-
-                count -= 1;
-            };
-
-            let mut storageItemsCounter: CharacterItemsStorageCounter = world.read_model(player);
-            let mut count = storageItemsCounter.count;
+            let inventory_counter_ptr = ptrs::inventory_counter(player);
+            let mut count = world.read_member(inventory_counter_ptr, selector!("count"));
 
             loop {
                 if count == 0 {
                     break;
                 }
 
-                let mut storageItem: CharacterItemStorage = world.read_model((player, count));
-
-                storageItem.itemId = 0;
-
-                world.write_model(@storageItem);
+                let item_ptr = ptrs::inventory_item(player, count);
+                world.write_member(item_ptr, selector!("itemId"), 0);
+                world.write_member(item_ptr, selector!("position"), Position { x: 0, y: 0 });
+                world.write_member(item_ptr, selector!("rotation"), 0);
+                world.write_member(item_ptr, selector!("plugins"), ArrayTrait::new());
 
                 count -= 1;
-            };
+            }
+
+            let storage_counter_ptr = ptrs::storage_counter(player);
+            let mut count = world.read_member(storage_counter_ptr, selector!("count"));
+
+            loop {
+                if count == 0 {
+                    break;
+                }
+
+                let storage_item_ptr = ptrs::storage_item(player, count);
+                world.write_member(storage_item_ptr, selector!("itemId"), 0);
+
+                count -= 1;
+            }
 
             // clear BackpackGrids
             let mut i = 0;
@@ -233,33 +230,42 @@ mod actions {
                         break;
                     }
 
-                    let player_backpack_grid_data: BackpackGrids = world.read_model((player, i, j));
+                    let grid_ptr = ptrs::backpack_grid(player, i, j);
+                    let grid_enabled: bool = world.read_member(grid_ptr, selector!("enabled"));
+                    let grid_occupied: bool = world.read_member(grid_ptr, selector!("occupied"));
 
-                    if player_backpack_grid_data.occupied || player_backpack_grid_data.enabled {
-                        world.write_model(@BackpackGrids {
-                            player: player, x: i, y: j, enabled: false, occupied: false, itemId: 0, inventoryItemId: 0, isWeapon: false, isPlugin: false
-                        });
+                    if grid_enabled || grid_occupied {
+                        world.write_member(grid_ptr, selector!("enabled"), false);
+                        world.write_member(grid_ptr, selector!("occupied"), false);
+                        world.write_member(grid_ptr, selector!("itemId"), 0);
+                        world.write_member(grid_ptr, selector!("inventoryItemId"), 0);
+                        world.write_member(grid_ptr, selector!("isWeapon"), false);
+                        world.write_member(grid_ptr, selector!("isPlugin"), false);
                     }
                     j += 1;
-                };
+                }
                 j = 0;
                 i += 1;
-            };
+            }
 
             // clear shop
-            let mut shop: Shop = world.read_model(player);
-            shop.item1 = 0;
-            shop.item2 = 0;
-            shop.item3 = 0;
-            shop.item4 = 0;
+            let shop_ptr = ptrs::shop(player);
+            world.write_member(shop_ptr, selector!("item1"), 0);
+            world.write_member(shop_ptr, selector!("item2"), 0);
+            world.write_member(shop_ptr, selector!("item3"), 0);
+            world.write_member(shop_ptr, selector!("item4"), 0);
 
-            inventoryItemsCounter.count = 0;
-            storageItemsCounter.count = 0;
+            world.write_member(inventory_counter_ptr, selector!("count"), 0);
+            world.write_member(storage_counter_ptr, selector!("count"), 0);
 
-            world.write_model(@char);
-            world.write_model(@shop);
-            world.write_model(@inventoryItemsCounter);
-            world.write_model(@storageItemsCounter);
+            world.write_member(char_ptr, selector!("loss"), char.loss);
+            world.write_member(char_ptr, selector!("rating"), char.rating);
+            world.write_member(char_ptr, selector!("totalWins"), char.totalWins);
+            world.write_member(char_ptr, selector!("totalLoss"), char.totalLoss);
+            world.write_member(char_ptr, selector!("winStreak"), char.winStreak);
+            world.write_member(char_ptr, selector!("birthCount"), char.birthCount);
+            world.write_member(char_ptr, selector!("stamina"), char.stamina);
+            world.write_member(char_ptr, selector!("updatedAt"), char.updatedAt);
 
             self.spawn(prev_name, char.wmClass);
         }
@@ -268,12 +274,11 @@ mod actions {
             let mut world = self.world(@"Warpacks");
 
             let caller = get_caller_address();
-            assert(world.dispatcher.is_owner(0, caller), 'caller not world owner');
+            assert(world.is_owner(0, caller), 'caller not world owner');
 
             let gameConfig: GameConfig = world.read_model(GAME_CONFIG_ID);
             let STRK_ADDRESS: ContractAddress = gameConfig.strk_address;
-            IERC20Dispatcher { contract_address: STRK_ADDRESS }
-                .transfer(recipient, amount);
+            IERC20Dispatcher { contract_address: STRK_ADDRESS }.transfer(recipient, amount);
         }
 
         fn get_balance(self: @ContractState) -> u256 {
@@ -283,12 +288,11 @@ mod actions {
 
             let gameConfig: GameConfig = world.read_model(GAME_CONFIG_ID);
             let STRK_ADDRESS: ContractAddress = gameConfig.strk_address;
-            return IERC20Dispatcher { contract_address: STRK_ADDRESS }
-                .balance_of(player);
+            return IERC20Dispatcher { contract_address: STRK_ADDRESS }.balance_of(player);
         }
-        
+
         fn move_item_from_storage_to_inventory(
-            ref self: ContractState, storage_item_id: u32, x: u32, y: u32, rotation: u32
+            ref self: ContractState, storage_item_id: u32, x: u32, y: u32, rotation: u32,
         ) {
             let mut world = self.world(@"Warpacks");
 
@@ -301,19 +305,17 @@ mod actions {
             assert(y < GRID_Y, 'y out of range');
             assert(
                 rotation == 0 || rotation == 90 || rotation == 180 || rotation == 270,
-                'invalid rotation'
+                'invalid rotation',
             );
 
-            let mut storageItem: CharacterItemStorage = world.read_model((player, storage_item_id));
+            let storage_item_ptr = ptrs::storage_item(player, storage_item_id);
+            let itemId: u32 = world.read_member(storage_item_ptr, selector!("itemId"));
 
-            assert(storageItem.itemId != 0, 'item not found');
+            assert(itemId != 0, 'item not found');
 
-            let itemId = storageItem.itemId;
-            
             self._add_item_to_inventory(player, itemId, x, y, rotation);
 
-            storageItem.itemId = 0;
-            world.write_model(@storageItem);
+            world.write_member(storage_item_ptr, selector!("itemId"), 0);
         }
 
         fn move_item_from_inventory_to_storage(ref self: ContractState, inventory_item_id: u32) {
@@ -323,11 +325,13 @@ mod actions {
             self._check_if_player_has_joined_a_matched_battle(player);
 
             let item_id = self._remove_item_from_inventory(player, inventory_item_id);
-        
+
             self._add_item_to_storage(player, item_id);
         }
 
-        fn move_item_within_inventory(ref self: ContractState, inventory_item_id: u32, x: u32, y: u32, rotation: u32) {
+        fn move_item_within_inventory(
+            ref self: ContractState, inventory_item_id: u32, x: u32, y: u32, rotation: u32,
+        ) {
             let player = get_caller_address();
 
             // check if the player has joined the matching battle
@@ -350,17 +354,18 @@ mod actions {
 
             let player = get_caller_address();
 
-            let mut storageItem: CharacterItemStorage = world.read_model((player, storage_item_id));
-            let item_id = storageItem.itemId;
+            let storage_item_ptr = ptrs::storage_item(player, storage_item_id);
+            let item_id: u32 = world.read_member(storage_item_ptr, selector!("itemId"));
             assert(item_id != 0, 'invalid item_id');
 
             self._sell_item(player, item_id);
 
-            storageItem.itemId = 0;
-            world.write_model(@storageItem);
+            world.write_member(storage_item_ptr, selector!("itemId"), 0);
         }
 
-        fn move_item_from_shop_to_inventory(ref self: ContractState, item_id: u32, x: u32, y: u32, rotation: u32) {
+        fn move_item_from_shop_to_inventory(
+            ref self: ContractState, item_id: u32, x: u32, y: u32, rotation: u32,
+        ) {
             let player = get_caller_address();
 
             self._buy_item(player, item_id);
@@ -375,9 +380,7 @@ mod actions {
             self._sell_item(player, item_id);
         }
 
-        fn craft_item(
-            ref self: ContractState, recipe_id: u32, storage_ids: Array<u32>
-        ) {
+        fn craft_item(ref self: ContractState, recipe_id: u32, storage_ids: Array<u32>) {
             let mut world = self.world(@"Warpacks");
 
             let player = get_caller_address();
@@ -394,29 +397,29 @@ mod actions {
                 let item_id = *recipe.item_ids[i];
                 let item_amount = *recipe.item_amounts[i];
                 required_items.insert(item_id.into(), item_amount);
-            };
+            }
 
             let storage_ids_len = storage_ids.len();
             assert(storage_ids_len > 0, 'must have at least one item');
 
             for i in 0..storage_ids_len {
                 let storage_id = *storage_ids[i];
-                let mut storage_item: CharacterItemStorage = world.read_model((player, storage_id));
-                assert(storage_item.itemId != 0, 'item not owned');
+                let storage_item_ptr = ptrs::storage_item(player, storage_id);
+                let storage_item_id: u32 = world.read_member(storage_item_ptr, selector!("itemId"));
+                assert(storage_item_id != 0, 'item not owned');
 
-                let required_item_amount = required_items.get(storage_item.itemId.into());
+                let required_item_amount = required_items.get(storage_item_id.into());
                 if (required_item_amount > 0) {
-                    required_items.insert(storage_item.itemId.into(), required_item_amount - 1);
-                    storage_item.itemId = 0;
-                    world.write_model(@storage_item);
+                    required_items.insert(storage_item_id.into(), required_item_amount - 1);
+                    world.write_member(storage_item_ptr, selector!("itemId"), 0);
                 }
-            };
+            }
 
             for i in 0..item_ids_len {
                 let item_id = *recipe.item_ids[i];
 
                 assert(required_items.get(item_id.into()) == 0, 'item not enough');
-            };
+            }
 
             self._add_item_to_storage(player, recipe.result_item_id);
         }
@@ -424,25 +427,32 @@ mod actions {
 
     #[generate_trait]
     impl InternalImpl of InternalTrait {
-        fn _check_if_player_has_joined_a_matched_battle(ref self: ContractState, player: ContractAddress) {
+        fn _check_if_player_has_joined_a_matched_battle(
+            ref self: ContractState, player: ContractAddress,
+        ) {
             let mut world = self.world(@"Warpacks");
 
             let mut battleLogCounter: BattleLogCounter = world.read_model(player);
             let latestBattleLog: BattleLog = world.read_model((player, battleLogCounter.count));
-            assert(battleLogCounter.count == 0 || latestBattleLog.winner != 0, 'matched battle not joined');
+            assert(
+                battleLogCounter.count == 0 || latestBattleLog.winner != 0,
+                'matched battle not joined',
+            );
         }
 
-        fn _remove_item_from_inventory(ref self: ContractState, player: ContractAddress, inventory_item_id: u32) -> u32 {
+        fn _remove_item_from_inventory(
+            ref self: ContractState, player: ContractAddress, inventory_item_id: u32,
+        ) -> u32 {
             let mut world = self.world(@"Warpacks");
 
-            let mut inventoryItem: CharacterItemInventory = world.read_model((player, inventory_item_id));
-            let itemId = inventoryItem.itemId;
+            let inventory_item_ptr = ptrs::inventory_item(player, inventory_item_id);
+            let itemId: u32 = world.read_member(inventory_item_ptr, selector!("itemId"));
             assert(itemId != 0, 'item not found');
             let item: Item = world.read_model(itemId);
 
-            let x = inventoryItem.position.x;
-            let y = inventoryItem.position.y;
-            let rotation = inventoryItem.rotation;
+            let position: Position = world.read_member(inventory_item_ptr, selector!("position"));
+            let rotation: u32 = world.read_member(inventory_item_ptr, selector!("rotation"));
+            let (x, y) = (position.x, position.y);
 
             let itemHeight = item.height;
             let itemWidth = item.width;
@@ -481,25 +491,30 @@ mod actions {
                         break;
                     }
 
+                    let grid_ptr = ptrs::backpack_grid(player, i, j);
                     let mut playerBackpackGrids: BackpackGrids = world.read_model((player, i, j));
                     if item.itemType == 4 {
                         assert(!playerBackpackGrids.occupied, 'Already occupied');
-                        playerBackpackGrids.enabled = false;
-                        world.write_model(@playerBackpackGrids);
+                        world.write_member(grid_ptr, selector!("enabled"), false);
                     } else {
                         assert(playerBackpackGrids.enabled, 'Grid not enabled');
                         assert(playerBackpackGrids.occupied, 'Grid not occupied');
-                        assert(playerBackpackGrids.inventoryItemId == inventory_item_id, 'Invalid inventory item id');
+                        assert(
+                            playerBackpackGrids.inventoryItemId == inventory_item_id,
+                            'Invalid inventory item id',
+                        );
                         assert(playerBackpackGrids.itemId == itemId, 'Invalid item id');
                         assert(playerBackpackGrids.isWeapon == isWeapon, 'Invalid item type');
-                        assert(playerBackpackGrids.isPlugin == item.isPlugin, 'Is not aligned with plugin');
+                        assert(
+                            playerBackpackGrids.isPlugin == item.isPlugin,
+                            'Is not aligned with plugin',
+                        );
 
-                        playerBackpackGrids.occupied = false;
-                        playerBackpackGrids.itemId = 0;
-                        playerBackpackGrids.inventoryItemId = 0;
-                        playerBackpackGrids.isWeapon = false;
-                        playerBackpackGrids.isPlugin = false;
-                        world.write_model(@playerBackpackGrids);
+                        world.write_member(grid_ptr, selector!("occupied"), false);
+                        world.write_member(grid_ptr, selector!("itemId"), 0);
+                        world.write_member(grid_ptr, selector!("inventoryItemId"), 0);
+                        world.write_member(grid_ptr, selector!("isWeapon"), false);
+                        world.write_member(grid_ptr, selector!("isPlugin"), false);
 
                         // to check around if it is a plugin
                         if item.isPlugin {
@@ -507,23 +522,22 @@ mod actions {
                             if i > 0 && i == x {
                                 let grid: BackpackGrids = world.read_model((player, i - 1, j));
                                 if !isHandled.get(grid.inventoryItemId.into()) && grid.isWeapon {
-                                    let mut weapon: CharacterItemInventory = world.read_model((player, grid.inventoryItemId));
-                                    let mut k = 0;
-                                    let plugins = weapon.plugins;
-                                    let mut newPlugins = array![];
+                                    let weapon_ptr = ptrs::inventory_item(player, grid.inventoryItemId);
+                                    let plugins: Array<(u8, u32, u32)> = world
+                                        .read_member(weapon_ptr, selector!("plugins"));
+                                    let mut filtered: Array<(u8, u32, u32)> = ArrayTrait::new();
+                                    let mut idx = 0;
                                     loop {
-                                        if k >= plugins.len() {
+                                        if idx >= plugins.len() {
                                             break;
                                         }
-                                        if *plugins.at(k) == (item.effectType, item.chance, item.effectStacks) {
-                                            k += 1;
-                                            continue;
+                                        let current = plugins.span().at(idx);
+                                        if current != (item.effectType, item.chance, item.effectStacks) {
+                                            filtered.append(current);
                                         }
-                                        newPlugins.append(*plugins.at(k));
-                                        k += 1;
-                                    };
-                                    weapon.plugins = newPlugins;
-                                    world.write_model(@weapon);
+                                        idx += 1;
+                                    }
+                                    world.write_member(weapon_ptr, selector!("plugins"), filtered);
                                     isHandled.insert(grid.inventoryItemId.into(), true);
                                 }
                             }
@@ -531,23 +545,22 @@ mod actions {
                             if j < GRID_Y - 1 && j == yMax {
                                 let grid: BackpackGrids = world.read_model((player, i, j + 1));
                                 if !isHandled.get(grid.inventoryItemId.into()) && grid.isWeapon {
-                                    let mut weapon: CharacterItemInventory = world.read_model((player, grid.inventoryItemId));
-                                    let mut k = 0;
-                                    let plugins = weapon.plugins;
-                                    let mut newPlugins = array![];
+                                    let weapon_ptr = ptrs::inventory_item(player, grid.inventoryItemId);
+                                    let plugins: Array<(u8, u32, u32)> = world
+                                        .read_member(weapon_ptr, selector!("plugins"));
+                                    let mut filtered: Array<(u8, u32, u32)> = ArrayTrait::new();
+                                    let mut idx = 0;
                                     loop {
-                                        if k >= plugins.len() {
+                                        if idx >= plugins.len() {
                                             break;
                                         }
-                                        if *plugins.at(k) == (item.effectType, item.chance, item.effectStacks) {
-                                            k += 1;
-                                            continue;
+                                        let current = plugins.span().at(idx);
+                                        if current != (item.effectType, item.chance, item.effectStacks) {
+                                            filtered.append(current);
                                         }
-                                        newPlugins.append(*plugins.at(k));
-                                        k += 1;
-                                    };
-                                    weapon.plugins = newPlugins;
-                                    world.write_model(@weapon);
+                                        idx += 1;
+                                    }
+                                    world.write_member(weapon_ptr, selector!("plugins"), filtered);
                                     isHandled.insert(grid.inventoryItemId.into(), true);
                                 }
                             }
@@ -555,23 +568,22 @@ mod actions {
                             if i < GRID_X - 1 && i == xMax {
                                 let grid: BackpackGrids = world.read_model((player, i + 1, j));
                                 if !isHandled.get(grid.inventoryItemId.into()) && grid.isWeapon {
-                                    let mut weapon: CharacterItemInventory = world.read_model((player, grid.inventoryItemId));
-                                    let mut k = 0;
-                                    let plugins = weapon.plugins;
-                                    let mut newPlugins = array![];
+                                    let weapon_ptr = ptrs::inventory_item(player, grid.inventoryItemId);
+                                    let plugins: Array<(u8, u32, u32)> = world
+                                        .read_member(weapon_ptr, selector!("plugins"));
+                                    let mut filtered: Array<(u8, u32, u32)> = ArrayTrait::new();
+                                    let mut idx = 0;
                                     loop {
-                                        if k >= plugins.len() {
+                                        if idx >= plugins.len() {
                                             break;
                                         }
-                                        if *plugins.at(k) == (item.effectType, item.chance, item.effectStacks) {
-                                            k += 1;
-                                            continue;
+                                        let current = plugins.span().at(idx);
+                                        if current != (item.effectType, item.chance, item.effectStacks) {
+                                            filtered.append(current);
                                         }
-                                        newPlugins.append(*plugins.at(k));
-                                        k += 1;
-                                    };
-                                    weapon.plugins = newPlugins;
-                                    world.write_model(@weapon);
+                                        idx += 1;
+                                    }
+                                    world.write_member(weapon_ptr, selector!("plugins"), filtered);
                                     isHandled.insert(grid.inventoryItemId.into(), true);
                                 }
                             }
@@ -579,23 +591,22 @@ mod actions {
                             if j > 0 && j == y {
                                 let grid: BackpackGrids = world.read_model((player, i, j - 1));
                                 if !isHandled.get(grid.inventoryItemId.into()) && grid.isWeapon {
-                                    let mut weapon: CharacterItemInventory = world.read_model((player, grid.inventoryItemId));
-                                    let mut k = 0;
-                                    let plugins = weapon.plugins;
-                                    let mut newPlugins = array![];
+                                    let weapon_ptr = ptrs::inventory_item(player, grid.inventoryItemId);
+                                    let plugins: Array<(u8, u32, u32)> = world
+                                        .read_member(weapon_ptr, selector!("plugins"));
+                                    let mut filtered: Array<(u8, u32, u32)> = ArrayTrait::new();
+                                    let mut idx = 0;
                                     loop {
-                                        if k >= plugins.len() {
+                                        if idx >= plugins.len() {
                                             break;
                                         }
-                                        if *plugins.at(k) == (item.effectType, item.chance, item.effectStacks) {
-                                            k += 1;
-                                            continue;
+                                        let current = plugins.span().at(idx);
+                                        if current != (item.effectType, item.chance, item.effectStacks) {
+                                            filtered.append(current);
                                         }
-                                        newPlugins.append(*plugins.at(k));
-                                        k += 1;
-                                    };
-                                    weapon.plugins = newPlugins;
-                                    world.write_model(@weapon);
+                                        idx += 1;
+                                    }
+                                    world.write_member(weapon_ptr, selector!("plugins"), filtered);
                                     isHandled.insert(grid.inventoryItemId.into(), true);
                                 }
                             }
@@ -603,22 +614,26 @@ mod actions {
                     }
 
                     j += 1;
-                };
+                }
                 j = y;
                 i += 1;
-            };
-
-            inventoryItem.itemId = 0;
-            inventoryItem.position.x = 0;
-            inventoryItem.position.y = 0;
-            inventoryItem.rotation = 0;
-            inventoryItem.plugins = array![];
-            world.write_model(@inventoryItem);
+            }
+            world.write_member(inventory_item_ptr, selector!("itemId"), 0);
+            world.write_member(inventory_item_ptr, selector!("position"), Position { x: 0, y: 0 });
+            world.write_member(inventory_item_ptr, selector!("rotation"), 0);
+            world.write_member(inventory_item_ptr, selector!("plugins"), ArrayTrait::new());
 
             itemId
         }
 
-        fn _add_item_to_inventory(ref self: ContractState, player: ContractAddress, itemId: u32, x: u32, y: u32, rotation: u32) {
+        fn _add_item_to_inventory(
+            ref self: ContractState,
+            player: ContractAddress,
+            itemId: u32,
+            x: u32,
+            y: u32,
+            rotation: u32,
+        ) {
             let mut world = self.world(@"Warpacks");
 
             let item: Item = world.read_model(itemId);
@@ -633,41 +648,39 @@ mod actions {
                 false
             };
 
-            let mut inventoryCounter: CharacterItemsInventoryCounter = world.read_model(player);
-            let mut count = inventoryCounter.count;
+            let inventory_counter_ptr = ptrs::inventory_counter(player);
+            let current_count: u32 = world.read_member(inventory_counter_ptr, selector!("count"));
 
-            let mut inventoryItem = CharacterItemInventory {
-                player,
-                id: 0,
-                itemId: itemId,
-                position: Position { x, y },
-                rotation: rotation,
-                plugins: array![],
-            };
-
+            let mut slot: u32 = 0;
+            let mut probe = current_count;
             loop {
-                if count == 0 {
+                if probe == 0 {
                     break;
                 }
 
-                let currentInventoryItem: CharacterItemInventory = world.read_model((player, count));
-                if currentInventoryItem.itemId == 0 {
-                    inventoryItem.id = count;
+                let item_ptr = ptrs::inventory_item(player, probe);
+                let existing_item_id: u32 = world.read_member(item_ptr, selector!("itemId"));
+                if existing_item_id == 0 {
+                    slot = probe;
                     break;
                 }
 
-                count -= 1;
-            };
-
-            if count == 0 {
-                inventoryCounter.count += 1;
-                inventoryItem.id = inventoryCounter.count;
+                probe -= 1;
             }
+
+            if slot == 0 {
+                let new_count = current_count + 1;
+                world.write_member(inventory_counter_ptr, selector!("count"), new_count);
+                slot = new_count;
+            }
+
+            let inventory_item_ptr = ptrs::inventory_item(player, slot);
+            let inventory_item_id = slot;
+            let mut item_plugins: Array<(u8, u32, u32)> = ArrayTrait::new();
 
             let mut xMax = 0;
             let mut yMax = 0;
 
-            
             if rotation == 0 || rotation == 180 {
                 // only check grids which are above the starting (x,y)
                 xMax = x + itemWidth - 1;
@@ -697,17 +710,24 @@ mod actions {
                     }
 
                     let playerBackpackGrids: BackpackGrids = world.read_model((player, i, j));
+                    let grid_ptr = ptrs::backpack_grid(player, i, j);
                     if item.itemType == 4 {
                         assert(!playerBackpackGrids.enabled, 'Already enabled');
-                        world.write_model(@BackpackGrids {
-                            player: player, x: i, y: j, enabled: true, occupied: false, itemId: 0, inventoryItemId: 0, isWeapon: false, isPlugin: false
-                        });
+                        world.write_member(grid_ptr, selector!("enabled"), true);
+                        world.write_member(grid_ptr, selector!("occupied"), false);
+                        world.write_member(grid_ptr, selector!("itemId"), 0);
+                        world.write_member(grid_ptr, selector!("inventoryItemId"), 0);
+                        world.write_member(grid_ptr, selector!("isWeapon"), false);
+                        world.write_member(grid_ptr, selector!("isPlugin"), false);
                     } else {
                         assert(playerBackpackGrids.enabled, 'Grid not enabled');
                         assert(!playerBackpackGrids.occupied, 'Already occupied');
-                        world.write_model(@BackpackGrids {
-                            player: player, x: i, y: j, enabled: true, occupied: true, itemId: itemId, inventoryItemId: inventoryItem.id, isWeapon: isWeapon, isPlugin: item.isPlugin
-                        });
+                        world.write_member(grid_ptr, selector!("enabled"), true);
+                        world.write_member(grid_ptr, selector!("occupied"), true);
+                        world.write_member(grid_ptr, selector!("itemId"), itemId);
+                        world.write_member(grid_ptr, selector!("inventoryItemId"), inventory_item_id);
+                        world.write_member(grid_ptr, selector!("isWeapon"), isWeapon);
+                        world.write_member(grid_ptr, selector!("isPlugin"), item.isPlugin);
 
                         // to check around if it is a weapon or plugin
                         if isWeapon || item.isPlugin {
@@ -717,11 +737,27 @@ mod actions {
                                 if !isHandled.get(grid.inventoryItemId.into()) {
                                     if isWeapon && grid.isPlugin {
                                         let plugin: Item = world.read_model(grid.itemId);
-                                        inventoryItem.plugins.append((plugin.effectType, plugin.chance, plugin.effectStacks));
+                                        item_plugins
+                                            .append(
+                                                (
+                                                    plugin.effectType,
+                                                    plugin.chance,
+                                                    plugin.effectStacks,
+                                                ),
+                                            );
                                     } else if item.isPlugin && grid.isWeapon {
-                                        let mut weapon: CharacterItemInventory = world.read_model((player, grid.inventoryItemId));
-                                        weapon.plugins.append((item.effectType, item.chance, item.effectStacks));
-                                        world.write_model(@weapon);
+                                        let weapon_ptr = ptrs::inventory_item(player, grid.inventoryItemId);
+                                        let mut weapon_plugins: Array<(u8, u32, u32)> = world
+                                            .read_member(weapon_ptr, selector!("plugins"));
+                                        weapon_plugins
+                                            .append(
+                                                (item.effectType, item.chance, item.effectStacks),
+                                            );
+                                        world.write_member(
+                                            weapon_ptr,
+                                            selector!("plugins"),
+                                            weapon_plugins,
+                                        );
                                     }
                                     isHandled.insert(grid.inventoryItemId.into(), true);
                                 }
@@ -732,11 +768,27 @@ mod actions {
                                 if !isHandled.get(grid.inventoryItemId.into()) {
                                     if isWeapon && grid.isPlugin {
                                         let plugin: Item = world.read_model(grid.itemId);
-                                        inventoryItem.plugins.append((plugin.effectType, plugin.chance, plugin.effectStacks));
+                                        item_plugins
+                                            .append(
+                                                (
+                                                    plugin.effectType,
+                                                    plugin.chance,
+                                                    plugin.effectStacks,
+                                                ),
+                                            );
                                     } else if item.isPlugin && grid.isWeapon {
-                                        let mut weapon: CharacterItemInventory = world.read_model((player, grid.inventoryItemId));
-                                        weapon.plugins.append((item.effectType, item.chance, item.effectStacks));
-                                        world.write_model(@weapon);
+                                        let weapon_ptr = ptrs::inventory_item(player, grid.inventoryItemId);
+                                        let mut weapon_plugins: Array<(u8, u32, u32)> = world
+                                            .read_member(weapon_ptr, selector!("plugins"));
+                                        weapon_plugins
+                                            .append(
+                                                (item.effectType, item.chance, item.effectStacks),
+                                            );
+                                        world.write_member(
+                                            weapon_ptr,
+                                            selector!("plugins"),
+                                            weapon_plugins,
+                                        );
                                     }
                                     isHandled.insert(grid.inventoryItemId.into(), true);
                                 }
@@ -747,11 +799,27 @@ mod actions {
                                 if !isHandled.get(grid.inventoryItemId.into()) {
                                     if isWeapon && grid.isPlugin {
                                         let plugin: Item = world.read_model(grid.itemId);
-                                        inventoryItem.plugins.append((plugin.effectType, plugin.chance, plugin.effectStacks));
+                                        item_plugins
+                                            .append(
+                                                (
+                                                    plugin.effectType,
+                                                    plugin.chance,
+                                                    plugin.effectStacks,
+                                                ),
+                                            );
                                     } else if item.isPlugin && grid.isWeapon {
-                                        let mut weapon: CharacterItemInventory = world.read_model((player, grid.inventoryItemId));
-                                        weapon.plugins.append((item.effectType, item.chance, item.effectStacks));
-                                        world.write_model(@weapon);
+                                        let weapon_ptr = ptrs::inventory_item(player, grid.inventoryItemId);
+                                        let mut weapon_plugins: Array<(u8, u32, u32)> = world
+                                            .read_member(weapon_ptr, selector!("plugins"));
+                                        weapon_plugins
+                                            .append(
+                                                (item.effectType, item.chance, item.effectStacks),
+                                            );
+                                        world.write_member(
+                                            weapon_ptr,
+                                            selector!("plugins"),
+                                            weapon_plugins,
+                                        );
                                     }
                                     isHandled.insert(grid.inventoryItemId.into(), true);
                                 }
@@ -762,27 +830,43 @@ mod actions {
                                 if !isHandled.get(grid.inventoryItemId.into()) {
                                     if isWeapon && grid.isPlugin {
                                         let plugin: Item = world.read_model(grid.itemId);
-                                        inventoryItem.plugins.append((plugin.effectType, plugin.chance, plugin.effectStacks));
+                                        item_plugins
+                                            .append(
+                                                (
+                                                    plugin.effectType,
+                                                    plugin.chance,
+                                                    plugin.effectStacks,
+                                                ),
+                                            );
                                     } else if item.isPlugin && grid.isWeapon {
-                                        let mut weapon: CharacterItemInventory = world.read_model((player, grid.inventoryItemId));
-                                        weapon.plugins.append((item.effectType, item.chance, item.effectStacks));
-                                        world.write_model(@weapon);
+                                        let weapon_ptr = ptrs::inventory_item(player, grid.inventoryItemId);
+                                        let mut weapon_plugins: Array<(u8, u32, u32)> = world
+                                            .read_member(weapon_ptr, selector!("plugins"));
+                                        weapon_plugins
+                                            .append(
+                                                (item.effectType, item.chance, item.effectStacks),
+                                            );
+                                        world.write_member(
+                                            weapon_ptr,
+                                            selector!("plugins"),
+                                            weapon_plugins,
+                                        );
                                     }
                                     isHandled.insert(grid.inventoryItemId.into(), true);
-                                }   
+                                }
                             }
                         }
                     }
 
                     j += 1;
-                };
+                }
                 j = y;
                 i += 1;
-            };
-
-            world.write_model(@inventoryItem);
-            world.write_model(@inventoryCounter);
-            
+            }
+            world.write_member(inventory_item_ptr, selector!("itemId"), itemId);
+            world.write_member(inventory_item_ptr, selector!("position"), Position { x, y });
+            world.write_member(inventory_item_ptr, selector!("rotation"), rotation);
+            world.write_member(inventory_item_ptr, selector!("plugins"), item_plugins);
         }
 
         fn _buy_item(ref self: ContractState, player: ContractAddress, item_id: u32) {
@@ -790,13 +874,17 @@ mod actions {
 
             let mut world = self.world(@"Warpacks");
 
-            let mut shop_data: Shop = world.read_model(player);
+            let shop_ptr = ptrs::shop(player);
+            let shop_item1: u32 = world.read_member(shop_ptr, selector!("item1"));
+            let shop_item2: u32 = world.read_member(shop_ptr, selector!("item2"));
+            let shop_item3: u32 = world.read_member(shop_ptr, selector!("item3"));
+            let shop_item4: u32 = world.read_member(shop_ptr, selector!("item4"));
             assert(
-                shop_data.item1 == item_id
-                    || shop_data.item2 == item_id
-                    || shop_data.item3 == item_id
-                    || shop_data.item4 == item_id,
-                'item not on sale'
+                shop_item1 == item_id
+                    || shop_item2 == item_id
+                    || shop_item3 == item_id
+                    || shop_item4 == item_id,
+                'item not on sale',
             );
 
             let item: Item = world.read_model(item_id);
@@ -805,30 +893,37 @@ mod actions {
             // assert(player_char.gold >= item.price, 'Not enough gold');
             // player_char.gold -= item.price;
 
-            self._tansfer_in_gold(item.price.into());
-            self._burn_gold(item.price.into());
+            let fee_config = self._compute_fee_split(item.price);
+            self._collect_gold_fee(player, fee_config.total);
+            self._distribute_gold_fee(fee_config);
 
             //delete respective item bought from the shop
-            if (shop_data.item1 == item_id) {
-                shop_data.item1 = 0
-            } else if (shop_data.item2 == item_id) {
-                shop_data.item2 = 0
-            } else if (shop_data.item3 == item_id) {
-                shop_data.item3 = 0
-            } else if (shop_data.item4 == item_id) {
-                shop_data.item4 = 0
+            if shop_item1 == item_id {
+                world.write_member(shop_ptr, selector!("item1"), 0);
+            } else {
+                if shop_item2 == item_id {
+                    world.write_member(shop_ptr, selector!("item2"), 0);
+                } else {
+                    if shop_item3 == item_id {
+                        world.write_member(shop_ptr, selector!("item3"), 0);
+                    } else {
+                        world.write_member(shop_ptr, selector!("item4"), 0);
+                    }
+                }
             }
 
-            world.emit_event(@BuyItem {
-                player,
-                itemId: item_id,
-                cost: item.price,
-                itemRarity: item.rarity,
-                birthCount: player_char.birthCount
-            });
+            world
+                .emit_event(
+                    @BuyItem {
+                        player,
+                        itemId: item_id,
+                        cost: item.price,
+                        itemRarity: item.rarity,
+                        birthCount: player_char.birthCount,
+                    },
+                );
 
             // world.write_model(@player_char);
-            world.write_model(@shop_data);
         }
 
         fn _sell_item(ref self: ContractState, player: ContractAddress, item_id: u32) {
@@ -841,84 +936,145 @@ mod actions {
             let sell_price = item_price / 2;
 
             // playerChar.gold += sell_price;
-            self._mint_gold(player,  sell_price.into());
+            self._mint_gold(player, sell_price.into());
 
-            world.emit_event(@SellItem {
-                player,
-                itemId: item_id,
-                price: sell_price,
-                itemRarity: item.rarity,
-                birthCount: playerChar.birthCount
-            });
-
+            world
+                .emit_event(
+                    @SellItem {
+                        player,
+                        itemId: item_id,
+                        price: sell_price,
+                        itemRarity: item.rarity,
+                        birthCount: playerChar.birthCount,
+                    },
+                );
             // world.write_model(@playerChar);
         }
 
         fn _add_item_to_storage(ref self: ContractState, player: ContractAddress, item_id: u32) {
             let mut world = self.world(@"Warpacks");
 
-            let mut storageCounter: CharacterItemsStorageCounter = world.read_model(player);
-            let mut count = storageCounter.count;
+            let storage_counter_ptr = ptrs::storage_counter(player);
+            let storage_count: u32 = world.read_member(storage_counter_ptr, selector!("count"));
+            let mut slot = storage_count;
             loop {
-                if count == 0 {
+                if slot == 0 {
                     break;
                 }
 
-                let mut storageItem: CharacterItemStorage = world.read_model((player, count));
-                if storageItem.itemId == 0 {
-                    storageItem.itemId = item_id;
-                    world.write_model(@storageItem);
+                let ptr = ptrs::storage_item(player, slot);
+                let current_item_id: u32 = world.read_member(ptr, selector!("itemId"));
+                if current_item_id == 0 {
+                    world.write_member(ptr, selector!("itemId"), item_id);
                     break;
                 }
 
-                count -= 1;
-            };
+                slot -= 1;
+            }
 
-            if count == 0 {
-                storageCounter.count += 1;
-                world.write_model(@CharacterItemStorage { player, id: storageCounter.count, itemId: item_id });
-                world.write_model(@storageCounter);
+            if slot == 0 {
+                let new_count = storage_count + 1;
+                world.write_member(storage_counter_ptr, selector!("count"), new_count);
+                let new_item_ptr = ptrs::storage_item(player, new_count);
+                world.write_member(new_item_ptr, selector!("itemId"), item_id);
             }
         }
 
-        fn _mint_gold(ref self: ContractState, recipient: ContractAddress, amount: u256){
+        fn _mint_gold(ref self: ContractState, recipient: ContractAddress, amount: u256) {
             let mut world = self.world(@"Warpacks");
 
             let registry: TokenRegistry = world.read_model(GOLD_ITEM_ID);
-            assert(registry.token_address != starknet::contract_address_const::<0>(), 'Token not registered');
+            assert(
+                registry.token_address != warpack_masters::utils::address::zero_address(),
+                'Token not registered',
+            );
             assert(registry.is_active, 'Token not active');
-            
+
             // Mint tokens to the player
             let token_amount = amount * 1_000_000_000_000_000_000;
-            let token_contract = IERC20MINTABLEDispatcher { contract_address: registry.token_address };
+            let token_contract = IERC20MINTABLEDispatcher {
+                contract_address: registry.token_address,
+            };
             token_contract.mint(recipient, token_amount);
         }
-        
-        fn _burn_gold(ref self: ContractState, value: u256){
+
+        fn _burn_gold(ref self: ContractState, value: u256) {
             let mut world = self.world(@"Warpacks");
 
             let registry: TokenRegistry = world.read_model(GOLD_ITEM_ID);
-            assert(registry.token_address != starknet::contract_address_const::<0>(), 'Token not registered');
+            assert(
+                registry.token_address != warpack_masters::utils::address::zero_address(),
+                'Token not registered',
+            );
             assert(registry.is_active, 'Token not active');
-            
+
             // Mint tokens to the player
             let token_amount = value * 1_000_000_000_000_000_000;
-            let token_contract = IERC20MINTABLEDispatcher { contract_address: registry.token_address };
+            let token_contract = IERC20MINTABLEDispatcher {
+                contract_address: registry.token_address,
+            };
             token_contract.burn(token_amount);
         }
 
-        fn _tansfer_in_gold(ref self: ContractState, value: u256){
+        fn _collect_gold_fee(ref self: ContractState, player: ContractAddress, amount: u256) {
             let mut world = self.world(@"Warpacks");
-            let player = get_caller_address();
 
             let registry: TokenRegistry = world.read_model(GOLD_ITEM_ID);
-            assert(registry.token_address != starknet::contract_address_const::<0>(), 'Token not registered');
+            assert(
+                registry.token_address != warpack_masters::utils::address::zero_address(),
+                'Token not registered',
+            );
             assert(registry.is_active, 'Token not active');
 
-            let token_amount = value * 1_000_000_000_000_000_000;
+            let token_amount = amount * 1_000_000_000_000_000_000;
 
             IERC20Dispatcher { contract_address: registry.token_address }
                 .transfer_from(player, starknet::get_contract_address(), token_amount);
+        }
+
+        fn _distribute_gold_fee(ref self: ContractState, breakdown: FeeBreakdown) {
+            let mut world = self.world(@"Warpacks");
+
+            let registry: TokenRegistry = world.read_model(GOLD_ITEM_ID);
+            assert(
+                registry.token_address != warpack_masters::utils::address::zero_address(),
+                'Token not registered',
+            );
+            assert(registry.is_active, 'Token not active');
+
+            let token_amount = breakdown.burn * 1_000_000_000_000_000_000;
+            let token_contract = IERC20MINTABLEDispatcher {
+                contract_address: registry.token_address,
+            };
+            if token_amount > 0 {
+                token_contract.burn(token_amount);
+            }
+
+            if breakdown.treasury > 0 {
+                let treasury_amount = breakdown.treasury * 1_000_000_000_000_000_000;
+                IERC20Dispatcher { contract_address: registry.token_address }
+                    .transfer(self._treasury_address(), treasury_amount);
+            }
+        }
+
+        fn _compute_fee_split(ref self: ContractState, price: u32) -> FeeBreakdown {
+            let total_raw: u128 = price.into();
+            let treasury_raw: u128 = (total_raw * 15_u128) / 100_u128;
+            let burn_raw: u128 = total_raw - treasury_raw;
+
+            FeeBreakdown {
+                total: total_raw.into(),
+                burn: burn_raw.into(),
+                treasury: treasury_raw.into(),
+            }
+        }
+
+        fn _treasury_address(ref self: ContractState) -> ContractAddress {
+            let mut world = self.world(@"Warpacks");
+            let game_config: GameConfig = world.read_model(GAME_CONFIG_ID);
+            let treasury = game_config.treasury_address;
+            assert(treasury != zero_address(), 'treasury not configured');
+            treasury
         }
     }
 }

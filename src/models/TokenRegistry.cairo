@@ -1,6 +1,6 @@
 use starknet::ContractAddress;
 
-#[derive(Drop, Serde)]
+#[derive(Drop, Serde, Introspect, DojoStore)]
 #[dojo::model]
 pub struct TokenRegistry {
     #[key]
@@ -9,4 +9,4 @@ pub struct TokenRegistry {
     pub symbol: ByteArray,
     pub token_address: ContractAddress,
     pub is_active: bool,
-} 
+}

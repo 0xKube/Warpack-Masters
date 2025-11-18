@@ -1,8 +1,7 @@
 use starknet::ContractAddress;
-
 use warpack_masters::models::Character::WMClass;
 
-#[derive(Drop, Serde)]
+#[derive(Drop, Serde, Introspect, DojoStore)]
 #[dojo::model]
 pub struct DummyCharacter {
     #[key]
@@ -17,7 +16,7 @@ pub struct DummyCharacter {
     pub stamina: u8,
 }
 
-#[derive(Drop, Serde)]
+#[derive(Drop, Serde, Introspect, DojoStore)]
 #[dojo::model]
 pub struct DummyCharacterCounter {
     #[key]

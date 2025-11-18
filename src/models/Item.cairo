@@ -1,4 +1,4 @@
-#[derive(Drop, Serde)]
+#[derive(Drop, Serde, Introspect, DojoStore)]
 #[dojo::model]
 pub struct Item {
     #[key]
@@ -11,7 +11,8 @@ pub struct Item {
     pub width: u32,
     pub height: u32,
     pub price: u32,
-    // 0 - None, 1 - Damage, 2 - Cleanse Poison, 3 - Armor, 4 - Regen, 5 - Reflect, 6 - Poison, 7 - Empower, 8 - Vampirism, 9 - Expand pack
+    // 0 - None, 1 - Damage, 2 - Cleanse Poison, 3 - Armor, 4 - Regen, 5 - Reflect, 6 - Poison, 7 -
+    // Empower, 8 - Vampirism, 9 - Expand pack
     pub effectType: u8,
     pub effectStacks: u32,
     // 0 - In armory, 1 - On Start, 2 - On Hit, 3 - On Cooldown, 4 - On Attack
@@ -25,7 +26,7 @@ pub struct Item {
     pub enabled: bool,
 }
 
-#[derive(Drop, Serde)]
+#[derive(Drop, Serde, Introspect, DojoStore)]
 #[dojo::model]
 pub struct ItemsCounter {
     #[key]

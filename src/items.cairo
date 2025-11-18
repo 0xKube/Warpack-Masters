@@ -16,7 +16,7 @@ pub mod Backpack {
     pub const energyCost: u8 = 0;
     pub const isPlugin: bool = false;
 }
-          
+
 
 pub mod Pack {
     pub const id: u32 = 2;
@@ -36,7 +36,7 @@ pub mod Pack {
     pub const energyCost: u8 = 0;
     pub const isPlugin: bool = false;
 }
-          
+
 
 pub mod Satchel {
     pub const id: u32 = 3;
@@ -56,7 +56,7 @@ pub mod Satchel {
     pub const energyCost: u8 = 0;
     pub const isPlugin: bool = false;
 }
-          
+
 
 pub mod Pouch {
     pub const id: u32 = 4;
@@ -76,7 +76,7 @@ pub mod Pouch {
     pub const energyCost: u8 = 0;
     pub const isPlugin: bool = false;
 }
-          
+
 
 pub mod Herb {
     pub const id: u32 = 5;
@@ -96,7 +96,7 @@ pub mod Herb {
     pub const energyCost: u8 = 0;
     pub const isPlugin: bool = false;
 }
-          
+
 
 pub mod Dagger {
     pub const id: u32 = 6;
@@ -116,7 +116,7 @@ pub mod Dagger {
     pub const energyCost: u8 = 20;
     pub const isPlugin: bool = false;
 }
-          
+
 
 pub mod Sword {
     pub const id: u32 = 7;
@@ -136,7 +136,7 @@ pub mod Sword {
     pub const energyCost: u8 = 30;
     pub const isPlugin: bool = false;
 }
-          
+
 
 pub mod Spike {
     pub const id: u32 = 8;
@@ -156,7 +156,7 @@ pub mod Spike {
     pub const energyCost: u8 = 0;
     pub const isPlugin: bool = false;
 }
-          
+
 
 pub mod Shield {
     pub const id: u32 = 9;
@@ -176,7 +176,7 @@ pub mod Shield {
     pub const energyCost: u8 = 0;
     pub const isPlugin: bool = false;
 }
-          
+
 
 pub mod Helmet {
     pub const id: u32 = 10;
@@ -196,7 +196,7 @@ pub mod Helmet {
     pub const energyCost: u8 = 0;
     pub const isPlugin: bool = false;
 }
-          
+
 
 pub mod HealingPotion {
     pub const id: u32 = 11;
@@ -216,7 +216,7 @@ pub mod HealingPotion {
     pub const energyCost: u8 = 0;
     pub const isPlugin: bool = false;
 }
-          
+
 
 pub mod LeatherArmor {
     pub const id: u32 = 12;
@@ -236,7 +236,7 @@ pub mod LeatherArmor {
     pub const energyCost: u8 = 0;
     pub const isPlugin: bool = false;
 }
-          
+
 
 pub mod Poison {
     pub const id: u32 = 13;
@@ -256,7 +256,7 @@ pub mod Poison {
     pub const energyCost: u8 = 0;
     pub const isPlugin: bool = true;
 }
-          
+
 
 pub mod AugmentedSword {
     pub const id: u32 = 14;
@@ -276,7 +276,7 @@ pub mod AugmentedSword {
     pub const energyCost: u8 = 30;
     pub const isPlugin: bool = false;
 }
-          
+
 
 pub mod AugmentedDagger {
     pub const id: u32 = 15;
@@ -296,7 +296,7 @@ pub mod AugmentedDagger {
     pub const energyCost: u8 = 20;
     pub const isPlugin: bool = false;
 }
-          
+
 
 pub mod SpikeShield {
     pub const id: u32 = 16;
@@ -316,7 +316,7 @@ pub mod SpikeShield {
     pub const energyCost: u8 = 0;
     pub const isPlugin: bool = false;
 }
-          
+
 
 pub mod PlagueFlower {
     pub const id: u32 = 17;
@@ -336,7 +336,7 @@ pub mod PlagueFlower {
     pub const energyCost: u8 = 0;
     pub const isPlugin: bool = true;
 }
-          
+
 
 pub mod MailArmor {
     pub const id: u32 = 18;
@@ -356,7 +356,7 @@ pub mod MailArmor {
     pub const energyCost: u8 = 0;
     pub const isPlugin: bool = false;
 }
-          
+
 
 pub mod Buckler {
     pub const id: u32 = 19;
@@ -376,7 +376,7 @@ pub mod Buckler {
     pub const energyCost: u8 = 0;
     pub const isPlugin: bool = false;
 }
-          
+
 
 pub mod MagicWater {
     pub const id: u32 = 20;
@@ -396,7 +396,7 @@ pub mod MagicWater {
     pub const energyCost: u8 = 0;
     pub const isPlugin: bool = false;
 }
-          
+
 
 pub mod VampiricArmor {
     pub const id: u32 = 21;
@@ -416,7 +416,7 @@ pub mod VampiricArmor {
     pub const energyCost: u8 = 0;
     pub const isPlugin: bool = false;
 }
-          
+
 
 pub mod Greatsword {
     pub const id: u32 = 22;
@@ -436,7 +436,7 @@ pub mod Greatsword {
     pub const energyCost: u8 = 60;
     pub const isPlugin: bool = false;
 }
-          
+
 
 pub mod Bow {
     pub const id: u32 = 23;
@@ -456,7 +456,7 @@ pub mod Bow {
     pub const energyCost: u8 = 25;
     pub const isPlugin: bool = false;
 }
-          
+
 
 pub mod Crossbow {
     pub const id: u32 = 24;
@@ -476,7 +476,7 @@ pub mod Crossbow {
     pub const energyCost: u8 = 15;
     pub const isPlugin: bool = false;
 }
-          
+
 
 pub mod Hammer {
     pub const id: u32 = 25;
@@ -496,7 +496,7 @@ pub mod Hammer {
     pub const energyCost: u8 = 45;
     pub const isPlugin: bool = false;
 }
-          
+
 
 pub mod AmuletOfFury {
     pub const id: u32 = 26;
@@ -516,7 +516,7 @@ pub mod AmuletOfFury {
     pub const energyCost: u8 = 0;
     pub const isPlugin: bool = true;
 }
-          
+
 
 pub mod RageGauntlet {
     pub const id: u32 = 27;
@@ -536,7 +536,7 @@ pub mod RageGauntlet {
     pub const energyCost: u8 = 0;
     pub const isPlugin: bool = true;
 }
-          
+
 
 pub mod KnightHelmet {
     pub const id: u32 = 28;
@@ -556,7 +556,7 @@ pub mod KnightHelmet {
     pub const energyCost: u8 = 0;
     pub const isPlugin: bool = true;
 }
-          
+
 
 pub mod BladeArmor {
     pub const id: u32 = 29;
@@ -576,7 +576,7 @@ pub mod BladeArmor {
     pub const energyCost: u8 = 0;
     pub const isPlugin: bool = false;
 }
-          
+
 
 pub mod Club {
     pub const id: u32 = 30;
@@ -596,7 +596,7 @@ pub mod Club {
     pub const energyCost: u8 = 35;
     pub const isPlugin: bool = false;
 }
-          
+
 
 pub mod Fang {
     pub const id: u32 = 31;
@@ -616,7 +616,7 @@ pub mod Fang {
     pub const energyCost: u8 = 0;
     pub const isPlugin: bool = false;
 }
-          
+
 
 pub mod ScarletCloak {
     pub const id: u32 = 32;
@@ -636,7 +636,7 @@ pub mod ScarletCloak {
     pub const energyCost: u8 = 0;
     pub const isPlugin: bool = false;
 }
-          
+
 
 pub mod DraculaGrimoire {
     pub const id: u32 = 33;
@@ -656,7 +656,7 @@ pub mod DraculaGrimoire {
     pub const energyCost: u8 = 0;
     pub const isPlugin: bool = false;
 }
-          
+
 
 pub mod Longbow {
     pub const id: u32 = 34;
@@ -676,4 +676,4 @@ pub mod Longbow {
     pub const energyCost: u8 = 35;
     pub const isPlugin: bool = false;
 }
-          
+

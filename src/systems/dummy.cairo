@@ -1,30 +1,36 @@
-use warpack_masters::prdefined_dummies::PredefinedItem;
 use warpack_masters::models::Character::WMClass;
+use warpack_masters::prdefined_dummies::PredefinedItem;
 
 
 #[starknet::interface]
 pub trait IDummy<T> {
     // fn create_dummy(ref self: T,);
-    fn prefine_dummy(ref self: T, level: u32, name: felt252, wmClass: WMClass, items: Array<PredefinedItem>);
-    fn update_prefine_dummy(ref self: T, dummyCharId: u32, level: u32, name: felt252, wmClass: WMClass, items: Array<PredefinedItem>);
+    fn prefine_dummy(
+        ref self: T, level: u32, name: felt252, wmClass: WMClass, items: Array<PredefinedItem>,
+    );
+    fn update_prefine_dummy(
+        ref self: T,
+        dummyCharId: u32,
+        level: u32,
+        name: felt252,
+        wmClass: WMClass,
+        items: Array<PredefinedItem>,
+    );
 }
 
 #[dojo::contract]
 mod dummy_system {
-    use super::IDummy;
-
-    use starknet::{get_caller_address};
-    use warpack_masters::models::Character::{WMClass, NameRecord};
+    use dojo::model::ModelStorage;
+    use dojo::world::IWorldDispatcherTrait;
+    use starknet::get_caller_address;
+    use warpack_masters::constants::constants::{INIT_HEALTH, INIT_STAMINA};
+    use warpack_masters::models::Character::{NameRecord, WMClass};
     use warpack_masters::models::DummyCharacter::{DummyCharacter, DummyCharacterCounter};
     use warpack_masters::models::DummyCharacterItem::{
-        DummyCharacterItem, DummyCharacterItemsCounter
+        DummyCharacterItem, DummyCharacterItemsCounter,
     };
     use warpack_masters::prdefined_dummies::PredefinedItem;
-
-    use warpack_masters::constants::constants::{INIT_HEALTH, INIT_STAMINA};
-
-    use dojo::model::{ModelStorage};
-    use dojo::world::{IWorldDispatcherTrait};
+    use super::IDummy;
 
     #[abi(embed_v0)]
     impl DummyImpl of IDummy<ContractState> {
@@ -53,7 +59,7 @@ mod dummy_system {
         //     };
         //     char.dummied = true;
 
-        //     let inventoryItemCounter: CharacterItemsInventoryCounter = world.read_model(player);
+        //     let inventoryItemCounter: CharInventoryCount = world.read_model(player);
 
         //     let mut count = 0;
         //     loop {
@@ -63,7 +69,8 @@ mod dummy_system {
 
         //         let inventoryItem: CharacterItemInventory = world.read_model((player, count+1));
 
-        //         let mut dummyCharItemsCounter: DummyCharacterItemsCounter = world.read_model((char.wins, dummyCharCounter.count));
+        //         let mut dummyCharItemsCounter: DummyCharacterItemsCounter =
+        //         world.read_model((char.wins, dummyCharCounter.count));
 
         //         dummyCharItemsCounter.count += 1;
 
@@ -88,7 +95,13 @@ mod dummy_system {
         //     world.write_model(@dummyChar);
         // }
 
-        fn prefine_dummy(ref self: ContractState, level: u32, name: felt252, wmClass: WMClass, items: Array<PredefinedItem>) {
+        fn prefine_dummy(
+            ref self: ContractState,
+            level: u32,
+            name: felt252,
+            wmClass: WMClass,
+            items: Array<PredefinedItem>,
+        ) {
             let mut world = self.world(@"Warpacks");
 
             let player = get_caller_address();
@@ -97,36 +110,24 @@ mod dummy_system {
             let mut health: u32 = INIT_HEALTH;
 
             match level {
-                0 => {
-                    health = INIT_HEALTH;
-                },
-                1 => {
-                    health = INIT_HEALTH + 10;
-                },
-                2 => {
-                    health = INIT_HEALTH + 20;
-                },
-                3 => {
-                    health = INIT_HEALTH + 30;
-                },
-                4 => {
-                    health = INIT_HEALTH + 40;
-                },
-                _ => {
-                    health = INIT_HEALTH + 55;
-                }
+                0 => { health = INIT_HEALTH; },
+                1 => { health = INIT_HEALTH + 10; },
+                2 => { health = INIT_HEALTH + 20; },
+                3 => { health = INIT_HEALTH + 30; },
+                4 => { health = INIT_HEALTH + 40; },
+                _ => { health = INIT_HEALTH + 55; },
             }
 
             let nameRecord: NameRecord = world.read_model(name);
             assert(
-                nameRecord.player == starknet::contract_address_const::<0>(),
-                'name already exists'
+                nameRecord.player == warpack_masters::utils::address::zero_address(),
+                'name already exists',
             );
 
             let mut dummyCharCounter: DummyCharacterCounter = world.read_model(level);
             dummyCharCounter.count += 1;
-            
-            let player = starknet::contract_address_const::<0x1>();
+
+            let player = warpack_masters::utils::address::address_from(0x1);
             let dummyChar = DummyCharacter {
                 level: level,
                 id: dummyCharCounter.count,
@@ -138,7 +139,8 @@ mod dummy_system {
                 stamina: INIT_STAMINA,
             };
 
-            let mut dummyCharItemsCounter: DummyCharacterItemsCounter = world.read_model((level, dummyCharCounter.count));
+            let mut dummyCharItemsCounter: DummyCharacterItemsCounter = world
+                .read_model((level, dummyCharCounter.count));
 
             let mut i = 0;
             loop {
@@ -161,71 +163,67 @@ mod dummy_system {
                 };
 
                 world.write_model(@dummyCharItem);
-                
+
                 i += 1;
-            };
+            }
 
             world.write_model(@dummyCharCounter);
             world.write_model(@dummyChar);
             world.write_model(@dummyCharItemsCounter);
-            world.write_model(@NameRecord{ name, player });
+            world.write_model(@NameRecord { name, player });
         }
 
-        fn update_prefine_dummy(ref self: ContractState, dummyCharId: u32, level: u32, name: felt252, wmClass: WMClass, items: Array<PredefinedItem>) {
+        fn update_prefine_dummy(
+            ref self: ContractState,
+            dummyCharId: u32,
+            level: u32,
+            name: felt252,
+            wmClass: WMClass,
+            items: Array<PredefinedItem>,
+        ) {
             let mut world = self.world(@"Warpacks");
 
             let player = get_caller_address();
             assert(world.dispatcher.is_owner(0, player), 'player not world owner');
-    
+
             let mut health: u32 = INIT_HEALTH;
-        
+
             match level {
-                0 => {
-                    health = INIT_HEALTH;
-                },
-                1 => {
-                    health = INIT_HEALTH + 10;
-                },
-                2 => {
-                    health = INIT_HEALTH + 20;
-                },
-                3 => {
-                    health = INIT_HEALTH + 30;
-                },
-                4 => {
-                    health = INIT_HEALTH + 40;
-                },
-                _ => {
-                    health = INIT_HEALTH + 55;
-                }
+                0 => { health = INIT_HEALTH; },
+                1 => { health = INIT_HEALTH + 10; },
+                2 => { health = INIT_HEALTH + 20; },
+                3 => { health = INIT_HEALTH + 30; },
+                4 => { health = INIT_HEALTH + 40; },
+                _ => { health = INIT_HEALTH + 55; },
             }
-            
+
             let mut dummyChar: DummyCharacter = world.read_model((level, dummyCharId));
             if dummyChar.name != name {
                 let nameRecord: NameRecord = world.read_model(name);
                 assert(
-                    nameRecord.player == starknet::contract_address_const::<0>(),
-                    'name already exists'
+                    nameRecord.player == warpack_masters::utils::address::zero_address(),
+                    'name already exists',
                 );
 
                 dummyChar.name = name;
             }
-            
+
             dummyChar.wmClass = wmClass;
             dummyChar.health = health;
             world.write_model(@dummyChar);
-            
-            let mut dummyCharItemsCounter: DummyCharacterItemsCounter = world.read_model((level, dummyCharId));
+
+            let mut dummyCharItemsCounter: DummyCharacterItemsCounter = world
+                .read_model((level, dummyCharId));
             assert(dummyCharItemsCounter.count <= items.len(), 'invalid items length');
-    
+
             let mut i = 0;
             loop {
                 if items.len() == i {
                     break;
                 }
-    
+
                 let item = *items.at(i);
-    
+
                 i += 1;
                 let dummyCharItem = DummyCharacterItem {
                     level: level,
@@ -236,9 +234,9 @@ mod dummy_system {
                     rotation: item.rotation,
                     plugins: item.plugins,
                 };
-                
+
                 world.write_model(@dummyCharItem);
-            };
+            }
 
             dummyCharItemsCounter.count = i;
             world.write_model(@dummyCharItemsCounter);

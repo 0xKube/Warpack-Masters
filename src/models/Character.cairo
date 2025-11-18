@@ -1,8 +1,8 @@
 use starknet::ContractAddress;
 
-#[derive(Drop, Serde)]
+#[derive(Drop, Serde, Introspect, DojoStore)]
 #[dojo::model]
-pub struct Characters {
+pub struct Character {
     #[key]
     pub player: ContractAddress,
     // must be less than 31 ASCII characters
@@ -18,23 +18,30 @@ pub struct Characters {
     pub winStreak: u32,
     pub stamina: u8,
     pub birthCount: u32,
-    pub updatedAt: u64
+    pub updatedAt: u64,
 }
 
-#[derive(Serde, Copy, Drop, Introspect, PartialEq)]
+#[derive(Serde, Copy, Drop, Introspect, DojoStore, Default, PartialEq)]
 pub enum WMClass {
+    #[default]
     Warrior,
     Warlock,
     Archer,
 }
 
-#[derive(Drop, Serde)]
+#[derive(Drop, Serde, Introspect, DojoStore)]
 #[dojo::model]
-pub struct NameRecord {
+pub struct CharacterName {
     #[key]
     pub name: felt252,
     pub player: ContractAddress,
 }
+
+pub type Characters = Character;
+pub type NameRecord = CharacterName;
+
+pub use m_Character as m_Characters;
+pub use m_CharacterName as m_NameRecord;
 
 pub const PLAYER: felt252 = 'player';
 pub const DUMMY: felt252 = 'dummy';

@@ -3673,13 +3673,13 @@
     {
       "members": [],
       "class_hash": "0x5bbe6af2c07146018da14f3abbce5de57dd3ff7aa86a1d04601fa8a15012243",
-      "tag": "Warpacks-CharacterItemsInventoryCounter",
+      "tag": "Warpacks-CharInventoryCount",
       "selector": "0x590aad75b0af5c025a4e2113d2eac8fc8f62b72a4638b1ad7cb35f91d3e0ecc"
     },
     {
       "members": [],
       "class_hash": "0xb7f4fc536ed7919cf2caead67152ee00472d9c33f2d60d9fb34a68d6a2c916",
-      "tag": "Warpacks-CharacterItemsStorageCounter",
+      "tag": "Warpacks-CharStorageCount",
       "selector": "0x5749580b0f3ef7182388b94bf7a1c7bb0f8b5280d7ffa12e787c3c3bb732090"
     },
     {
