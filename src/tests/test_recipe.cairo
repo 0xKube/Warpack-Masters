@@ -3,7 +3,7 @@ mod tests {
     use starknet::testing::{set_contract_address};
 
     use dojo::model::{ModelStorage};
-    use dojo::world::WorldStorageTrait;
+    use dojo::world::{WorldStorageTrait, world};
     use dojo_cairo_test::{spawn_test_world, NamespaceDef, TestResource, ContractDefTrait, ContractDef, WorldStorageTestTrait};
 
     use warpack_masters::{
@@ -20,14 +20,14 @@ mod tests {
 
     fn namespace_def() -> NamespaceDef {
         let ndef = NamespaceDef {
-            namespace: "Warpacks", 
+            namespace: "Warpacks",
             resources: [
-                TestResource::Model(m_Item::TEST_CLASS_HASH.try_into().unwrap()),
-                TestResource::Model(m_ItemsCounter::TEST_CLASS_HASH.try_into().unwrap()),
-                TestResource::Model(m_CharacterItemStorage::TEST_CLASS_HASH.try_into().unwrap()),
-                TestResource::Model(m_CharacterItemsStorageCounter::TEST_CLASS_HASH.try_into().unwrap()),
-                TestResource::Model(m_Recipe::TEST_CLASS_HASH.try_into().unwrap()),
-                TestResource::Model(m_RecipesCounter::TEST_CLASS_HASH.try_into().unwrap()),
+                TestResource::Model(m_Item::TEST_CLASS_HASH),
+                TestResource::Model(m_ItemsCounter::TEST_CLASS_HASH),
+                TestResource::Model(m_CharacterItemStorage::TEST_CLASS_HASH),
+                TestResource::Model(m_CharacterItemsStorageCounter::TEST_CLASS_HASH),
+                TestResource::Model(m_Recipe::TEST_CLASS_HASH),
+                TestResource::Model(m_RecipesCounter::TEST_CLASS_HASH),
                 TestResource::Contract(item_system::TEST_CLASS_HASH),
                 TestResource::Contract(recipe_system::TEST_CLASS_HASH),
                 TestResource::Contract(actions::TEST_CLASS_HASH),
@@ -51,7 +51,7 @@ mod tests {
     #[available_gas(3000000000000000)]
     fn test_add_recipe() {
         let ndef = namespace_def();
-        let mut world = spawn_test_world([ndef].span());
+        let mut world = spawn_test_world(world::TEST_CLASS_HASH, [ndef].span());
         world.sync_perms_and_inits(contract_defs());
 
         let (contract_address, _) = world.dns(@"item_system").unwrap();
@@ -78,7 +78,7 @@ mod tests {
     #[available_gas(3000000000000000)]
     fn test_add_recipe_with_same_item_id() {
         let ndef = namespace_def();
-        let mut world = spawn_test_world([ndef].span());
+        let mut world = spawn_test_world(world::TEST_CLASS_HASH, [ndef].span());
         world.sync_perms_and_inits(contract_defs());
 
         let (contract_address, _) = world.dns(@"item_system").unwrap();
@@ -104,7 +104,7 @@ mod tests {
     #[should_panic(expected: ('player not world owner', 'ENTRYPOINT_FAILED'))]
     fn test_add_recipe_without_permission() {
         let ndef = namespace_def();
-        let mut world = spawn_test_world([ndef].span());
+        let mut world = spawn_test_world(world::TEST_CLASS_HASH, [ndef].span());
         world.sync_perms_and_inits(contract_defs());
 
         let (contract_address, _) = world.dns(@"item_system").unwrap();
@@ -125,7 +125,7 @@ mod tests {
     #[should_panic(expected: ('item is not enabled', 'ENTRYPOINT_FAILED'))]
     fn test_add_recipe_item1_doesnt_exists() {
         let ndef = namespace_def();
-        let mut world = spawn_test_world([ndef].span());
+        let mut world = spawn_test_world(world::TEST_CLASS_HASH, [ndef].span());
         world.sync_perms_and_inits(contract_defs());
 
         let (contract_address, _) = world.dns(@"item_system").unwrap();
@@ -144,7 +144,7 @@ mod tests {
     #[should_panic(expected: ('item is not enabled', 'ENTRYPOINT_FAILED'))]
     fn test_add_recipe_item2_doesnt_exists() {
         let ndef = namespace_def();
-        let mut world = spawn_test_world([ndef].span());
+        let mut world = spawn_test_world(world::TEST_CLASS_HASH, [ndef].span());
         world.sync_perms_and_inits(contract_defs());
 
         let (contract_address, _) = world.dns(@"item_system").unwrap();
@@ -163,7 +163,7 @@ mod tests {
     #[should_panic(expected: ('result item is not enabled', 'ENTRYPOINT_FAILED'))]
     fn test_add_recipe_result_doesnt_exists() {
         let ndef = namespace_def();
-        let mut world = spawn_test_world([ndef].span());
+        let mut world = spawn_test_world(world::TEST_CLASS_HASH, [ndef].span());
         world.sync_perms_and_inits(contract_defs());
 
         let (contract_address, _) = world.dns(@"item_system").unwrap();
@@ -181,7 +181,7 @@ mod tests {
     #[available_gas(3000000000000000)]
     fn test_craft_item() {
         let ndef = namespace_def();
-        let mut world = spawn_test_world([ndef].span());
+        let mut world = spawn_test_world(world::TEST_CLASS_HASH, [ndef].span());
         world.sync_perms_and_inits(contract_defs());
 
         let (contract_address, _) = world.dns(@"item_system").unwrap();
@@ -216,7 +216,7 @@ mod tests {
     #[should_panic(expected: ('recipe is not enabled', 'ENTRYPOINT_FAILED'))]
     fn test_craft_item_with_disabled_recipe() {
         let ndef = namespace_def();
-        let mut world = spawn_test_world([ndef].span());
+        let mut world = spawn_test_world(world::TEST_CLASS_HASH, [ndef].span());
         world.sync_perms_and_inits(contract_defs());
 
         let (contract_address, _) = world.dns(@"actions").unwrap();
@@ -232,7 +232,7 @@ mod tests {
     #[should_panic(expected: ('item not enough', 'ENTRYPOINT_FAILED'))]
     fn test_craft_item_insufficient_items() {
         let ndef = namespace_def();
-        let mut world = spawn_test_world([ndef].span());
+        let mut world = spawn_test_world(world::TEST_CLASS_HASH, [ndef].span());
         world.sync_perms_and_inits(contract_defs());
 
         let (contract_address, _) = world.dns(@"item_system").unwrap();

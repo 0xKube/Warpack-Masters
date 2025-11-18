@@ -1,7 +1,7 @@
 #[cfg(test)]
 mod tests {
     use dojo::model::{ModelStorage};
-    use dojo::world::WorldStorageTrait;
+    use dojo::world::{WorldStorageTrait, world};
     use dojo_cairo_test::{spawn_test_world, NamespaceDef, TestResource, ContractDefTrait, ContractDef, WorldStorageTestTrait};
 
     use warpack_masters::{
@@ -23,18 +23,18 @@ mod tests {
 
     fn namespace_def() -> NamespaceDef {
         let ndef = NamespaceDef {
-            namespace: "Warpacks", 
+            namespace: "Warpacks",
             resources: [
-                TestResource::Model(m_BackpackGrids::TEST_CLASS_HASH.try_into().unwrap()),
-                TestResource::Model(m_Item::TEST_CLASS_HASH.try_into().unwrap()),
-                TestResource::Model(m_ItemsCounter::TEST_CLASS_HASH.try_into().unwrap()),
-                TestResource::Model(m_CharacterItemStorage::TEST_CLASS_HASH.try_into().unwrap()),
-                TestResource::Model(m_CharacterItemsStorageCounter::TEST_CLASS_HASH.try_into().unwrap()),
-                TestResource::Model(m_CharacterItemInventory::TEST_CLASS_HASH.try_into().unwrap()),
-                TestResource::Model(m_CharacterItemsInventoryCounter::TEST_CLASS_HASH.try_into().unwrap()),
-                TestResource::Model(m_Characters::TEST_CLASS_HASH.try_into().unwrap()),
-                TestResource::Model(m_NameRecord::TEST_CLASS_HASH.try_into().unwrap()),
-                TestResource::Model(m_Shop::TEST_CLASS_HASH.try_into().unwrap()),
+                TestResource::Model(m_BackpackGrids::TEST_CLASS_HASH),
+                TestResource::Model(m_Item::TEST_CLASS_HASH),
+                TestResource::Model(m_ItemsCounter::TEST_CLASS_HASH),
+                TestResource::Model(m_CharacterItemStorage::TEST_CLASS_HASH),
+                TestResource::Model(m_CharacterItemsStorageCounter::TEST_CLASS_HASH),
+                TestResource::Model(m_CharacterItemInventory::TEST_CLASS_HASH),
+                TestResource::Model(m_CharacterItemsInventoryCounter::TEST_CLASS_HASH),
+                TestResource::Model(m_Characters::TEST_CLASS_HASH),
+                TestResource::Model(m_NameRecord::TEST_CLASS_HASH),
+                TestResource::Model(m_Shop::TEST_CLASS_HASH),
                 TestResource::Contract(actions::TEST_CLASS_HASH),
                 TestResource::Contract(item_system::TEST_CLASS_HASH),
                 TestResource::Contract(shop_system::TEST_CLASS_HASH),
@@ -42,7 +42,7 @@ mod tests {
                 TestResource::Event(actions::e_SellItem::TEST_CLASS_HASH),
             ].span()
         };
- 
+
         ndef
     }
 
@@ -61,7 +61,7 @@ mod tests {
     #[available_gas(3000000000000000)]
     fn test_move_item_from_shop_to_inventory_sword() {
         let ndef = namespace_def();
-        let mut world = spawn_test_world([ndef].span());
+        let mut world = spawn_test_world(world::TEST_CLASS_HASH, [ndef].span());
         world.sync_perms_and_inits(contract_defs());
 
         let (contract_address, _) = world.dns(@"actions").unwrap();
@@ -142,7 +142,7 @@ mod tests {
     #[available_gas(3000000000000000)]
     fn test_move_item_from_shop_to_inventory_shield() {
         let ndef = namespace_def();
-        let mut world = spawn_test_world([ndef].span());
+        let mut world = spawn_test_world(world::TEST_CLASS_HASH, [ndef].span());
         world.sync_perms_and_inits(contract_defs());
 
         let (contract_address, _) = world.dns(@"actions").unwrap();
@@ -208,7 +208,7 @@ mod tests {
     #[available_gas(3000000000000000)]
     fn test_move_item_from_shop_to_inventory_potion() {
         let ndef = namespace_def();
-        let mut world = spawn_test_world([ndef].span());
+        let mut world = spawn_test_world(world::TEST_CLASS_HASH, [ndef].span());
         world.sync_perms_and_inits(contract_defs());
 
         let (contract_address, _) = world.dns(@"actions").unwrap();
@@ -260,7 +260,7 @@ mod tests {
     #[available_gas(3000000000000000)]
     fn test_move_item_from_shop_to_inventory_with_rotation_90() {
         let ndef = namespace_def();
-        let mut world = spawn_test_world([ndef].span());
+        let mut world = spawn_test_world(world::TEST_CLASS_HASH, [ndef].span());
         world.sync_perms_and_inits(contract_defs());
 
         let (contract_address, _) = world.dns(@"actions").unwrap();
@@ -318,7 +318,7 @@ mod tests {
     #[should_panic(expected: ('item out of bound for x', 'ENTRYPOINT_FAILED'))]
     fn test_move_item_from_shop_to_inventory_revert_x_out_of_range() {
         let ndef = namespace_def();
-        let mut world = spawn_test_world([ndef].span());
+        let mut world = spawn_test_world(world::TEST_CLASS_HASH, [ndef].span());
         world.sync_perms_and_inits(contract_defs());
 
         let (contract_address, _) = world.dns(@"actions").unwrap();
@@ -351,7 +351,7 @@ mod tests {
     #[should_panic(expected: ('item out of bound for y', 'ENTRYPOINT_FAILED'))]
     fn test_move_item_from_shop_to_inventory_revert_y_out_of_range() {
         let ndef = namespace_def();
-        let mut world = spawn_test_world([ndef].span());
+        let mut world = spawn_test_world(world::TEST_CLASS_HASH, [ndef].span());
         world.sync_perms_and_inits(contract_defs());
 
         let (contract_address, _) = world.dns(@"actions").unwrap();
@@ -384,7 +384,7 @@ mod tests {
     #[should_panic(expected: ('invalid rotation', 'ENTRYPOINT_FAILED'))]
     fn test_move_item_from_shop_to_inventory_revert_invalid_rotation() {
         let ndef = namespace_def();
-        let mut world = spawn_test_world([ndef].span());
+        let mut world = spawn_test_world(world::TEST_CLASS_HASH, [ndef].span());
         world.sync_perms_and_inits(contract_defs());
 
         let (contract_address, _) = world.dns(@"actions").unwrap();
@@ -417,7 +417,7 @@ mod tests {
     #[should_panic(expected: ('item not on sale', 'ENTRYPOINT_FAILED'))]
     fn test_move_item_from_shop_to_inventory_revert_item_not_in_shop() {
         let ndef = namespace_def();
-        let mut world = spawn_test_world([ndef].span());
+        let mut world = spawn_test_world(world::TEST_CLASS_HASH, [ndef].span());
         world.sync_perms_and_inits(contract_defs());
 
         let (contract_address, _) = world.dns(@"actions").unwrap();
@@ -453,7 +453,7 @@ mod tests {
     #[should_panic(expected: ('Not enough gold', 'ENTRYPOINT_FAILED'))]
     fn test_move_item_from_shop_to_inventory_revert_not_enough_gold() {
         let ndef = namespace_def();
-        let mut world = spawn_test_world([ndef].span());
+        let mut world = spawn_test_world(world::TEST_CLASS_HASH, [ndef].span());
         world.sync_perms_and_inits(contract_defs());
 
         let (contract_address, _) = world.dns(@"actions").unwrap();
@@ -491,7 +491,7 @@ mod tests {
     #[should_panic(expected: ('Already occupied', 'ENTRYPOINT_FAILED'))]
     fn test_move_item_from_shop_to_inventory_revert_grid_occupied() {
         let ndef = namespace_def();
-        let mut world = spawn_test_world([ndef].span());
+        let mut world = spawn_test_world(world::TEST_CLASS_HASH, [ndef].span());
         world.sync_perms_and_inits(contract_defs());
 
         let (contract_address, _) = world.dns(@"actions").unwrap();

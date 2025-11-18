@@ -42,7 +42,7 @@ mod tests {
     fn get_systems(
         world: IWorldDispatcher
     ) -> (ContractAddress, IActionsDispatcher, ContractAddress, IItemDispatcher, ContractAddress, IDummyDispatcher) {
-        let action_system_address = world.deploy_contract('salt1', actions::TEST_CLASS_HASH.try_into().unwrap());
+        let action_system_address = world.deploy_contract('salt1', actions::TEST_CLASS_HASH);
         let mut action_system = IActionsDispatcher { contract_address: action_system_address };
 
         world.grant_writer(Model::<CharacterItemStorage>::selector(), action_system_address);
@@ -59,14 +59,14 @@ mod tests {
         world.grant_writer(Model::<Shop>::selector(), action_system_address);
 
         let item_system_address = world
-            .deploy_contract('salt2', item_system::TEST_CLASS_HASH.try_into().unwrap());
+            .deploy_contract('salt2', item_system::TEST_CLASS_HASH);
         let mut item_system = IItemDispatcher { contract_address: item_system_address };
 
         world.grant_writer(Model::<Item>::selector(), item_system_address);
         world.grant_writer(Model::<ItemsCounter>::selector(), item_system_address);
 
         let dummy_system_address = world
-            .deploy_contract('salt4', dummy_system::TEST_CLASS_HASH.try_into().unwrap());
+            .deploy_contract('salt4', dummy_system::TEST_CLASS_HASH);
         let mut dummy_system = IDummyDispatcher { contract_address: dummy_system_address };
 
         world.grant_writer(Model::<DummyCharacterItem>::selector(), dummy_system_address);

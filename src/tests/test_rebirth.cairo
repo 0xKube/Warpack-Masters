@@ -3,7 +3,7 @@ mod tests {
     use starknet::testing::{set_contract_address, set_block_timestamp};
 
     use dojo::model::{ModelStorage};
-    use dojo::world::WorldStorageTrait;
+    use dojo::world::{WorldStorageTrait, world};
     use dojo_cairo_test::{spawn_test_world, NamespaceDef, TestResource, ContractDefTrait, ContractDef, WorldStorageTestTrait, deploy_contract};
 
     use warpack_masters::{
@@ -28,19 +28,19 @@ mod tests {
 
     fn namespace_def() -> NamespaceDef {
         let ndef = NamespaceDef {
-            namespace: "Warpacks", 
+            namespace: "Warpacks",
             resources: [
-                TestResource::Model(m_BackpackGrids::TEST_CLASS_HASH.try_into().unwrap()),
-                TestResource::Model(m_Item::TEST_CLASS_HASH.try_into().unwrap()),
-                TestResource::Model(m_ItemsCounter::TEST_CLASS_HASH.try_into().unwrap()),
-                TestResource::Model(m_CharacterItemStorage::TEST_CLASS_HASH.try_into().unwrap()),
-                TestResource::Model(m_CharacterItemsStorageCounter::TEST_CLASS_HASH.try_into().unwrap()),
-                TestResource::Model(m_CharacterItemInventory::TEST_CLASS_HASH.try_into().unwrap()),
-                TestResource::Model(m_CharacterItemsInventoryCounter::TEST_CLASS_HASH.try_into().unwrap()),
-                TestResource::Model(m_Characters::TEST_CLASS_HASH.try_into().unwrap()),
-                TestResource::Model(m_NameRecord::TEST_CLASS_HASH.try_into().unwrap()),
-                TestResource::Model(m_Shop::TEST_CLASS_HASH.try_into().unwrap()),
-                TestResource::Model(m_GameConfig::TEST_CLASS_HASH.try_into().unwrap()),
+                TestResource::Model(m_BackpackGrids::TEST_CLASS_HASH),
+                TestResource::Model(m_Item::TEST_CLASS_HASH),
+                TestResource::Model(m_ItemsCounter::TEST_CLASS_HASH),
+                TestResource::Model(m_CharacterItemStorage::TEST_CLASS_HASH),
+                TestResource::Model(m_CharacterItemsStorageCounter::TEST_CLASS_HASH),
+                TestResource::Model(m_CharacterItemInventory::TEST_CLASS_HASH),
+                TestResource::Model(m_CharacterItemsInventoryCounter::TEST_CLASS_HASH),
+                TestResource::Model(m_Characters::TEST_CLASS_HASH),
+                TestResource::Model(m_NameRecord::TEST_CLASS_HASH),
+                TestResource::Model(m_Shop::TEST_CLASS_HASH),
+                TestResource::Model(m_GameConfig::TEST_CLASS_HASH),
                 TestResource::Contract(actions::TEST_CLASS_HASH),
                 TestResource::Contract(item_system::TEST_CLASS_HASH),
                 TestResource::Event(actions::e_BuyItem::TEST_CLASS_HASH),
@@ -66,7 +66,7 @@ mod tests {
         let default_address = starknet::contract_address_const::<0x0>();
 
         let ndef = namespace_def();
-        let mut world = spawn_test_world([ndef].span());
+        let mut world = spawn_test_world(world::TEST_CLASS_HASH, [ndef].span());
         world.sync_perms_and_inits(contract_defs());
 
         let (actions_contract_address, _) = world.dns(@"actions").unwrap();
@@ -262,7 +262,7 @@ mod tests {
         let alice = starknet::contract_address_const::<0x0>();
 
         let ndef = namespace_def();
-        let mut world = spawn_test_world([ndef].span());
+        let mut world = spawn_test_world(world::TEST_CLASS_HASH, [ndef].span());
         world.sync_perms_and_inits(contract_defs());
 
         let (contract_address, _) = world.dns(@"actions").unwrap();
@@ -291,7 +291,7 @@ mod tests {
         let bob = starknet::contract_address_const::<'bob'>();
         
         let ndef = namespace_def();
-        let mut world = spawn_test_world([ndef].span());
+        let mut world = spawn_test_world(world::TEST_CLASS_HASH, [ndef].span());
         world.sync_perms_and_inits(contract_defs());
 
         let (contract_address, _) = world.dns(@"actions").unwrap();
@@ -320,7 +320,7 @@ mod tests {
         let default_address = starknet::contract_address_const::<0x0>();
 
         let ndef = namespace_def();
-        let mut world = spawn_test_world([ndef].span());
+        let mut world = spawn_test_world(world::TEST_CLASS_HASH, [ndef].span());
         world.sync_perms_and_inits(contract_defs());
 
         let (actions_contract_address, _) = world.dns(@"actions").unwrap();
@@ -373,7 +373,7 @@ mod tests {
         let default_address = starknet::contract_address_const::<0x0>();
 
         let ndef = namespace_def();
-        let mut world = spawn_test_world([ndef].span());
+        let mut world = spawn_test_world(world::TEST_CLASS_HASH, [ndef].span());
         world.sync_perms_and_inits(contract_defs());
 
         let (actions_contract_address, _) = world.dns(@"actions").unwrap();

@@ -1,5 +1,5 @@
 [package]
-cairo-version = "2.10.1"
+cairo-version = "2.12.2"
 name = "warpack_masters"
 version = "1.3.0"
 edition = "2024_07"
@@ -16,9 +16,12 @@ openzeppelin = { git = "https://github.com/openzeppelin/cairo-contracts", tag = 
 openzeppelin_access = { git = "https://github.com/openzeppelin/cairo-contracts", tag = "v1.0.0" }
 openzeppelin_upgrades = { git = "https://github.com/openzeppelin/cairo-contracts", tag = "v1.0.0" }
 openzeppelin_introspection = { git = "https://github.com/openzeppelin/cairo-contracts", tag = "v1.0.0" }
-dojo = { git = "https://github.com/dojoengine/dojo.git", tag = "v1.6.0-alpha.2" }
-starknet = "2.10.1"
+dojo = "=1.7.2"
+starknet = "2.12.2"
 
 [dev-dependencies]
-cairo_test = "2.10.1"
-dojo_cairo_test = { git = "https://github.com/dojoengine/dojo.git", tag = "v1.6.0-alpha.2" }
+cairo_test = "2.12.2"
+dojo_cairo_test = "=1.7.2"
+
+[tool.scarb]
+allow-prebuilt-plugins = ["dojo_cairo_macros"]

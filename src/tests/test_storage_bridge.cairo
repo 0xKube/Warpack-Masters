@@ -5,7 +5,7 @@ mod tests {
 
     use dojo::model::{ModelStorage};
     use dojo::world::storage::WorldStorage;
-    use dojo::world::WorldStorageTrait;
+    use dojo::world::{WorldStorageTrait, world};
     use dojo_cairo_test::{spawn_test_world, NamespaceDef, TestResource, ContractDefTrait, ContractDef, WorldStorageTestTrait};
 
     use warpack_masters::{
@@ -34,19 +34,19 @@ mod tests {
 
     fn namespace_def() -> NamespaceDef {
         let ndef = NamespaceDef {
-            namespace: "Warpacks", 
+            namespace: "Warpacks",
             resources: [
-                TestResource::Model(m_BackpackGrids::TEST_CLASS_HASH.try_into().unwrap()),
-                TestResource::Model(m_Item::TEST_CLASS_HASH.try_into().unwrap()),
-                TestResource::Model(m_ItemsCounter::TEST_CLASS_HASH.try_into().unwrap()),
-                TestResource::Model(m_TokenRegistry::TEST_CLASS_HASH.try_into().unwrap()),
-                TestResource::Model(m_CharacterItemStorage::TEST_CLASS_HASH.try_into().unwrap()),
-                TestResource::Model(m_CharacterItemsStorageCounter::TEST_CLASS_HASH.try_into().unwrap()),
-                TestResource::Model(m_CharacterItemInventory::TEST_CLASS_HASH.try_into().unwrap()),
-                TestResource::Model(m_CharacterItemsInventoryCounter::TEST_CLASS_HASH.try_into().unwrap()),
-                TestResource::Model(m_Characters::TEST_CLASS_HASH.try_into().unwrap()),
-                TestResource::Model(m_NameRecord::TEST_CLASS_HASH.try_into().unwrap()),
-                TestResource::Model(m_Shop::TEST_CLASS_HASH.try_into().unwrap()),
+                TestResource::Model(m_BackpackGrids::TEST_CLASS_HASH),
+                TestResource::Model(m_Item::TEST_CLASS_HASH),
+                TestResource::Model(m_ItemsCounter::TEST_CLASS_HASH),
+                TestResource::Model(m_TokenRegistry::TEST_CLASS_HASH),
+                TestResource::Model(m_CharacterItemStorage::TEST_CLASS_HASH),
+                TestResource::Model(m_CharacterItemsStorageCounter::TEST_CLASS_HASH),
+                TestResource::Model(m_CharacterItemInventory::TEST_CLASS_HASH),
+                TestResource::Model(m_CharacterItemsInventoryCounter::TEST_CLASS_HASH),
+                TestResource::Model(m_Characters::TEST_CLASS_HASH),
+                TestResource::Model(m_NameRecord::TEST_CLASS_HASH),
+                TestResource::Model(m_Shop::TEST_CLASS_HASH),
                 TestResource::Contract(storage_bridge::TEST_CLASS_HASH),
                 TestResource::Contract(token_factory::TEST_CLASS_HASH),
                 TestResource::Contract(item_system::TEST_CLASS_HASH),
@@ -55,7 +55,7 @@ mod tests {
                 TestResource::Event(storage_bridge::e_WithdrawItem::TEST_CLASS_HASH),
             ].span()
         };
- 
+
         ndef
     }
 
@@ -74,7 +74,7 @@ mod tests {
 
     fn setup_test_environment() -> (ContractAddress, ContractAddress, IStorageBridgeDispatcher, ITokenFactoryDispatcher, IActionsDispatcher, WorldStorage) {
         let ndef = namespace_def();
-        let mut world = spawn_test_world([ndef].span());
+        let mut world = spawn_test_world(world::TEST_CLASS_HASH, [ndef].span());
         world.sync_perms_and_inits(contract_defs());
 
         let (storage_bridge_address, _) = world.dns(@"storage_bridge").unwrap();
@@ -104,7 +104,7 @@ mod tests {
             items::Dagger::name(),
             "DAG",
             alice,
-            ERC20Token::TEST_CLASS_HASH.try_into().unwrap()
+            ERC20Token::TEST_CLASS_HASH
         );
 
         // Spawn character and add item to storage

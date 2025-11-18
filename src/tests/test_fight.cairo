@@ -3,7 +3,7 @@ mod tests {
     use starknet::testing::{set_contract_address};
 
     use dojo::model::{ModelStorage};
-    use dojo::world::WorldStorageTrait;
+    use dojo::world::{WorldStorageTrait, world};
     use dojo_cairo_test::{spawn_test_world, NamespaceDef, TestResource, ContractDefTrait, ContractDef, WorldStorageTestTrait};
 
     use warpack_masters::{
@@ -29,23 +29,23 @@ mod tests {
 
     fn namespace_def() -> NamespaceDef {
         let ndef = NamespaceDef {
-            namespace: "Warpacks", 
+            namespace: "Warpacks",
             resources: [
-                TestResource::Model(m_BackpackGrids::TEST_CLASS_HASH.try_into().unwrap()),
-                TestResource::Model(m_Item::TEST_CLASS_HASH.try_into().unwrap()),
-                TestResource::Model(m_ItemsCounter::TEST_CLASS_HASH.try_into().unwrap()),
-                TestResource::Model(m_Characters::TEST_CLASS_HASH.try_into().unwrap()),
-                TestResource::Model(m_NameRecord::TEST_CLASS_HASH.try_into().unwrap()),
-                TestResource::Model(m_DummyCharacter::TEST_CLASS_HASH.try_into().unwrap()),
-                TestResource::Model(m_DummyCharacterCounter::TEST_CLASS_HASH.try_into().unwrap()),
-                TestResource::Model(m_DummyCharacterItem::TEST_CLASS_HASH.try_into().unwrap()),
-                TestResource::Model(m_DummyCharacterItemsCounter::TEST_CLASS_HASH.try_into().unwrap()),
-                TestResource::Model(m_BattleLog::TEST_CLASS_HASH.try_into().unwrap()),
-                TestResource::Model(m_BattleLogCounter::TEST_CLASS_HASH.try_into().unwrap()),
-                TestResource::Model(m_CharacterItemInventory::TEST_CLASS_HASH.try_into().unwrap()),
-                TestResource::Model(m_CharacterItemsInventoryCounter::TEST_CLASS_HASH.try_into().unwrap()),
-                TestResource::Model(m_CharacterItemStorage::TEST_CLASS_HASH.try_into().unwrap()),
-                TestResource::Model(m_CharacterItemsStorageCounter::TEST_CLASS_HASH.try_into().unwrap()),
+                TestResource::Model(m_BackpackGrids::TEST_CLASS_HASH),
+                TestResource::Model(m_Item::TEST_CLASS_HASH),
+                TestResource::Model(m_ItemsCounter::TEST_CLASS_HASH),
+                TestResource::Model(m_Characters::TEST_CLASS_HASH),
+                TestResource::Model(m_NameRecord::TEST_CLASS_HASH),
+                TestResource::Model(m_DummyCharacter::TEST_CLASS_HASH),
+                TestResource::Model(m_DummyCharacterCounter::TEST_CLASS_HASH),
+                TestResource::Model(m_DummyCharacterItem::TEST_CLASS_HASH),
+                TestResource::Model(m_DummyCharacterItemsCounter::TEST_CLASS_HASH),
+                TestResource::Model(m_BattleLog::TEST_CLASS_HASH),
+                TestResource::Model(m_BattleLogCounter::TEST_CLASS_HASH),
+                TestResource::Model(m_CharacterItemInventory::TEST_CLASS_HASH),
+                TestResource::Model(m_CharacterItemsInventoryCounter::TEST_CLASS_HASH),
+                TestResource::Model(m_CharacterItemStorage::TEST_CLASS_HASH),
+                TestResource::Model(m_CharacterItemsStorageCounter::TEST_CLASS_HASH),
                 TestResource::Event(e_BattleLogDetail::TEST_CLASS_HASH),
                 TestResource::Contract(actions::TEST_CLASS_HASH),
                 TestResource::Contract(item_system::TEST_CLASS_HASH),
@@ -74,7 +74,7 @@ mod tests {
     #[should_panic(expected: ('no new match found', 'ENTRYPOINT_FAILED'))]
     fn test_no_new_matching_battle() {
         let ndef = namespace_def();
-        let mut world = spawn_test_world([ndef].span());
+        let mut world = spawn_test_world(world::TEST_CLASS_HASH, [ndef].span());
         world.sync_perms_and_inits(contract_defs());
 
         let (contract_address, _) = world.dns(@"actions").unwrap();
@@ -102,7 +102,7 @@ mod tests {
     #[should_panic(expected: ('no dummy created', 'ENTRYPOINT_FAILED'))]
     fn test_dummy_not_created() {
         let ndef = namespace_def();
-        let mut world = spawn_test_world([ndef].span());
+        let mut world = spawn_test_world(world::TEST_CLASS_HASH, [ndef].span());
         world.sync_perms_and_inits(contract_defs());
 
         let (contract_address, _) = world.dns(@"actions").unwrap();
@@ -127,7 +127,7 @@ mod tests {
     #[should_panic(expected: ('battle not fought', 'ENTRYPOINT_FAILED'))]
     fn test_battle_not_fought() {
         let ndef = namespace_def();
-        let mut world = spawn_test_world([ndef].span());
+        let mut world = spawn_test_world(world::TEST_CLASS_HASH, [ndef].span());
         world.sync_perms_and_inits(contract_defs());
 
         let (contract_address, _) = world.dns(@"actions").unwrap();
@@ -160,7 +160,7 @@ mod tests {
     #[should_panic(expected: ('max loss reached', 'ENTRYPOINT_FAILED'))]
     fn test_max_loss_reached() {
         let ndef = namespace_def();
-        let mut world = spawn_test_world([ndef].span());
+        let mut world = spawn_test_world(world::TEST_CLASS_HASH, [ndef].span());
         world.sync_perms_and_inits(contract_defs());
 
         let (contract_address, _) = world.dns(@"actions").unwrap();
@@ -194,7 +194,7 @@ mod tests {
     #[available_gas(3000000000000000)]
     fn test_fight() {
         let ndef = namespace_def();
-        let mut world = spawn_test_world([ndef].span());
+        let mut world = spawn_test_world(world::TEST_CLASS_HASH, [ndef].span());
         world.sync_perms_and_inits(contract_defs());
 
         let (contract_address, _) = world.dns(@"actions").unwrap();

@@ -21,8 +21,9 @@ pub struct Characters {
     pub updatedAt: u64
 }
 
-#[derive(Serde, Copy, Drop, Introspect, PartialEq)]
+#[derive(Serde, Copy, Drop, Introspect, PartialEq, DojoStore, Default)]
 pub enum WMClass {
+    #[default]
     Warrior,
     Warlock,
     Archer,
