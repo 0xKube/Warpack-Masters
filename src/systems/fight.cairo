@@ -10,7 +10,7 @@ mod fight_system {
 
     use starknet::{get_caller_address, get_block_timestamp, ContractAddress};
     use warpack_masters::models::{
-        CharacterItem::{CharacterItemInventory, CharacterItemsInventoryCounter},
+        CharacterItem::{CharacterItemInventory, CharItemInventoryCounter},
         Item::Item,
         TokenRegistry::TokenRegistry,
     };
@@ -81,7 +81,7 @@ mod fight_system {
             let mut player_on_attack_items = ArrayTrait::new();
             let mut dummy_on_attack_items = ArrayTrait::new();
 
-            let inventoryItemsCounter: CharacterItemsInventoryCounter = world.read_model(player);
+            let inventoryItemsCounter: CharItemInventoryCounter = world.read_model(player);
             let mut inventoryItemCount = inventoryItemsCounter.count;
 
             let mut items_length: u32 = 0;

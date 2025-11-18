@@ -53,7 +53,7 @@ mod dummy_system {
         //     };
         //     char.dummied = true;
 
-        //     let inventoryItemCounter: CharacterItemsInventoryCounter = world.read_model(player);
+        //     let inventoryItemCounter: CharItemInventoryCounter = world.read_model(player);
 
         //     let mut count = 0;
         //     loop {

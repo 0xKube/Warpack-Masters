@@ -11,9 +11,9 @@ mod tests {
         models::backpack::{BackpackGrids, m_BackpackGrids},
         models::Item::{m_Item, m_ItemsCounter},
         models::CharacterItem::{
-            CharacterItemStorage, m_CharacterItemStorage, CharacterItemsStorageCounter,
-            m_CharacterItemsStorageCounter, CharacterItemInventory, m_CharacterItemInventory,
-            CharacterItemsInventoryCounter, m_CharacterItemsInventoryCounter
+            CharacterItemStorage, m_CharacterItemStorage, CharItemStorageCounter,
+            m_CharItemStorageCounter, CharacterItemInventory, m_CharacterItemInventory,
+            CharItemInventoryCounter, m_CharItemInventoryCounter
         },
         models::Character::{Characters, m_Characters, m_NameRecord, WMClass},
         models::Shop::{Shop, m_Shop}, utils::{test_utils::{add_items}}
@@ -27,9 +27,9 @@ mod tests {
                 TestResource::Model(m_Item::TEST_CLASS_HASH),
                 TestResource::Model(m_ItemsCounter::TEST_CLASS_HASH),
                 TestResource::Model(m_CharacterItemStorage::TEST_CLASS_HASH),
-                TestResource::Model(m_CharacterItemsStorageCounter::TEST_CLASS_HASH),
+                TestResource::Model(m_CharItemStorageCounter::TEST_CLASS_HASH),
                 TestResource::Model(m_CharacterItemInventory::TEST_CLASS_HASH),
-                TestResource::Model(m_CharacterItemsInventoryCounter::TEST_CLASS_HASH),
+                TestResource::Model(m_CharItemInventoryCounter::TEST_CLASS_HASH),
                 TestResource::Model(m_Characters::TEST_CLASS_HASH),
                 TestResource::Model(m_NameRecord::TEST_CLASS_HASH),
                 TestResource::Model(m_Shop::TEST_CLASS_HASH),
@@ -91,13 +91,13 @@ mod tests {
 
         action_system.move_item_from_inventory_to_storage(3);
 
-        let storageItemCounter: CharacterItemsStorageCounter = world.read_model(alice);
+        let storageItemCounter: CharItemStorageCounter = world.read_model(alice);
         assert(storageItemCounter.count == 2, 'storage item count mismatch');
 
         let storageItem: CharacterItemStorage = world.read_model((alice, 2));
         assert(storageItem.itemId == 5, 'item id should equal 5');
 
-        let inventoryItemCounter: CharacterItemsInventoryCounter = world.read_model(alice);
+        let inventoryItemCounter: CharItemInventoryCounter = world.read_model(alice);
         assert(inventoryItemCounter.count == 3, 'inventory item count mismatch');
 
         let invetoryItem: CharacterItemInventory = world.read_model((alice, 3));
@@ -137,7 +137,7 @@ mod tests {
 
         action_system.move_item_from_inventory_to_storage(3);
 
-        let storageItemCounter: CharacterItemsStorageCounter = world.read_model(alice);
+        let storageItemCounter: CharItemStorageCounter = world.read_model(alice);
         assert(storageItemCounter.count == 2, 'storage item count mismatch');
 
         let storageItem: CharacterItemStorage = world.read_model((alice, 2));
@@ -145,7 +145,7 @@ mod tests {
         let storageItem: CharacterItemStorage = world.read_model((alice, 1));
         assert(storageItem.itemId == 6, 'item id should equal 6');
 
-        let inventoryItemCounter: CharacterItemsInventoryCounter = world.read_model(alice);
+        let inventoryItemCounter: CharItemInventoryCounter = world.read_model(alice);
         assert(inventoryItemCounter.count == 3, 'inventory item count mismatch');
 
         let invetoryItem: CharacterItemInventory = world.read_model((alice, 3));
@@ -193,7 +193,7 @@ mod tests {
 
         action_system.move_item_from_inventory_to_storage(3);
 
-        let storageItemCounter: CharacterItemsStorageCounter = world.read_model(alice);
+        let storageItemCounter: CharItemStorageCounter = world.read_model(alice);
         assert(storageItemCounter.count == 3, 'storage item count mismatch');
 
         let storageItem: CharacterItemStorage = world.read_model((alice, 3));
@@ -202,7 +202,7 @@ mod tests {
         assert(storageItem.itemId == 5, 'item id should equal 4');
         let storageItem: CharacterItemStorage = world.read_model((alice, 1));
         assert(storageItem.itemId == 6, 'item id should equal 6');
-        let inventoryItemCounter: CharacterItemsInventoryCounter = world.read_model(alice);
+        let inventoryItemCounter: CharItemInventoryCounter = world.read_model(alice);
         assert(inventoryItemCounter.count == 3, 'inventory item count mismatch');
 
         let invetoryItem: CharacterItemInventory = world.read_model((alice, 3));
@@ -226,7 +226,7 @@ mod tests {
 
         action_system.move_item_from_inventory_to_storage(4);
 
-        let storageItemCounter: CharacterItemsStorageCounter = world.read_model(alice);
+        let storageItemCounter: CharItemStorageCounter = world.read_model(alice);
         assert(storageItemCounter.count == 3, 'storage item count mismatch');
 
         let storageItem: CharacterItemStorage = world.read_model((alice, 1));
@@ -236,7 +236,7 @@ mod tests {
         let storageItem: CharacterItemStorage = world.read_model((alice, 3));
         assert(storageItem.itemId == 6, 'item id should equal 6');
 
-        let inventoryItemCounter: CharacterItemsInventoryCounter = world.read_model(alice);
+        let inventoryItemCounter: CharItemInventoryCounter = world.read_model(alice);
         assert(inventoryItemCounter.count == 5, 'inventory item count mismatch');
 
         let invetoryItem: CharacterItemInventory = world.read_model((alice, 3));
@@ -326,12 +326,12 @@ mod tests {
         action_system.move_item_from_storage_to_inventory(2, 2, 2, 0);
 
         action_system.move_item_from_inventory_to_storage(3);
-        let storageItemCounter: CharacterItemsStorageCounter = world.read_model(alice);
+        let storageItemCounter: CharItemStorageCounter = world.read_model(alice);
         assert(storageItemCounter.count == 2, 'storage item count mismatch');
         let storageItem: CharacterItemStorage = world.read_model((alice, 2));
         assert(storageItem.itemId == 13, 'item id should equal 7');
         
-        let inventoryItemCounter: CharacterItemsInventoryCounter = world.read_model(alice);
+        let inventoryItemCounter: CharItemInventoryCounter = world.read_model(alice);
         assert(inventoryItemCounter.count == 5, 'inventory item count mismatch');
         let invetoryItem: CharacterItemInventory = world.read_model((alice, 3));
         assert(invetoryItem.itemId == 0, 'item id should equal 0');
@@ -348,12 +348,12 @@ mod tests {
         assert(*invetoryItem.plugins.at(0) == (6, 80, 3), 'plugin length mismatch');
 
         action_system.move_item_from_inventory_to_storage(4);
-        let storageItemCounter: CharacterItemsStorageCounter = world.read_model(alice);
+        let storageItemCounter: CharItemStorageCounter = world.read_model(alice);
         assert(storageItemCounter.count == 2, 'storage item count mismatch');
         let storageItem: CharacterItemStorage = world.read_model((alice, 1));
         assert(storageItem.itemId == 7, 'item id should equal 7');
 
-        let inventoryItemCounter: CharacterItemsInventoryCounter = world.read_model(alice);
+        let inventoryItemCounter: CharItemInventoryCounter = world.read_model(alice);
         assert(inventoryItemCounter.count == 5, 'inventory item count mismatch');
         let invetoryItem: CharacterItemInventory = world.read_model((alice, 4));
         assert(invetoryItem.itemId == 0, 'item id should equal 0');
@@ -363,12 +363,12 @@ mod tests {
         assert(invetoryItem.plugins.len() == 0, 'plugins length mismatch');
 
         action_system.move_item_from_storage_to_inventory(1, 4, 2, 0);
-        let storageItemCounter: CharacterItemsStorageCounter = world.read_model(alice);
+        let storageItemCounter: CharItemStorageCounter = world.read_model(alice);
         assert(storageItemCounter.count == 2, 'storage item count mismatch');
         let storageItem: CharacterItemStorage = world.read_model((alice, 1));
         assert(storageItem.itemId == 0, 'item id should equal 0');
 
-        let inventoryItemCounter: CharacterItemsInventoryCounter = world.read_model(alice);
+        let inventoryItemCounter: CharItemInventoryCounter = world.read_model(alice);
         assert(inventoryItemCounter.count == 5, 'inventory item count mismatch');
         let invetoryItem: CharacterItemInventory = world.read_model((alice, 4));
         assert(invetoryItem.itemId == 7, 'item id should equal 7');

@@ -18,8 +18,8 @@ mod tests {
         models::DummyCharacterItem::{
             m_DummyCharacterItem, m_DummyCharacterItemsCounter
         },
-        models::CharacterItem::{CharacterItemInventory, CharacterItemsInventoryCounter, m_CharacterItemInventory, m_CharacterItemsInventoryCounter, 
-            m_CharacterItemStorage, m_CharacterItemsStorageCounter,
+        models::CharacterItem::{CharacterItemInventory, CharItemInventoryCounter, m_CharacterItemInventory, m_CharItemInventoryCounter, 
+            m_CharacterItemStorage, m_CharItemStorageCounter,
             Position
         },
         models::Fight::{BattleLog, m_BattleLog, m_BattleLogCounter, e_BattleLogDetail},
@@ -43,9 +43,9 @@ mod tests {
                 TestResource::Model(m_BattleLog::TEST_CLASS_HASH),
                 TestResource::Model(m_BattleLogCounter::TEST_CLASS_HASH),
                 TestResource::Model(m_CharacterItemInventory::TEST_CLASS_HASH),
-                TestResource::Model(m_CharacterItemsInventoryCounter::TEST_CLASS_HASH),
+                TestResource::Model(m_CharItemInventoryCounter::TEST_CLASS_HASH),
                 TestResource::Model(m_CharacterItemStorage::TEST_CLASS_HASH),
-                TestResource::Model(m_CharacterItemsStorageCounter::TEST_CLASS_HASH),
+                TestResource::Model(m_CharItemStorageCounter::TEST_CLASS_HASH),
                 TestResource::Event(e_BattleLogDetail::TEST_CLASS_HASH),
                 TestResource::Contract(actions::TEST_CLASS_HASH),
                 TestResource::Contract(item_system::TEST_CLASS_HASH),
@@ -217,7 +217,7 @@ mod tests {
         action_system.spawn('alice', WMClass::Warlock);
 
         // Add items for Alice
-        let mut inventoryCounter: CharacterItemsInventoryCounter = world.read_model(alice);
+        let mut inventoryCounter: CharItemInventoryCounter = world.read_model(alice);
         
         // add Herb id 5, on start +1 regen
         inventoryCounter.count += 1;
@@ -274,7 +274,7 @@ mod tests {
         set_contract_address(bob);
         action_system.spawn('bob', WMClass::Warlock);
 
-        let mut inventoryCounter: CharacterItemsInventoryCounter = world.read_model(bob);
+        let mut inventoryCounter: CharItemInventoryCounter = world.read_model(bob);
         
         // add Sword id 7, damage 5, cooldown 5
         inventoryCounter.count += 1;

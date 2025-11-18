@@ -11,9 +11,9 @@ mod tests {
         models::backpack::{m_BackpackGrids},
         models::Item::{m_Item, m_ItemsCounter},
         models::CharacterItem::{
-            CharacterItemStorage, m_CharacterItemStorage, CharacterItemsStorageCounter,
-            m_CharacterItemsStorageCounter, m_CharacterItemInventory,
-            m_CharacterItemsInventoryCounter
+            CharacterItemStorage, m_CharacterItemStorage, CharItemStorageCounter,
+            m_CharItemStorageCounter, m_CharacterItemInventory,
+            m_CharItemInventoryCounter
         },
         models::Character::{Characters, m_Characters, m_NameRecord, WMClass},
         models::Shop::{Shop, m_Shop}, utils::{test_utils::{add_items}}
@@ -30,9 +30,9 @@ mod tests {
                 TestResource::Model(m_Item::TEST_CLASS_HASH),
                 TestResource::Model(m_ItemsCounter::TEST_CLASS_HASH),
                 TestResource::Model(m_CharacterItemStorage::TEST_CLASS_HASH),
-                TestResource::Model(m_CharacterItemsStorageCounter::TEST_CLASS_HASH),
+                TestResource::Model(m_CharItemStorageCounter::TEST_CLASS_HASH),
                 TestResource::Model(m_CharacterItemInventory::TEST_CLASS_HASH),
-                TestResource::Model(m_CharacterItemsInventoryCounter::TEST_CLASS_HASH),
+                TestResource::Model(m_CharItemInventoryCounter::TEST_CLASS_HASH),
                 TestResource::Model(m_Characters::TEST_CLASS_HASH),
                 TestResource::Model(m_NameRecord::TEST_CLASS_HASH),
                 TestResource::Model(m_Shop::TEST_CLASS_HASH),
@@ -90,7 +90,7 @@ mod tests {
         let char_data: Characters = world.read_model(alice);
         assert(char_data.gold == INIT_GOLD - items::Spike::price, 'gold value mismatch');
 
-        let storageItemCount: CharacterItemsStorageCounter = world.read_model(alice);
+        let storageItemCount: CharItemStorageCounter = world.read_model(alice);
         assert(storageItemCount.count == 2, 'total item count mismatch');
 
         let storageItem: CharacterItemStorage =  world.read_model((alice, 2));

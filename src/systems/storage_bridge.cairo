@@ -14,7 +14,7 @@ pub mod storage_bridge {
     use dojo::event::EventStorage;
     use warpack_masters::models::{
         TokenRegistry::{TokenRegistry},
-        CharacterItem::{CharacterItemStorage, CharacterItemsStorageCounter},
+        CharacterItem::{CharacterItemStorage, CharItemStorageCounter},
         Item::{Item},
     };
 
@@ -115,7 +115,7 @@ pub mod storage_bridge {
         fn _add_items_to_storage(ref self: ContractState, player: ContractAddress, item_id: u32) {
             let mut world = self.world(@"Warpacks");
             
-            let mut storageCounter: CharacterItemsStorageCounter = world.read_model(player);
+            let mut storageCounter: CharItemStorageCounter = world.read_model(player);
             let mut count = storageCounter.count;
             
             loop {
@@ -136,7 +136,7 @@ pub mod storage_bridge {
             if count == 0 {
                 storageCounter.count += 1;
                 world.write_model(@CharacterItemStorage { player, id: storageCounter.count, itemId: item_id, });
-                world.write_model(@CharacterItemsStorageCounter { player, count: storageCounter.count });
+                world.write_model(@CharItemStorageCounter { player, count: storageCounter.count });
             }
         }
     }

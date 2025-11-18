@@ -18,7 +18,7 @@ pub struct CharacterItemStorage {
 
 #[derive(Drop, Serde)]
 #[dojo::model]
-pub struct CharacterItemsStorageCounter {
+pub struct CharItemStorageCounter {
     #[key]
     pub player: ContractAddress,
     pub count: u32,
@@ -41,7 +41,7 @@ pub struct CharacterItemInventory {
 
 #[derive(Drop, Serde)]
 #[dojo::model]
-pub struct CharacterItemsInventoryCounter {
+pub struct CharItemInventoryCounter {
     #[key]
     pub player: ContractAddress,
     pub count: u32,

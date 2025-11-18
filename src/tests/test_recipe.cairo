@@ -12,7 +12,7 @@ mod tests {
         systems::{item::{item_system, IItemDispatcher}},
         models::Item::{m_Item, m_ItemsCounter},
         models::CharacterItem::{
-            CharacterItemStorage, m_CharacterItemStorage, CharacterItemsStorageCounter, m_CharacterItemsStorageCounter
+            CharacterItemStorage, m_CharacterItemStorage, CharItemStorageCounter, m_CharItemStorageCounter
         },
         models::Recipe::{RecipeV2, m_Recipe, m_RecipesCounter},
         utils::test_utils::add_items
@@ -25,7 +25,7 @@ mod tests {
                 TestResource::Model(m_Item::TEST_CLASS_HASH),
                 TestResource::Model(m_ItemsCounter::TEST_CLASS_HASH),
                 TestResource::Model(m_CharacterItemStorage::TEST_CLASS_HASH),
-                TestResource::Model(m_CharacterItemsStorageCounter::TEST_CLASS_HASH),
+                TestResource::Model(m_CharItemStorageCounter::TEST_CLASS_HASH),
                 TestResource::Model(m_Recipe::TEST_CLASS_HASH),
                 TestResource::Model(m_RecipesCounter::TEST_CLASS_HASH),
                 TestResource::Contract(item_system::TEST_CLASS_HASH),
@@ -200,7 +200,7 @@ mod tests {
         let alice = starknet::contract_address_const::<0x1>();
         world.write_model(@CharacterItemStorage { player: alice, id: 1, itemId: 1});
         world.write_model(@CharacterItemStorage { player: alice, id: 2, itemId: 2});
-        world.write_model(@CharacterItemsStorageCounter { player: alice, count: 2});
+        world.write_model(@CharItemStorageCounter { player: alice, count: 2});
 
         set_contract_address(alice);
         actions.craft_item(1, array![1, 2]);
@@ -251,7 +251,7 @@ mod tests {
         let alice = starknet::contract_address_const::<0x1>();
         world.write_model(@CharacterItemStorage { player: alice, id: 1, itemId: 1}); // Only 1 of item 1
         world.write_model(@CharacterItemStorage { player: alice, id: 2, itemId: 2});
-        world.write_model(@CharacterItemsStorageCounter { player: alice, count: 2});
+        world.write_model(@CharItemStorageCounter { player: alice, count: 2});
 
         set_contract_address(alice);
         actions.craft_item(1, array![1, 2]);

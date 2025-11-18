@@ -12,9 +12,9 @@ mod tests {
         models::backpack::{BackpackGrids, m_BackpackGrids},
         models::Item::{m_Item, m_ItemsCounter},
         models::CharacterItem::{
-            CharacterItemStorage, m_CharacterItemStorage, CharacterItemsStorageCounter,
-            m_CharacterItemsStorageCounter, CharacterItemInventory, m_CharacterItemInventory,
-            CharacterItemsInventoryCounter, m_CharacterItemsInventoryCounter
+            CharacterItemStorage, m_CharacterItemStorage, CharItemStorageCounter,
+            m_CharItemStorageCounter, CharacterItemInventory, m_CharacterItemInventory,
+            CharItemInventoryCounter, m_CharItemInventoryCounter
         },
         models::Character::{Characters, m_Characters, NameRecord, m_NameRecord, WMClass},
         models::Shop::{Shop, m_Shop}, utils::{test_utils::{add_items}},
@@ -34,9 +34,9 @@ mod tests {
                 TestResource::Model(m_Item::TEST_CLASS_HASH),
                 TestResource::Model(m_ItemsCounter::TEST_CLASS_HASH),
                 TestResource::Model(m_CharacterItemStorage::TEST_CLASS_HASH),
-                TestResource::Model(m_CharacterItemsStorageCounter::TEST_CLASS_HASH),
+                TestResource::Model(m_CharItemStorageCounter::TEST_CLASS_HASH),
                 TestResource::Model(m_CharacterItemInventory::TEST_CLASS_HASH),
-                TestResource::Model(m_CharacterItemsInventoryCounter::TEST_CLASS_HASH),
+                TestResource::Model(m_CharItemInventoryCounter::TEST_CLASS_HASH),
                 TestResource::Model(m_Characters::TEST_CLASS_HASH),
                 TestResource::Model(m_NameRecord::TEST_CLASS_HASH),
                 TestResource::Model(m_Shop::TEST_CLASS_HASH),
@@ -128,8 +128,8 @@ mod tests {
 
         set_contract_address(default_address);
         let char: Characters = world.read_model(alice);
-        let inventoryItemsCounter: CharacterItemsInventoryCounter = world.read_model(alice);
-        let storageItemsCounter: CharacterItemsStorageCounter = world.read_model(alice);
+        let inventoryItemsCounter: CharItemInventoryCounter = world.read_model(alice);
+        let storageItemsCounter: CharItemStorageCounter = world.read_model(alice);
         let playerShopData: Shop = world.read_model(alice);
 
         assert(char.wins == 0, 'wins count should be 0');

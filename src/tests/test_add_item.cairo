@@ -14,8 +14,8 @@ mod tests {
         models::Item::{Item, m_Item, ItemsCounter, m_ItemsCounter},
         models::CharacterItem::{
             m_CharacterItemStorage,
-            m_CharacterItemsStorageCounter, m_CharacterItemInventory,
-            m_CharacterItemsInventoryCounter
+            m_CharItemStorageCounter, m_CharacterItemInventory,
+            m_CharItemInventoryCounter
         },
         models::Character::{m_Characters, m_NameRecord},
         models::Shop::{m_Shop}, utils::{test_utils::{add_items}}
@@ -32,9 +32,9 @@ mod tests {
                 TestResource::Model(m_Item::TEST_CLASS_HASH),
                 TestResource::Model(m_ItemsCounter::TEST_CLASS_HASH),
                 TestResource::Model(m_CharacterItemStorage::TEST_CLASS_HASH),
-                TestResource::Model(m_CharacterItemsStorageCounter::TEST_CLASS_HASH),
+                TestResource::Model(m_CharItemStorageCounter::TEST_CLASS_HASH),
                 TestResource::Model(m_CharacterItemInventory::TEST_CLASS_HASH),
-                TestResource::Model(m_CharacterItemsInventoryCounter::TEST_CLASS_HASH),
+                TestResource::Model(m_CharItemInventoryCounter::TEST_CLASS_HASH),
                 TestResource::Model(m_Characters::TEST_CLASS_HASH),
                 TestResource::Model(m_NameRecord::TEST_CLASS_HASH),
                 TestResource::Model(m_Shop::TEST_CLASS_HASH),

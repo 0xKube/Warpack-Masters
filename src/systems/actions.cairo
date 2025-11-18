@@ -39,8 +39,8 @@ mod actions {
     use warpack_masters::models::{backpack::{BackpackGrids}};
     use warpack_masters::models::{
         CharacterItem::{
-            Position, CharacterItemsStorageCounter, CharacterItemStorage, CharacterItemInventory,
-            CharacterItemsInventoryCounter
+            Position, CharItemStorageCounter, CharacterItemStorage, CharacterItemInventory,
+            CharItemInventoryCounter
         },
         Item::{Item},
         Character::{Characters, NameRecord},
@@ -128,7 +128,7 @@ mod actions {
 
             world.write_model(@CharacterItemStorage { player, id: 1, itemId: Backpack::id });
             world.write_model(@CharacterItemStorage { player, id: 2, itemId: Pack::id });
-            world.write_model(@CharacterItemsStorageCounter { player, count: 2 });
+            world.write_model(@CharItemStorageCounter { player, count: 2 });
 
             self.move_item_from_storage_to_inventory(1, 4, 2, 0);
             self.move_item_from_storage_to_inventory(2, 2, 2, 0);
@@ -183,7 +183,7 @@ mod actions {
             // required to calling spawn doesn't fail
             char.name = '';
 
-            let mut inventoryItemsCounter: CharacterItemsInventoryCounter = world.read_model(player);
+            let mut inventoryItemsCounter: CharItemInventoryCounter = world.read_model(player);
             let mut count = inventoryItemsCounter.count;
 
             loop {
@@ -204,7 +204,7 @@ mod actions {
                 count -= 1;
             };
 
-            let mut storageItemsCounter: CharacterItemsStorageCounter = world.read_model(player);
+            let mut storageItemsCounter: CharItemStorageCounter = world.read_model(player);
             let mut count = storageItemsCounter.count;
 
             loop {
@@ -633,7 +633,7 @@ mod actions {
                 false
             };
 
-            let mut inventoryCounter: CharacterItemsInventoryCounter = world.read_model(player);
+            let mut inventoryCounter: CharItemInventoryCounter = world.read_model(player);
             let mut count = inventoryCounter.count;
 
             let mut inventoryItem = CharacterItemInventory {
@@ -857,7 +857,7 @@ mod actions {
         fn _add_item_to_storage(ref self: ContractState, player: ContractAddress, item_id: u32) {
             let mut world = self.world(@"Warpacks");
 
-            let mut storageCounter: CharacterItemsStorageCounter = world.read_model(player);
+            let mut storageCounter: CharItemStorageCounter = world.read_model(player);
             let mut count = storageCounter.count;
             loop {
                 if count == 0 {

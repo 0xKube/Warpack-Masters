@@ -17,9 +17,9 @@ mod tests {
         models::Item::{m_Item, m_ItemsCounter},
         models::TokenRegistry::{m_TokenRegistry},
         models::CharacterItem::{
-            CharacterItemStorage, m_CharacterItemStorage, CharacterItemsStorageCounter,
-            m_CharacterItemsStorageCounter, m_CharacterItemInventory,
-            m_CharacterItemsInventoryCounter
+            CharacterItemStorage, m_CharacterItemStorage, CharItemStorageCounter,
+            m_CharItemStorageCounter, m_CharacterItemInventory,
+            m_CharItemInventoryCounter
         },
         models::Character::{m_Characters, m_NameRecord, WMClass},
         models::Shop::{m_Shop},
@@ -41,9 +41,9 @@ mod tests {
                 TestResource::Model(m_ItemsCounter::TEST_CLASS_HASH),
                 TestResource::Model(m_TokenRegistry::TEST_CLASS_HASH),
                 TestResource::Model(m_CharacterItemStorage::TEST_CLASS_HASH),
-                TestResource::Model(m_CharacterItemsStorageCounter::TEST_CLASS_HASH),
+                TestResource::Model(m_CharItemStorageCounter::TEST_CLASS_HASH),
                 TestResource::Model(m_CharacterItemInventory::TEST_CLASS_HASH),
-                TestResource::Model(m_CharacterItemsInventoryCounter::TEST_CLASS_HASH),
+                TestResource::Model(m_CharItemInventoryCounter::TEST_CLASS_HASH),
                 TestResource::Model(m_Characters::TEST_CLASS_HASH),
                 TestResource::Model(m_NameRecord::TEST_CLASS_HASH),
                 TestResource::Model(m_Shop::TEST_CLASS_HASH),
@@ -113,7 +113,7 @@ mod tests {
 
         // Manually add item to storage
         set_contract_address(default_address);
-        let storage_counter = CharacterItemsStorageCounter { player: alice, count: 1 };
+        let storage_counter = CharItemStorageCounter { player: alice, count: 1 };
         let storage_item = CharacterItemStorage { player: alice, id: 1, itemId: item_id };
         world.write_model(@storage_counter);
         world.write_model(@storage_item);
@@ -170,7 +170,7 @@ mod tests {
 
         // Verify item was added to storage
         set_contract_address(default_address);
-        let storage_counter: CharacterItemsStorageCounter = world.read_model(alice);
+        let storage_counter: CharItemStorageCounter = world.read_model(alice);
         assert(storage_counter.count == 2, 'Storage count should increase');
 
         let storage_item: CharacterItemStorage = world.read_model((alice, 2));
@@ -225,7 +225,7 @@ mod tests {
         actions.spawn('Alice', WMClass::Warrior);
 
         set_contract_address(default_address);
-        let storage_counter = CharacterItemsStorageCounter { player: alice, count: 1 };
+        let storage_counter = CharItemStorageCounter { player: alice, count: 1 };
         let storage_item = CharacterItemStorage { player: alice, id: 1, itemId: item_id };
         world.write_model(@storage_counter);
         world.write_model(@storage_item);
@@ -273,7 +273,7 @@ mod tests {
 
         // Verify new slot was created
         set_contract_address(default_address);
-        let storage_counter: CharacterItemsStorageCounter = world.read_model(alice);
+        let storage_counter: CharItemStorageCounter = world.read_model(alice);
         assert(storage_counter.count == 2, 'Storage count should be 2');
 
         let new_storage_item: CharacterItemStorage = world.read_model((alice, 2));

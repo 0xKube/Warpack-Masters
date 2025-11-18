@@ -14,9 +14,9 @@ mod tests {
         models::Character::{Characters, m_Characters, m_NameRecord, WMClass},
         models::Shop::{Shop, m_Shop},
         models::CharacterItem::{
-            CharacterItemStorage, m_CharacterItemStorage, CharacterItemsStorageCounter,
-            m_CharacterItemsStorageCounter, m_CharacterItemInventory,
-            m_CharacterItemsInventoryCounter
+            CharacterItemStorage, m_CharacterItemStorage, CharItemStorageCounter,
+            m_CharItemStorageCounter, m_CharacterItemInventory,
+            m_CharItemInventoryCounter
         },
         utils::{test_utils::{add_items}}
     };
@@ -31,9 +31,9 @@ mod tests {
                 TestResource::Model(m_Item::TEST_CLASS_HASH),
                 TestResource::Model(m_ItemsCounter::TEST_CLASS_HASH),
                 TestResource::Model(m_CharacterItemStorage::TEST_CLASS_HASH),
-                TestResource::Model(m_CharacterItemsStorageCounter::TEST_CLASS_HASH),
+                TestResource::Model(m_CharItemStorageCounter::TEST_CLASS_HASH),
                 TestResource::Model(m_CharacterItemInventory::TEST_CLASS_HASH),
-                TestResource::Model(m_CharacterItemsInventoryCounter::TEST_CLASS_HASH),
+                TestResource::Model(m_CharItemInventoryCounter::TEST_CLASS_HASH),
                 TestResource::Model(m_Characters::TEST_CLASS_HASH),
                 TestResource::Model(m_NameRecord::TEST_CLASS_HASH),
                 TestResource::Model(m_Shop::TEST_CLASS_HASH),
@@ -94,13 +94,13 @@ mod tests {
         world.write_model(@shop_data);
 
         action_system.move_item_from_shop_to_storage(6);
-        let storageItemCount: CharacterItemsStorageCounter = world.read_model(alice);
+        let storageItemCount: CharItemStorageCounter = world.read_model(alice);
         assert(storageItemCount.count == 2, 'storage count mismatch');
 
         let prev_char_data: Characters = world.read_model(alice);
 
         action_system.move_item_from_storage_to_shop(2);
-        let storageItemCount: CharacterItemsStorageCounter = world.read_model(alice);
+        let storageItemCount: CharItemStorageCounter = world.read_model(alice);
         assert(storageItemCount.count == 2, 'storage count mismatch');
 
         let char_data: Characters = world.read_model(alice);
@@ -132,11 +132,11 @@ mod tests {
 
         action_system.move_item_from_shop_to_storage(3);
 
-        let storageItemCount: CharacterItemsStorageCounter = world.read_model(alice);
+        let storageItemCount: CharItemStorageCounter = world.read_model(alice);
         assert(storageItemCount.count == 3, 'storage count mismatch');
 
         action_system.move_item_from_storage_to_shop(2);
-        let storageItemCount: CharacterItemsStorageCounter = world.read_model(alice);
+        let storageItemCount: CharItemStorageCounter = world.read_model(alice);
         assert(storageItemCount.count == 3, 'storage count mismatch');
 
         let storageItem: CharacterItemStorage = world.read_model((alice, 1));
@@ -147,7 +147,7 @@ mod tests {
         assert(storageItem.itemId == 3, 'item id mismatch');
 
         action_system.move_item_from_shop_to_storage(5);
-        let storageItemCount: CharacterItemsStorageCounter = world.read_model(alice);
+        let storageItemCount: CharItemStorageCounter = world.read_model(alice);
         assert(storageItemCount.count == 3, 'storage count mismatch');
 
         let storageItem: CharacterItemStorage = world.read_model((alice, 1));

@@ -27,9 +27,9 @@ mod tests {
             dummy_character_items_counter
         },
         models::CharacterItem::{
-            Position, CharacterItemStorage, character_item_storage, CharacterItemsStorageCounter,
+            Position, CharacterItemStorage, character_item_storage, CharItemStorageCounter,
             character_items_storage_counter, CharacterItemInventory, character_item_inventory,
-            CharacterItemsInventoryCounter, character_items_inventory_counter
+            CharItemInventoryCounter, character_items_inventory_counter
         },
         models::Item::{Item, item, ItemsCounter, items_counter}, utils::{test_utils::{add_items}},
         models::Shop::{Shop, shop}
@@ -47,11 +47,11 @@ mod tests {
 
         world.grant_writer(Model::<CharacterItemStorage>::selector(), action_system_address);
         world
-            .grant_writer(Model::<CharacterItemsStorageCounter>::selector(), action_system_address);
+            .grant_writer(Model::<CharItemStorageCounter>::selector(), action_system_address);
         world.grant_writer(Model::<CharacterItemInventory>::selector(), action_system_address);
         world
             .grant_writer(
-                Model::<CharacterItemsInventoryCounter>::selector(), action_system_address
+                Model::<CharItemInventoryCounter>::selector(), action_system_address
             );
         world.grant_writer(Model::<BackpackGrids>::selector(), action_system_address);
         world.grant_writer(Model::<Characters>::selector(), action_system_address);
