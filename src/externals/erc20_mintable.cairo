@@ -8,7 +8,7 @@ const UPGRADER_ROLE: felt252 = selector!("UPGRADER_ROLE");
 pub mod MintableERC20Token {
     use openzeppelin_access::accesscontrol::{AccessControlComponent, DEFAULT_ADMIN_ROLE};
     use openzeppelin_introspection::src5::SRC5Component;
-    use openzeppelin_token::erc20::{ERC20Component, ERC20HooksEmptyImpl};
+    use openzeppelin_token::erc20::{ERC20Component, ERC20HooksEmptyImpl, DefaultConfig};
     use openzeppelin_upgrades::interface::IUpgradeable;
     use openzeppelin_upgrades::UpgradeableComponent;
     use starknet::{ClassHash, ContractAddress, get_caller_address};
@@ -30,6 +30,9 @@ pub mod MintableERC20Token {
     impl ERC20InternalImpl = ERC20Component::InternalImpl<ContractState>;
     impl AccessControlInternalImpl = AccessControlComponent::InternalImpl<ContractState>;
     impl UpgradeableInternalImpl = UpgradeableComponent::InternalImpl<ContractState>;
+
+    // ERC20 Config (18 decimals)
+    impl ERC20ImmutableConfig = DefaultConfig;
 
     #[storage]
     struct Storage {
