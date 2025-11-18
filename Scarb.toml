@@ -16,7 +16,6 @@ openzeppelin = { git = "https://github.com/openzeppelin/cairo-contracts", tag = 
 openzeppelin_access = { git = "https://github.com/openzeppelin/cairo-contracts", tag = "v2.0.0" }
 openzeppelin_upgrades = { git = "https://github.com/openzeppelin/cairo-contracts", tag = "v2.0.0" }
 openzeppelin_introspection = { git = "https://github.com/openzeppelin/cairo-contracts", tag = "v2.0.0" }
-openzeppelin_interfaces = { git = "https://github.com/openzeppelin/cairo-contracts", tag = "v2.0.0" }
 dojo = "=1.7.2"
 starknet = "2.12.2"
 

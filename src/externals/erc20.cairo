@@ -1,9 +1,9 @@
 #[starknet::contract]
 pub mod ERC20Token {
     use openzeppelin_access::ownable::OwnableComponent;
-    use openzeppelin_interfaces::upgrades::IUpgradeable;
-    use openzeppelin_token::erc20::{ERC20Component, ERC20HooksEmptyImpl};
+    use openzeppelin_upgrades::interface::IUpgradeable;
     use openzeppelin_upgrades::UpgradeableComponent;
+    use openzeppelin_token::erc20::{ERC20Component, ERC20HooksEmptyImpl};
     use starknet::{ClassHash, ContractAddress};
 
     component!(path: OwnableComponent, storage: ownable, event: OwnableEvent);
