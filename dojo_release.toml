@@ -16,10 +16,10 @@ telegram = ""
 default = "Warpacks"
 
 [env]
-rpc_url = ""
-# Default account for katana with seed = 0
-account_address = ""
-private_key = ""
+rpc_url = "https://starknet-sepolia.g.alchemy.com/starknet/version/rpc/v0_9/iOVGW3WTTEPV8_IPJI5X68y5_lMStBKN"
+# Your Sepolia account
+account_address = "YOUR_SEPOLIA_ACCOUNT_ADDRESS_HERE"
+private_key = "YOUR_PRIVATE_KEY_HERE"
 
 [writers]
 "Warpacks" = ["Warpacks-actions", "Warpacks-dummy_system", "Warpacks-fight_system", 
