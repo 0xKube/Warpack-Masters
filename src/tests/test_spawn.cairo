@@ -1,7 +1,7 @@
 #[cfg(test)]
 mod tests {
     use dojo::model::ModelStorage;
-    use dojo::world::WorldStorageTrait;
+    use dojo::world::{WorldStorageTrait, world};
     use dojo::world::storage::WorldStorage;
     use dojo_cairo_test::{
         ContractDef, ContractDefTrait, NamespaceDef, TestResource, WorldStorageTestTrait,
@@ -81,7 +81,7 @@ mod tests {
     #[available_gas(3000000000000000)]
     fn test_spawn() {
         let ndef = namespace_def();
-        let mut world = spawn_test_world([ndef].span());
+        let mut world = spawn_test_world(world::TEST_CLASS_HASH, [ndef].span());
         world.sync_perms_and_inits(contract_defs());
 
         let (contract_address, _) = world.dns(@"actions").unwrap();

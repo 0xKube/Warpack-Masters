@@ -23,3 +23,6 @@ starknet = "2.12.2"
 [dev-dependencies]
 cairo_test = "2.12.2"
 dojo_cairo_test = { git = "https://github.com/dojoengine/dojo.git", tag = "v1.7.1" }
+
+[tool.scarb]
+allow-prebuilt-plugins = ["dojo_cairo_macros"]
