@@ -23,4 +23,4 @@ echo "World: $WORLD_ADDRESS"
 echo "Token Factory: $TOKEN_FACTORY_ADDRESS"
 echo "---------------------------------------------------------------------------"
 
-sozo execute -P ${ENV} Warpacks-token_factory reigster_gold 0x034dc20ea98d615518c783f498869d08d260dffec86fdef9448bd04ff8482001 --wait --rpc-url $STARKNET_RPC_URL
+sozo execute -P ${ENV} Warpacks-token_factory reigster_gold 0x00a1c64e2d85db6b90a3a2c309b494aba992cffa1029856b4f9208395f409872 --wait --rpc-url $STARKNET_RPC_URL

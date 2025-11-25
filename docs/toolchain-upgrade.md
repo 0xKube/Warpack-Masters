@@ -37,7 +37,6 @@
 
 - **Economic model enforcement**
   - Minting, equipping, and unequipping flows do not currently validate fees or transfer tokens. Cairo 2.12/OZ 3.0 make integration with ERC20 dispatchers straightforward; the upgrade should embed payment verification at the system level.
-  - Gold is managed by an external ERC20 contract today; buying an item currently burns the entire amount. We need to adjust this to burn 85% of the payment and redirect a 15% fee to the treasury address.
 
 - **Operational safety**
   - No emergency pause or admin override exists. Upgrades should introduce owner/administrator roles capable of pausing systems and authorizing migrations to mitigate runtime incidents.
@@ -82,23 +81,16 @@
     - Replace every `use openzeppelin_token::erc20::interface::{IERC20Dispatcher, IERC20DispatcherTrait}` (and similar legacy paths) with `use openzeppelin_interfaces::erc20::{IERC20Dispatcher, IERC20DispatcherTrait}` in systems (`actions.cairo`, `shop.cairo`, `storage_bridge.cairo`) and tests (`test_rebirth.cairo`, `test_storage_bridge.cairo`, etc.). OpenZeppelin re-exports the ERC20 dispatchers at the root `erc20` module in `packages/interfaces/src/lib.cairo`; omitting the `token::` segment avoids unresolved-import build failures.
     - Update other legacy interface imports (for example `openzeppelin_upgrades::interface::IUpgradeable`) to the matching modules under `openzeppelin_interfaces::` (`openzeppelin_interfaces::upgrades::IUpgradeable`, etc.) before modifying business logic.
     - Ensure each external ERC20 contract imports `DefaultConfig`, `ERC20Component`, and `ERC20HooksEmptyImpl` from `openzeppelin_token::erc20`, wires the `ImmutableConfig` implementation expected by v3, and exposes SRC5 + Initializable mixins.
-    - After refactoring imports, run `scarb build` to confirm the dispatcher signatures resolve cleanly before adding treasury/fee logic.
+   - After refactoring imports, run `scarb build` to confirm the dispatcher signatures resolve cleanly before adding fee logic.
 
 4. **Access Control & Authorization**
    - Implement Starknet SRC5 compliance for all deployed contracts (world-facing systems and external ERC20s).  
      *Why required:* SRC5 is the Starknet-standard interface registry; without it, downstream tooling cannot query supported interfaces.
    - Add `#[dojo::authorization]` guards that validate fees, ownership, and roles before executing world mutations.  
      *Why required:* Prevents unauthorized minting/equipping and is essential for mainnet security.
-   - Introduce a single admin address (configurable constant) responsible for upgrade approvals, emergency pauses, and treasury management. Document how to rotate this address if governance moves to a multisig later.
+   - Introduce a single admin address (configurable constant) responsible for upgrade approvals and emergency pauses. Document how to rotate this address if governance moves to a multisig later.
 
-5. **Economic Safeguards** *(🚧 helpers landed; validation pending)*
-   - Integrated ERC20 fee collection into core systems via OZ v3 dispatchers and added a reusable `FeeBreakdown` helper set (`_compute_fee_split`, `_collect_gold_fee`, `_distribute_gold_fee`, `_treasury_address`).  
-     *Why required:* Enforces the economic model on-chain and protects treasury revenue.
-   - Persist the treasury destination explicitly (for example extend `GameConfig` with `treasury_address: ContractAddress` or introduce a dedicated `TreasuryConfig` component) and gate setters behind admin-only authorization.
-- Adjust the item-buy flow so that the external gold token burns 85% of the payment and routes the remaining 15% to the treasury address. Compute the split on the raw `u256` price before applying the 18-decimal multiplier, use floor division for the treasury share, and burn the remainder; document this rounding rule in tests so the economics stay predictable. (Helper scaffolding exists in `actions.cairo`; finalize once pointer migration is stable.)
-   - Centralize fee configuration and treasury addresses so they can be governed securely, and cover the 85/15 split plus treasury setter in regression tests.
-
-6. **Counter Logic Rewrite** *(🚧 blocked by pointer helpers)*
+5. **Counter Logic Rewrite** *(🚧 blocked by pointer helpers)*
    - After pointer utilities exist, rework counter loops to iterate using pointer reads and to update counts via `write_member` instead of snapshot mutation.
    - Update shared utilities (`utils/test_utils`) to centralize safe increment/decrement helpers.
 
@@ -125,4 +117,3 @@
 - Update tests and helper functions to consume pointer-based reads/writes; retire direct snapshot mutation.
 - Once pointer migration passes `scarb build`, resume SRC5/authorization and economics tasks, followed by end-to-end test coverage.
 - Schedule frontend alignment before deployment to confirm selector changes and world schema stability.
-

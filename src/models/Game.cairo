@@ -6,5 +6,4 @@ pub struct GameConfig {
     #[key]
     pub id: felt252,
     pub strk_address: ContractAddress,
-    pub treasury_address: ContractAddress,
 }

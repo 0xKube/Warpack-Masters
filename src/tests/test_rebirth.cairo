@@ -86,7 +86,6 @@ mod tests {
             @GameConfig {
                 id: GAME_CONFIG_ID,
                 strk_address: erc20_address,
-                treasury_address: warpack_masters::utils::address::zero_address(),
             },
         );
 
@@ -349,7 +348,6 @@ mod tests {
             @GameConfig {
                 id: GAME_CONFIG_ID,
                 strk_address: erc20_address,
-                treasury_address: warpack_masters::utils::address::zero_address(),
             },
         );
 
@@ -404,7 +402,6 @@ mod tests {
             @GameConfig {
                 id: GAME_CONFIG_ID,
                 strk_address: erc20_address,
-                treasury_address: warpack_masters::utils::address::zero_address(),
             },
         );
 
@@ -434,4 +431,3 @@ mod tests {
         assert(nameRecord.player == alice, 'player should be alice');
     }
 }
-

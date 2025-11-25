@@ -28,11 +28,10 @@ mod actions {
     use core::array::{Array, ArrayTrait, SpanTrait};
     use core::bytes_31::bytes31;
     use core::dict::Felt252Dict;
-    use dojo::array::ArrayTraitExt;
     use core::traits::TryInto;
     use dojo::event::EventStorage;
     use dojo::model::ModelStorage;
-    use dojo::world::{WorldDispatcherTrait, WorldStorageTrait};
+    use dojo::world::{IWorldDispatcher, IWorldDispatcherTrait};
     use openzeppelin_interfaces::erc20::{IERC20Dispatcher, IERC20DispatcherTrait};
     use starknet::{ContractAddress, get_block_timestamp, get_caller_address};
     use warpack_masters::constants::constants::{
@@ -51,10 +50,8 @@ mod actions {
     use warpack_masters::models::Game::GameConfig;
     use warpack_masters::models::Item::Item;
     use warpack_masters::models::Recipe::RecipeV2;
-    use warpack_masters::models::Shop::Shop;
     use warpack_masters::models::TokenRegistry::TokenRegistry;
     use warpack_masters::models::backpack::BackpackGrids;
-    use warpack_masters::utils::address::zero_address;
     use warpack_masters::utils::storage_pointers as ptrs;
     use super::{IActions, WMClass};
 
@@ -80,13 +77,6 @@ mod actions {
         birthCount: u32,
     }
 
-    #[derive(Copy, Drop)]
-    struct FeeBreakdown {
-        total: u256,
-        burn: u256,
-        treasury: u256,
-    }
-
     #[abi(embed_v0)]
     impl ActionsImpl of IActions<ContractState> {
         fn spawn(ref self: ContractState, name: felt252, wmClass: WMClass) {
@@ -105,7 +95,6 @@ mod actions {
             }
             assert(len <= 12 && len >= 3, 'name size is invalid');
 
-            let name_ptr = ptrs::character_name(name);
             let nameRecord: CharacterName = world.read_model((name,));
             let zero_address: ContractAddress = 0.try_into().unwrap();
             assert(
@@ -113,7 +102,7 @@ mod actions {
                 'name already exists',
             );
 
-            world.write_member(name_ptr, selector!("player"), player);
+            world.write_model(@CharacterName { name, player });
 
             let player_exists: Character = world.read_model(player);
             assert(player_exists.name == '', 'player already exists');
@@ -125,13 +114,10 @@ mod actions {
             let item: Item = world.read_model(Pack::id);
             assert(item.itemType == 4, 'Invalid item type');
 
-            let storage_item_one_ptr = ptrs::storage_item(player, 1);
-            let storage_item_two_ptr = ptrs::storage_item(player, 2);
-            let storage_counter_ptr = ptrs::storage_counter(player);
-
-            world.write_member(storage_item_one_ptr, selector!("itemId"), Backpack::id);
-            world.write_member(storage_item_two_ptr, selector!("itemId"), Pack::id);
-            world.write_member(storage_counter_ptr, selector!("count"), 2);
+            world.write_model(@StorageItem { player, id: 1, itemId: Backpack::id });
+            world.write_model(@StorageItem { player, id: 2, itemId: Pack::id });
+            world.write_model(@StorageCounter { player, count: 2 });
+            world.write_model(@InventoryCounter { player, count: 0 });
 
             self.move_item_from_storage_to_inventory(1, 4, 2, 0);
             self.move_item_from_storage_to_inventory(2, 2, 2, 0);
@@ -146,20 +132,23 @@ mod actions {
             self._mint_gold(player, INIT_GOLD.into() + 1);
 
             // add one gold for reroll shop
-            let character_ptr = ptrs::character(player);
-            world.write_member(character_ptr, selector!("name"), name);
-            world.write_member(character_ptr, selector!("wmClass"), wmClass);
-            world.write_member(character_ptr, selector!("gold"), 0);
-            world.write_member(character_ptr, selector!("health"), INIT_HEALTH);
-            world.write_member(character_ptr, selector!("wins"), 0);
-            world.write_member(character_ptr, selector!("loss"), 0);
-            world.write_member(character_ptr, selector!("rating"), prev_rating);
-            world.write_member(character_ptr, selector!("totalWins"), prev_total_wins);
-            world.write_member(character_ptr, selector!("totalLoss"), prev_total_loss);
-            world.write_member(character_ptr, selector!("winStreak"), 0);
-            world.write_member(character_ptr, selector!("birthCount"), prev_birth_count + 1);
-            world.write_member(character_ptr, selector!("stamina"), INIT_STAMINA);
-            world.write_member(character_ptr, selector!("updatedAt"), updatedAt);
+            let character = Character {
+                player,
+                name,
+                wmClass,
+                gold: 0,
+                health: INIT_HEALTH,
+                wins: 0,
+                loss: 0,
+                rating: prev_rating,
+                totalWins: prev_total_wins,
+                totalLoss: prev_total_loss,
+                winStreak: 0,
+                stamina: INIT_STAMINA,
+                birthCount: prev_birth_count + 1,
+                updatedAt,
+            };
+            world.write_model(@character);
         }
 
         fn rebirth(ref self: ContractState) {
@@ -199,7 +188,7 @@ mod actions {
                 world.write_member(item_ptr, selector!("itemId"), 0);
                 world.write_member(item_ptr, selector!("position"), Position { x: 0, y: 0 });
                 world.write_member(item_ptr, selector!("rotation"), 0);
-                world.write_member(item_ptr, selector!("plugins"), ArrayTrait::new());
+                world.write_member(item_ptr, selector!("plugins"), ArrayTrait::<(u8, u32, u32)>::new());
 
                 count -= 1;
             }
@@ -274,7 +263,7 @@ mod actions {
             let mut world = self.world(@"Warpacks");
 
             let caller = get_caller_address();
-            assert(world.is_owner(0, caller), 'caller not world owner');
+            assert(world.dispatcher.is_owner(0, caller), 'caller not world owner');
 
             let gameConfig: GameConfig = world.read_model(GAME_CONFIG_ID);
             let STRK_ADDRESS: ContractAddress = gameConfig.strk_address;
@@ -532,8 +521,8 @@ mod actions {
                                             break;
                                         }
                                         let current = plugins.span().at(idx);
-                                        if current != (item.effectType, item.chance, item.effectStacks) {
-                                            filtered.append(current);
+                                        if *current != (item.effectType, item.chance, item.effectStacks) {
+                                            filtered.append(*current);
                                         }
                                         idx += 1;
                                     }
@@ -555,8 +544,8 @@ mod actions {
                                             break;
                                         }
                                         let current = plugins.span().at(idx);
-                                        if current != (item.effectType, item.chance, item.effectStacks) {
-                                            filtered.append(current);
+                                        if *current != (item.effectType, item.chance, item.effectStacks) {
+                                            filtered.append(*current);
                                         }
                                         idx += 1;
                                     }
@@ -578,8 +567,8 @@ mod actions {
                                             break;
                                         }
                                         let current = plugins.span().at(idx);
-                                        if current != (item.effectType, item.chance, item.effectStacks) {
-                                            filtered.append(current);
+                                        if *current != (item.effectType, item.chance, item.effectStacks) {
+                                            filtered.append(*current);
                                         }
                                         idx += 1;
                                     }
@@ -601,8 +590,8 @@ mod actions {
                                             break;
                                         }
                                         let current = plugins.span().at(idx);
-                                        if current != (item.effectType, item.chance, item.effectStacks) {
-                                            filtered.append(current);
+                                        if *current != (item.effectType, item.chance, item.effectStacks) {
+                                            filtered.append(*current);
                                         }
                                         idx += 1;
                                     }
@@ -621,7 +610,7 @@ mod actions {
             world.write_member(inventory_item_ptr, selector!("itemId"), 0);
             world.write_member(inventory_item_ptr, selector!("position"), Position { x: 0, y: 0 });
             world.write_member(inventory_item_ptr, selector!("rotation"), 0);
-            world.write_member(inventory_item_ptr, selector!("plugins"), ArrayTrait::new());
+            world.write_member(inventory_item_ptr, selector!("plugins"), ArrayTrait::<(u8, u32, u32)>::new());
 
             itemId
         }
@@ -672,6 +661,16 @@ mod actions {
                 let new_count = current_count + 1;
                 world.write_member(inventory_counter_ptr, selector!("count"), new_count);
                 slot = new_count;
+
+                let empty_item = InventoryItem {
+                    player,
+                    id: slot,
+                    itemId: 0,
+                    position: Position { x: 0, y: 0 },
+                    rotation: 0,
+                    plugins: ArrayTrait::new(),
+                };
+                world.write_model(@empty_item);
             }
 
             let inventory_item_ptr = ptrs::inventory_item(player, slot);
@@ -893,9 +892,9 @@ mod actions {
             // assert(player_char.gold >= item.price, 'Not enough gold');
             // player_char.gold -= item.price;
 
-            let fee_config = self._compute_fee_split(item.price);
-            self._collect_gold_fee(player, fee_config.total);
-            self._distribute_gold_fee(fee_config);
+            let price_amount: u256 = item.price.into();
+            self._collect_gold_fee(player, price_amount);
+            self._burn_gold(price_amount);
 
             //delete respective item bought from the shop
             if shop_item1 == item_id {
@@ -1032,49 +1031,5 @@ mod actions {
                 .transfer_from(player, starknet::get_contract_address(), token_amount);
         }
 
-        fn _distribute_gold_fee(ref self: ContractState, breakdown: FeeBreakdown) {
-            let mut world = self.world(@"Warpacks");
-
-            let registry: TokenRegistry = world.read_model(GOLD_ITEM_ID);
-            assert(
-                registry.token_address != warpack_masters::utils::address::zero_address(),
-                'Token not registered',
-            );
-            assert(registry.is_active, 'Token not active');
-
-            let token_amount = breakdown.burn * 1_000_000_000_000_000_000;
-            let token_contract = IERC20MINTABLEDispatcher {
-                contract_address: registry.token_address,
-            };
-            if token_amount > 0 {
-                token_contract.burn(token_amount);
-            }
-
-            if breakdown.treasury > 0 {
-                let treasury_amount = breakdown.treasury * 1_000_000_000_000_000_000;
-                IERC20Dispatcher { contract_address: registry.token_address }
-                    .transfer(self._treasury_address(), treasury_amount);
-            }
-        }
-
-        fn _compute_fee_split(ref self: ContractState, price: u32) -> FeeBreakdown {
-            let total_raw: u128 = price.into();
-            let treasury_raw: u128 = (total_raw * 15_u128) / 100_u128;
-            let burn_raw: u128 = total_raw - treasury_raw;
-
-            FeeBreakdown {
-                total: total_raw.into(),
-                burn: burn_raw.into(),
-                treasury: treasury_raw.into(),
-            }
-        }
-
-        fn _treasury_address(ref self: ContractState) -> ContractAddress {
-            let mut world = self.world(@"Warpacks");
-            let game_config: GameConfig = world.read_model(GAME_CONFIG_ID);
-            let treasury = game_config.treasury_address;
-            assert(treasury != zero_address(), 'treasury not configured');
-            treasury
-        }
     }
 }

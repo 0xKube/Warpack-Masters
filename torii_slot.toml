@@ -1,0 +1,21 @@
+world_address = "0xd622721bcdf3816ae358da7e46bd804f51f72908cbb348cd78484c6cabed56"
+rpc = "https://api.cartridge.gg/x/starknet/sepolia"
+
+[indexing]
+preconfirmed = true
+namespaces = ["Warpacks"]
+external_contracts = true
+
+[server]
+http_addr = "0.0.0.0"
+http_port = 8080
+http_cors_origins = ["*"]
+
+[relay]
+port = 9090
+webrtc_port = 9091
+websocket_port = 9092
+
+[grpc]
+grpc_addr = "0.0.0.0"
+grpc_port = 50051

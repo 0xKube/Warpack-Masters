@@ -133,18 +133,16 @@ pub mod storage_bridge {
                 let existing_id: u32 = world.read_member(storage_item_ptr, selector!("itemId"));
                 if existing_id == 0 {
                     world.write_member(storage_item_ptr, selector!("itemId"), item_id);
-                    break;
+                    return;
                 }
 
                 slot -= 1;
             }
 
-            if slot == 0 {
-                let new_count = current_count + 1;
-                world.write_member(storage_counter_ptr, selector!("count"), new_count);
-                let new_item_ptr = ptrs::storage_item(player, new_count);
-                world.write_member(new_item_ptr, selector!("itemId"), item_id);
-            }
+            let new_count = current_count + 1;
+            world.write_member(storage_counter_ptr, selector!("count"), new_count);
+
+            world.write_model(@StorageItem { player, id: new_count, itemId: item_id });
         }
     }
 }

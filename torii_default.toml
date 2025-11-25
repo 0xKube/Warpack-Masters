@@ -1,0 +1,101 @@
+world_address = "0xd622721bcdf3816ae358da7e46bd804f51f72908cbb348cd78484c6cabed56"
+rpc = "https://api.cartridge.gg/x/starknet/sepolia"
+
+[runner]
+explorer = false
+check_contracts = false
+query_threads = 0
+indexer_threads = 0
+allocation_strategy = "adaptive"
+
+[indexing]
+events_chunk_size = 1024
+blocks_chunk_size = 10240
+preconfirmed = true
+polling_interval = 500
+max_concurrent_tasks = 100
+transactions = false
+contracts = []
+namespaces = []
+models = []
+world_block = 0
+controllers = false
+strict_model_reader = false
+batch_chunk_size = 1024
+external_contracts = true
+external_contract_whitelist = []
+
+[events]
+raw = false
+
+[erc]
+max_metadata_tasks = 100
+token_attributes = true
+trait_counts = false
+metadata_updates = true
+metadata_update_whitelist = []
+metadata_update_blacklist = []
+
+[sql]
+all_model_indices = false
+model_indices = []
+historical = []
+page_size = 4096
+cache_size = -500000
+hooks = []
+aggregators = []
+wal_autocheckpoint = 10000
+wal_truncate_size_threshold = 104857600
+optimize_interval = 3600
+busy_timeout = 60000
+acquire_timeout = 30000
+idle_timeout = 600000
+max_connections = 100
+soft_memory_limit = 1073741824
+hard_memory_limit = 0
+shared_cache = false
+temp_store = "file"
+mmap_size = 268435456
+journal_size_limit = 67108864
+
+[activity]
+enabled = false
+session_timeout = 3600
+excluded_entrypoints = []
+
+[achievement]
+registration_model_name = "TrophyCreation"
+progression_model_name = "TrophyProgression"
+
+[snapshot]
+
+[metrics]
+metrics = false
+metrics_addr = "127.0.0.1"
+metrics_port = 9200
+
+[server]
+http_addr = "127.0.0.1"
+http_port = 8080
+mkcert = false
+
+[relay]
+port = 9090
+webrtc_port = 9091
+websocket_port = 9092
+peers = []
+
+[grpc]
+grpc_addr = "127.0.0.1"
+grpc_port = 50051
+subscription_buffer_size = 256
+optimistic = false
+tcp_keepalive_interval = 60
+http2_keepalive_interval = 30
+http2_keepalive_timeout = 10
+max_message_size = 16777216
+
+[messaging]
+max_age = 300000
+future_tolerance = 60000
+require_timestamp = false

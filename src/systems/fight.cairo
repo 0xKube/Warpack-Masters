@@ -38,11 +38,11 @@ mod fight_system {
 
             let player = get_caller_address();
 
-            let mut char: Characters = world.read_model(player);
+            let mut character: Character = world.read_model(player);
 
-            assert(char.loss < 5, 'max loss reached');
+            assert(character.loss < 5, 'max loss reached');
 
-            let dummyCharCounter: DummyCharacterCounter = world.read_model(char.wins);
+            let dummyCharCounter: DummyCharacterCounter = world.read_model(character.wins);
             assert(dummyCharCounter.count > 0, 'no dummy created');
 
             let mut battleLogCounter: BattleLogCounter = world.read_model(player);
@@ -161,7 +161,7 @@ mod fight_system {
             }
 
             let dummyCharItemsCounter: DummyCharacterItemsCounter = world
-                .read_model((char.wins, dummy_index));
+                .read_model((character.wins, dummy_index));
 
             let mut dummy_item_count = dummyCharItemsCounter.count;
             loop {
@@ -170,7 +170,7 @@ mod fight_system {
                 }
 
                 let dummy_item: DummyCharacterItem = world
-                    .read_model((char.wins, dummy_index, dummy_item_count));
+                    .read_model((character.wins, dummy_index, dummy_item_count));
 
                 let item: Item = world.read_model(dummy_item.itemId);
                 if item.itemType == 4 {
@@ -241,7 +241,7 @@ mod fight_system {
             let battleLog = BattleLog {
                 player: player,
                 id: battleLogCounter.count,
-                dummyLevel: char.wins,
+                dummyLevel: character.wins,
                 dummyCharId: dummy_index,
                 sorted_items: sorted_items.span(),
                 items_length: items_length,
@@ -270,7 +270,7 @@ mod fight_system {
 
             let player = get_caller_address();
 
-            let mut char: Characters = world.read_model(player);
+            let mut character: Character = world.read_model(player);
 
             let battleLogCounter: BattleLogCounter = world.read_model(player);
 
@@ -281,13 +281,13 @@ mod fight_system {
             assert(battleLogCounterCount != 0 && battleLog.winner == 0, 'no new match found');
 
             let dummy_index = battleLog.dummyCharId;
-            let mut dummyChar: DummyCharacter = world.read_model((char.wins, dummy_index));
+            let mut dummyChar: DummyCharacter = world.read_model((character.wins, dummy_index));
 
-            let player_health_flag: u32 = char.health;
+            let player_health_flag: u32 = character.health;
             let player_buffs = battleLog.player_buffs;
             let mut playerStatus = CharStatus {
-                hp: char.health,
-                stamina: char.stamina,
+                hp: character.health,
+                stamina: character.stamina,
                 armor: *player_buffs.at(0),
                 regen: *player_buffs.at(1),
                 reflect: *player_buffs.at(2),
@@ -732,30 +732,30 @@ mod fight_system {
             world.write_model(@battleLog);
 
             if winner == PLAYER {
-                char.wins += 1;
-                char.totalWins += 1;
-                char.winStreak += 1;
-                // char.gold += 5;
-                if char.wins < 5 {
-                    char.health += 10;
-                } else if char.wins == 5 {
-                    char.health += 15;
+                character.wins += 1;
+                character.totalWins += 1;
+                character.winStreak += 1;
+                // character.gold += 5;
+                if character.wins < 5 {
+                    character.health += 10;
+                } else if character.wins == 5 {
+                    character.health += 15;
                 }
 
                 let base_rating = 25;
                 let mut bonus_rating = 0;
 
-                if char.winStreak >= 2 && char.winStreak < 5 {
+                if character.winStreak >= 2 && character.winStreak < 5 {
                     bonus_rating = 15;
-                } else if char.winStreak >= 5 && char.winStreak < 10 {
+                } else if character.winStreak >= 5 && character.winStreak < 10 {
                     bonus_rating = 35;
-                } else if char.winStreak >= 10 && char.winStreak < 20 {
+                } else if character.winStreak >= 10 && character.winStreak < 20 {
                     bonus_rating = 50;
-                } else if char.winStreak >= 20 {
+                } else if character.winStreak >= 20 {
                     bonus_rating = 75;
                 }
 
-                char.rating += base_rating + bonus_rating;
+                character.rating += base_rating + bonus_rating;
 
                 if (dummyChar.rating < 10) {
                     dummyChar.rating = 0;
@@ -765,23 +765,23 @@ mod fight_system {
 
                 self._mint_gold(player, 5)
             } else {
-                char.loss += 1;
-                char.totalLoss += 1;
-                char.winStreak = 0;
-                // char.gold += 2;
+                character.loss += 1;
+                character.totalLoss += 1;
+                character.winStreak = 0;
+                // character.gold += 2;
 
                 dummyChar.rating += 25;
 
-                if (char.rating < 10) {
-                    char.rating = 0;
+                if (character.rating < 10) {
+                    character.rating = 0;
                 } else {
-                    char.rating -= 10;
+                    character.rating -= 10;
                 }
 
                 self._mint_gold(player, 2)
             }
-            char.updatedAt = get_block_timestamp();
-            world.write_model(@char);
+            character.updatedAt = get_block_timestamp();
+            world.write_model(@character);
             world.write_model(@dummyChar);
         }
     }
