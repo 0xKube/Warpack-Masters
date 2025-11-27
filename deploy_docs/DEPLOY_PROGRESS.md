@@ -1,3 +1,5 @@
+WARNING: Legacy запись для старого мира `0xd622...` (до ноябрьского редеплоя). Актуальные шаги и адреса смотрите в `DEPLOY_PROGRESS_2.md` / `COMPLETE_DEPLOY_PROCESS.md`. Фронт/Torii с этими командами дадут `Player already exists`/connection refused, если не переключить env на новый мир.
+
 ## Что сделано
 
 1. Добавил пин `starknet-foundry 0.52.0` в `.tool-versions` и через `asdf install` поставил свежий Foundry, чтобы получить `sncast` с поддержкой RPC 0.9. Старая 0.48.1 дергала несовместимые RPC и ловила `Invalid block id`.
@@ -119,5 +121,5 @@ sncast --wait --accounts-file sncast_accounts_manual.json --account deployer inv
    grpc_addr = "0.0.0.0"
    grpc_port = 50051
    ```
-3. Деплой: `slot deployments create warpack-masters torii -c torii_slot.toml`. Slot поднял Torii v1.8.9 (basic tier) по адресу `https://api.cartridge.gg/x/warpack-masters/torii/graphql`.
+3. Деплой: `slot deployments create warpack-masters torii -c torii_slot.toml`. Slot поднял Torii v1.8.9 (basic tier) по адресу `https://api.cartridge.gg/x/warpack-masters/torii/graphql` (после редеплоя мира обновляйте `torii_slot.toml`, запускайте `slot deployments update ...`, и копируйте свежий `manifest_release.json` в фронт).
 4. Мониторинг: `slot deployments logs warpack-masters torii -f`. Обновления/перезапуски — через `slot deployments update ...` с тем же конфигом.

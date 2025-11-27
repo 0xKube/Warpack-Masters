@@ -964,8 +964,8 @@ mod actions {
                 let ptr = ptrs::storage_item(player, slot);
                 let current_item_id: u32 = world.read_member(ptr, selector!("itemId"));
                 if current_item_id == 0 {
-                    world.write_member(ptr, selector!("itemId"), item_id);
-                    break;
+                    world.write_model(@StorageItem { player, id: slot, itemId: item_id });
+                    return;
                 }
 
                 slot -= 1;
@@ -974,8 +974,7 @@ mod actions {
             if slot == 0 {
                 let new_count = storage_count + 1;
                 world.write_member(storage_counter_ptr, selector!("count"), new_count);
-                let new_item_ptr = ptrs::storage_item(player, new_count);
-                world.write_member(new_item_ptr, selector!("itemId"), item_id);
+                world.write_model(@StorageItem { player, id: new_count, itemId: item_id });
             }
         }
 

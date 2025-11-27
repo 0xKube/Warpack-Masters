@@ -1,17 +1,17 @@
 # Complete Deployment Process Documentation
 
-This document outlines the step-by-step process undertaken to deploy the "Warpack Masters" Dojo world to Starknet Sepolia. It reflects the actions taken, challenges encountered, and the logical workflow derived from the deployment session.
+This document outlines the step-by-step process to deploy the "Warpack Masters" Dojo world to Starknet Sepolia. It reflects the latest (Nov 2025) deployment to the new world address.
 
 ## 1. Prerequisites & Environment Setup
 
 Before deployment, the following environment variables and tools were configured:
 
-*   **Tools**: `sozo` (Dojo toolchain), `scarb` (Cairo package manager), `starkli` (Starknet CLI).
+*   **Tools**: `sozo` (Dojo toolchain), `scarb` (Cairo package manager).
 *   **Configuration Files**:
-    *   `Scarb.toml`: Verified dependencies (Dojo v1.7.1, Cairo v2.12.2).
+    *   `Scarb.toml`: Dojo v1.8.0, Cairo/scarb v2.13.1.
     *   `dojo_release.toml`: Configured for the `release` profile with Sepolia RPC and account credentials.
 *   **Environment Variables**:
-    *   `STARKNET_RPC`: Set to Alchemy/BlastAPI/Lava/DRPC endpoints (troubleshooting involved switching these).
+    *   `STARKNET_RPC`: `https://starknet-sepolia.g.alchemy.com/starknet/version/rpc/v0_9/iOVGW3WTTEPV8_IPJI5X68y5_lMStBKN`.
     *   `STARKNET_ACCOUNT`: Path to `account.json`.
     *   `STARKNET_PRIVATE_KEY`: The deployer's private key.
 
@@ -20,59 +20,89 @@ Before deployment, the following environment variables and tools were configured
 The core Dojo world deployment was handled by the `sozo` toolchain.
 
 ### Steps:
-1.  **Build the Project**:
+1.  **Build the Project** (with local caches to avoid $HOME perms):
     ```bash
-    sozo build --profile release
+    SCARB_CACHE=.scarb_cache SCARB_CONFIG=.scarb_config SCARB_TARGET_DIR=target \
+      sozo build --profile release
     ```
     This compiled the Cairo contracts into Sierra artifacts in `target/release`.
 
-2.  **Migrate to Sepolia**:
+2.  **Migrate to Sepolia** (blake2s class hash for Sepolia):
     ```bash
-    sozo migrate --profile release
+    SCARB_CACHE=.scarb_cache SCARB_CONFIG=.scarb_config SCARB_TARGET_DIR=target \
+      sozo migrate --profile release --wait --use-blake2s-casm-class-hash
     ```
-    *   **Process**: This command calculated the world diff, declared necessary classes, and deployed/updated the World contract and its systems.
-    *   **Outcome**: Successful. The `manifest_release.json` file was updated with the deployed contract addresses.
+    *   **Outcome**: Successful. `manifest_release.json` updated (скопировать в фронт при деплое).
+    *   **World Address**: `0x07c7e6cbe015e7a1ee77c4e29b859894c8eae03ac1ff69361df6bd8c262c9d47`.
 
 ## 3. Post-Deployment Setup (Gold Token & Wiring)
 
-After the world was deployed, the external "Gold" ERC20 token needed to be deployed and registered within the game systems. This phase involved significant troubleshooting.
+After world deployment, Gold ERC20 was declared, deployed, and wired with sozo 1.8.2 (no starkli needed):
 
-### Objectives:
-1.  Deploy `MintableERC20Token` (Gold).
-2.  Grant `MINTER_ROLE` to `fight_system` and `actions` contracts.
-3.  Register the Gold token in the `token_factory`.
+1. **Declare**:
+   ```bash
+   SCARB_CACHE=.scarb_cache SCARB_CONFIG=.scarb_config SCARB_TARGET_DIR=target \
+     sozo declare --profile release --wait --use-blake2s-casm-class-hash \
+       --account-address <DEPLOYER> --private-key <PK> \
+       --rpc-url <RPC> target/release/warpack_masters_MintableERC20Token.contract_class.json
+   ```
+   Class hash: `0x053f5b433645cbd46405fd90e2855902361fee093dd8031cba1e8464ab15a4a1`.
 
-### Attempted Workflows:
+2. **Deploy**:
+   ```bash
+   sozo deploy --profile release --wait --use-blake2s-casm-class-hash \
+     --account-address <DEPLOYER> --private-key <PK> --rpc-url <RPC> \
+     0x053f5b433645cbd46405fd90e2855902361fee093dd8031cba1e8464ab15a4a1 \
+     --constructor-calldata str:Gold str:gold <DEPLOYER> <DEPLOYER> <DEPLOYER>
+   ```
+   Gold address: `0x0689731c6c6df7798e601d730f18a0eae7f9a138f9ac9c54d27d94b423b29eca`.
 
-#### Approach A: Manual Deployment via `starkli` (Initial Plan)
-We attempted to use a shell script (`setup_contracts_starkli.sh`) to orchestrate the setup.
-1.  **Extract Addresses**: Parsed `manifest_release.json` to get addresses for `actions`, `fight_system`, and `token_factory`.
-2.  **Declare Class**: Tried to declare `MintableERC20Token` using `starkli declare`.
-    *   **Issue**: Encountered persistent `JSON-RPC error: code=-32602, message="Invalid params", data={"reason":"Invalid block id"}`.
-    *   **Troubleshooting**: Switched RPC providers (Alchemy -> BlastAPI -> Lava -> DRPC). The error persisted across all providers, indicating a likely incompatibility between the local `starkli` version and the RPC nodes.
+3. **Register in token_factory**:
+   ```bash
+   sozo execute --profile release --wait --use-blake2s-casm-class-hash \
+     --account-address <DEPLOYER> --private-key <PK> --rpc-url <RPC> \
+     Warpacks-token_factory reigster_gold 0x0689731c6c6df7798e601d730f18a0eae7f9a138f9ac9c54d27d94b423b29eca
+   ```
 
-#### Approach B: Deployment via `sozo execute` (Alternative Strategy)
-To bypass `starkli` issues, we pivoted to using `sozo` to leverage the `token_factory` contract's logic.
-1.  **Logic**: The `token_factory` contract has a `create_gold_token` function that can deploy the token internally using `deploy_syscall`.
-2.  **Requirement**: The `MintableERC20Token` class hash must be passed to this function.
-3.  **Action**: Calculated the class hash using `starkli class-hash`:
-    *   Hash: `0x072313c5be9b40fd661ed143cf1036606cb2fd1839c545ac1a52bedf4781af6f`
-4.  **Execution**:
-    ```bash
-    sozo --profile release execute Warpacks-token_factory create_gold_token <ADMIN> <MINTER> <UPGRADER> <CLASS_HASH>
-    ```
-    *   **Outcome**: Failed with `Class with hash ... is not declared`.
-    *   **Root Cause**: `deploy_syscall` requires the class to be declared on Starknet first. Since `starkli declare` failed (Approach A), the class was never declared.
+4. **Grant MINTER_ROLE** (`0x032df0fed2c77648de5860a4cc508cd0818c85b8b8a1ab4ceeef8d981c8956a6`) to the systems that call `mint` (fight_system, actions), otherwise spawn/combat rewards will revert with `Caller is missing role`. Fast path:
+   ```bash
+   STARKNET_RPC_URL=<RPC> scripts/init_register_gold.sh release 0x0689731c6c6df7798e601d730f18a0eae7f9a138f9ac9c54d27d94b423b29eca
+   ```
+   The script reads `manifest_release.json`, registers Gold in token_factory, and grants MINTER_ROLE to both systems. Manual alternative if needed:
+   ```bash
+   sozo execute ... <GoldAddress> grant_role <MINTER_ROLE> <fight_system_address>
+   sozo execute ... <GoldAddress> grant_role <MINTER_ROLE> <actions_address>
+   ```
+   - fight_system: `0x1e9c91163b28a0cf2ebeb8311df4f57f7788b8f9bc10707d8f5243df57d97ea`
+   - actions: `0x6cf6450c132752fbf3ace05d82f5d61fac097a6f62d0abd0b2b04a204ac16e6`
 
-### Final Resolution Path
-The deployment process requires a working method to declare the `MintableERC20Token` class. Since `starkli` was failing, the working solution involves:
-1.  **Declare the Class**: Use a compatible tool (e.g., `sncast` or a compatible `starkli` version) to declare `target/release/warpack_masters_MintableERC20Token.contract_class.json`.
-2.  **Deploy & Register**: Once declared, either:
-    *   Call `token_factory.create_gold_token` via `sozo execute` (cleanest method).
-    *   OR manually deploy via `sncast`/`starkli` and then call `token_factory.reigster_gold`.
+## 4b. Seed game data (items + dummies)
+
+After wiring Gold, seed baseline data; otherwise spawn/fight flows will miss items/dummy targets:
+```bash
+STARKNET_RPC_URL=<RPC> scripts/init_batch_add_items.sh release          # items catalog
+STARKNET_RPC_URL=<RPC> scripts/init_pre_dummies.sh release              # predefined dummy opponents
+```
+Both scripts read addresses from `manifest_release.json`.
 
 ## 4. Summary of Deployed Components
 
-*   **World Address**: `0xd622721bcdf3816ae358da7e46bd804f51f72908cbb348cd78484c6cabed56`
-*   **Systems**: Deployed and registered in the world (e.g., `actions`, `fight_system`).
-*   **Gold Token**: Requires manual declaration and deployment as a post-migration step.
+*   **World Address**: `0x07c7e6cbe015e7a1ee77c4e29b859894c8eae03ac1ff69361df6bd8c262c9d47`
+*   **Key system addresses** (from `manifest_release.json`):
+    - actions: `0x6cf6450c132752fbf3ace05d82f5d61fac097a6f62d0abd0b2b04a204ac16e6`
+    - fight_system: `0x1e9c91163b28a0cf2ebeb8311df4f57f7788b8f9bc10707d8f5243df57d97ea`
+    - token_factory: `0x1bf08ba7685ca7dd87c12375ada60ed042fb90c1ef5b33c354c7134734c6605`
+*   **Gold Token**: Class `0x053f5b433645cbd46405fd90e2855902361fee093dd8031cba1e8464ab15a4a1`, address `0x0689731c6c6df7798e601d730f18a0eae7f9a138f9ac9c54d27d94b423b29eca`.
+*   **Torii (Cartridge Slot)**: Config `torii_slot.toml` uses new world and RPC; deployed via `slot deployments update warpack-masters torii --config torii_slot.toml`. GraphQL: `https://api.cartridge.gg/x/warpack-masters/torii/graphql`.
+
+## Frontend wiring & pitfalls
+
+*   Env for the new world:  
+    `NEXT_PUBLIC_RPC_URL=https://api.cartridge.gg/x/starknet/sepolia`  
+    `NEXT_PUBLIC_GRAPHQL_URL=https://api.cartridge.gg/x/warpack-masters/torii/graphql`  
+    `NEXT_PUBLIC_WORLD_ADDRESS=0x07c7e6cbe015e7a1ee77c4e29b859894c8eae03ac1ff69361df6bd8c262c9d47`  
+    `NEXT_PUBLIC_CARTRIDGE_SLOT=warpack-masters`  
+    `NEXT_PUBLIC_CARTRIDGE_NAMESPACE=Warpacks`
+*   **Обязательно копируйте свежий `manifest_release.json` в фронт** после каждой миграции, иначе адреса систем/моделей не совпадут с Torii.
+*   Ошибка `can't reach deployment ... torii.ext-warpack-masters.svc...` возникает, если фронт смотрит на старый Torii. После `slot deployments delete warpack-masters torii -f` и `slot deployments create ...` новый endpoint: `https://api.cartridge.gg/x/warpack-masters/torii/graphql`.
+*   Сообщение `Player already exists` воспроизводилось, когда фронт был на старом мире `0xd622...` с уже созданным игроком. При использовании env/manifest выше (новый мир `0x07c7...d47`) спавн работает.

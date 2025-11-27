@@ -3,6 +3,8 @@ target
 abis/
 manifests/
 bindings/
+.scarb_cache/
+.scarb_config/
 
 node_modules/
 
