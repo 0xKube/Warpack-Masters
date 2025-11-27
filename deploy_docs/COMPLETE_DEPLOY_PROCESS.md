@@ -85,6 +85,12 @@ STARKNET_RPC_URL=<RPC> scripts/init_pre_dummies.sh release              # predef
 ```
 Both scripts read addresses from `manifest_release.json`.
 
+Optional, if you need crafting/token plumbing in this environment:
+```bash
+STARKNET_RPC_URL=<RPC> scripts/init_add_recipes.sh release              # craft recipes (currently 2*Dagger+Herb)
+STARKNET_RPC_URL=<RPC> scripts/init_batch_create_tokens.sh release      # ERC20 tokens per item (uses token_factory)
+```
+
 ## 4. Summary of Deployed Components
 
 *   **World Address**: `0x07c7e6cbe015e7a1ee77c4e29b859894c8eae03ac1ff69361df6bd8c262c9d47`
