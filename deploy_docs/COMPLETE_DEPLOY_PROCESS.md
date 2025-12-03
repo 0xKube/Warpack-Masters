@@ -91,6 +91,8 @@ STARKNET_RPC_URL=<RPC> scripts/init_add_recipes.sh release              # craft 
 STARKNET_RPC_URL=<RPC> scripts/init_batch_create_tokens.sh release      # ERC20 tokens per item (uses token_factory)
 ```
 
+`scripts/init_add_recipes.sh` details: adds recipe “2x Dagger (id 6) + 1x Herb (id 5) -> Augmented Dagger (id 15)”; reads addresses from `manifest_release.json`.
+
 ## 4. Summary of Deployed Components
 
 *   **World Address**: `0x07c7e6cbe015e7a1ee77c4e29b859894c8eae03ac1ff69361df6bd8c262c9d47`

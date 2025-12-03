@@ -13,17 +13,32 @@ fi
 
 : "${STARKNET_RPC_URL:?Environment variable STARKNET_RPC_URL must be set}"
 
-export WORLD_ADDRESS=$(cat $MANIFEST_FILE | jq -r '.world.address')
-export RECIPE_STSTEM_ADDRESS=$(cat $MANIFEST_FILE | jq -r '.contracts[] | select(.tag == "Warpacks-recipe_system").address')
+WORLD_ADDRESS=$(cat "$MANIFEST_FILE" | jq -r '.world.address')
+RECIPE_SYSTEM_ADDRESS=$(cat "$MANIFEST_FILE" | jq -r '.contracts[] | select(.tag == "Warpacks-recipe_system").address')
+
+if [[ -z "$RECIPE_SYSTEM_ADDRESS" ]]; then
+    echo "Error: recipe_system address not found in $MANIFEST_FILE"
+    exit 1
+fi
 
 echo "---------------------------------------------------------------------------"
 echo "Environment: $ENV"
 echo "Using manifest: $MANIFEST_FILE"
 echo "World: $WORLD_ADDRESS"
-echo "Recipe system: $RECIPE_STSTEM_ADDRESS"
+echo "Recipe system: $RECIPE_SYSTEM_ADDRESS"
 echo "---------------------------------------------------------------------------"
 
 
-# Generated add recipes commands
-# 2*Dagger + 1*Herb = Augument Dageer
-sozo execute -P ${ENV} Warpacks-recipe_system add_recipe 2 6 5 2 2 1 15 --wait --rpc-url $STARKNET_RPC_URL
+# Recipes:
+# - Augmented Dagger: 2x Dagger (id 6) + 1x Herb (id 5) -> Augmented Dagger (id 15)
+#
+# Cairo array encoding for add_recipe(item_ids, item_amounts, result_item_id):
+# <len ids> <id1> <id2> ... <len amounts> <amt1> <amt2> ... <result_id>
+
+echo "Adding recipes..."
+sozo execute -P ${ENV} Warpacks-recipe_system add_recipe \
+    2 6 5 \
+    2 2 1 \
+    15 \
+    --wait --rpc-url "$STARKNET_RPC_URL"
+echo "Done."
