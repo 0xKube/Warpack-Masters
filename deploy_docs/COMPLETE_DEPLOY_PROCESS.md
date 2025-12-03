@@ -35,7 +35,19 @@ The core Dojo world deployment was handled by the `sozo` toolchain.
     *   **Outcome**: Successful. `manifest_release.json` updated (скопировать в фронт при деплое).
     *   **World Address**: `0x07c7e6cbe015e7a1ee77c4e29b859894c8eae03ac1ff69361df6bd8c262c9d47`.
 
-## 3. Post-Deployment Setup (Gold Token & Wiring)
+## 3. Post-Deployment Setup (GameConfig + Gold Token & Wiring)
+
+### GameConfig (STRK + rebirth fee)
+
+*   **STRK address (immutable):** `config_system`'s `dojo_init` takes the STRK token address as calldata. Set it in `dojo_release.toml` before migrating; if a wrong address is used you must redeploy.
+*   **Rebirth fee (owner adjustable):** After deploy, the world owner can tune/disable the fee (in STRK wei) at any time:
+    ```bash
+    SCARB_CACHE=.scarb_cache SCARB_CONFIG=.scarb_config SCARB_TARGET_DIR=target \
+      sozo execute --profile release --wait --use-blake2s-casm-class-hash \
+        --account-address <DEPLOYER> --private-key <PK> --rpc-url <RPC> \
+        Warpacks-config_system set_rebirth_fee <FEE_WEI>
+    ```
+    The fee accrues on the `actions` system; use `withdraw_strk` there to move funds. Setting `0` disables charging.
 
 After world deployment, Gold ERC20 was declared, deployed, and wired with sozo 1.8.2 (no starkli needed):
 

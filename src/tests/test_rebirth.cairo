@@ -8,7 +8,9 @@ mod tests {
     };
     use openzeppelin_interfaces::erc20::{IERC20Dispatcher, IERC20DispatcherTrait};
     use starknet::testing::{set_block_timestamp, set_contract_address};
-    use warpack_masters::constants::constants::{GAME_CONFIG_ID, INIT_GOLD, INIT_HEALTH};
+    use warpack_masters::constants::constants::{
+        GAME_CONFIG_ID, INIT_GOLD, INIT_HEALTH, REBIRTH_FEE,
+    };
     use warpack_masters::externals::erc20::ERC20Token;
     use warpack_masters::models::Character::{
         Character, CharacterName, WMClass, m_Character, m_CharacterName,
@@ -86,6 +88,7 @@ mod tests {
             @GameConfig {
                 id: GAME_CONFIG_ID,
                 strk_address: erc20_address,
+                rebirth_fee: REBIRTH_FEE,
             },
         );
 
@@ -348,6 +351,7 @@ mod tests {
             @GameConfig {
                 id: GAME_CONFIG_ID,
                 strk_address: erc20_address,
+                rebirth_fee: REBIRTH_FEE,
             },
         );
 
@@ -402,6 +406,7 @@ mod tests {
             @GameConfig {
                 id: GAME_CONFIG_ID,
                 strk_address: erc20_address,
+                rebirth_fee: REBIRTH_FEE,
             },
         );
 

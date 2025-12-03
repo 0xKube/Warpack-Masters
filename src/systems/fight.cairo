@@ -40,7 +40,7 @@ mod fight_system {
 
             let mut character: Character = world.read_model(player);
 
-            assert(character.loss < 5, 'max loss reached');
+            assert(character.loss < 3, 'max loss reached');
 
             let dummyCharCounter: DummyCharacterCounter = world.read_model(character.wins);
             assert(dummyCharCounter.count > 0, 'no dummy created');

@@ -31,12 +31,11 @@ mod actions {
     use core::traits::TryInto;
     use dojo::event::EventStorage;
     use dojo::model::ModelStorage;
-    use dojo::world::{IWorldDispatcher, IWorldDispatcherTrait};
+    use dojo::world::IWorldDispatcherTrait;
     use openzeppelin_interfaces::erc20::{IERC20Dispatcher, IERC20DispatcherTrait};
     use starknet::{ContractAddress, get_block_timestamp, get_caller_address};
     use warpack_masters::constants::constants::{
         GAME_CONFIG_ID, GOLD_ITEM_ID, GRID_X, GRID_Y, INIT_GOLD, INIT_HEALTH, INIT_STAMINA,
-        REBIRTH_FEE,
     };
     use warpack_masters::externals::interface::{
         IERC20MINTABLEDispatcher, IERC20MINTABLEDispatcherTrait,
@@ -52,6 +51,7 @@ mod actions {
     use warpack_masters::models::Recipe::RecipeV2;
     use warpack_masters::models::TokenRegistry::TokenRegistry;
     use warpack_masters::models::backpack::BackpackGrids;
+    use warpack_masters::utils::address::zero_address;
     use warpack_masters::utils::storage_pointers as ptrs;
     use super::{IActions, WMClass};
 
@@ -96,59 +96,25 @@ mod actions {
             assert(len <= 12 && len >= 3, 'name size is invalid');
 
             let nameRecord: CharacterName = world.read_model((name,));
-            let zero_address: ContractAddress = 0.try_into().unwrap();
-            assert(
-                nameRecord.player == zero_address || nameRecord.player == player,
-                'name already exists',
-            );
-
-            world.write_model(@CharacterName { name, player });
+            let zero: ContractAddress = zero_address();
+            assert(nameRecord.player == zero || nameRecord.player == player, 'name already exists');
 
             let player_exists: Character = world.read_model(player);
             assert(player_exists.name == '', 'player already exists');
 
-            // Default the player has 2 Backpacks
-            // Must add two backpack items when setup the game
-            let item: Item = world.read_model(Backpack::id);
-            assert(item.itemType == 4, 'Invalid item type');
-            let item: Item = world.read_model(Pack::id);
-            assert(item.itemType == 4, 'Invalid item type');
+            self._charge_rebirth_fee(player);
+            self._reset_player_state(player);
 
-            world.write_model(@StorageItem { player, id: 1, itemId: Backpack::id });
-            world.write_model(@StorageItem { player, id: 2, itemId: Pack::id });
-            world.write_model(@StorageCounter { player, count: 2 });
-            world.write_model(@InventoryCounter { player, count: 0 });
-
-            self.move_item_from_storage_to_inventory(1, 4, 2, 0);
-            self.move_item_from_storage_to_inventory(2, 2, 2, 0);
-
-            // keep the previous rating, totalWins and totalLoss during rebirth
-            let prev_rating = player_exists.rating;
-            let prev_total_wins = player_exists.totalWins;
-            let prev_total_loss = player_exists.totalLoss;
-            let prev_birth_count = player_exists.birthCount;
-            let updatedAt = get_block_timestamp();
-
-            self._mint_gold(player, INIT_GOLD.into() + 1);
-
-            // add one gold for reroll shop
-            let character = Character {
-                player,
-                name,
-                wmClass,
-                gold: 0,
-                health: INIT_HEALTH,
-                wins: 0,
-                loss: 0,
-                rating: prev_rating,
-                totalWins: prev_total_wins,
-                totalLoss: prev_total_loss,
-                winStreak: 0,
-                stamina: INIT_STAMINA,
-                birthCount: prev_birth_count + 1,
-                updatedAt,
-            };
-            world.write_model(@character);
+            self
+                ._initialize_character(
+                    player,
+                    name,
+                    wmClass,
+                    player_exists.rating,
+                    player_exists.totalWins,
+                    player_exists.totalLoss,
+                    player_exists.birthCount,
+                );
         }
 
         fn rebirth(ref self: ContractState) {
@@ -156,107 +122,31 @@ mod actions {
 
             let player = get_caller_address();
 
-            let char_ptr = ptrs::character(player);
-            let mut char: Character = world.read_model(player);
+            let char: Character = world.read_model(player);
 
-            assert(char.loss >= 5, 'loss not reached');
-
-            let gameConfig: GameConfig = world.read_model(GAME_CONFIG_ID);
-            let STRK_ADDRESS: ContractAddress = gameConfig.strk_address;
-
-            IERC20Dispatcher { contract_address: STRK_ADDRESS }
-                .transfer_from(player, starknet::get_contract_address(), REBIRTH_FEE);
+            assert(char.loss >= 3, 'loss not reached');
 
             let prev_name = char.name;
-            // required to calling spawn doesn't fail
-            world
-                .write_member(
-                    char_ptr,
-                    selector!("name"),
-                    '',
+            let prev_rating = char.rating;
+            let prev_total_wins = char.totalWins;
+            let prev_total_loss = char.totalLoss;
+            let prev_birth_count = char.birthCount;
+            let wm_class = char.wmClass;
+
+            self._charge_rebirth_fee(player);
+
+            self._reset_player_state(player);
+
+            self
+                ._initialize_character(
+                    player,
+                    prev_name,
+                    wm_class,
+                    prev_rating,
+                    prev_total_wins,
+                    prev_total_loss,
+                    prev_birth_count,
                 );
-
-            let inventory_counter_ptr = ptrs::inventory_counter(player);
-            let mut count = world.read_member(inventory_counter_ptr, selector!("count"));
-
-            loop {
-                if count == 0 {
-                    break;
-                }
-
-                let item_ptr = ptrs::inventory_item(player, count);
-                world.write_member(item_ptr, selector!("itemId"), 0);
-                world.write_member(item_ptr, selector!("position"), Position { x: 0, y: 0 });
-                world.write_member(item_ptr, selector!("rotation"), 0);
-                world.write_member(item_ptr, selector!("plugins"), ArrayTrait::<(u8, u32, u32)>::new());
-
-                count -= 1;
-            }
-
-            let storage_counter_ptr = ptrs::storage_counter(player);
-            let mut count = world.read_member(storage_counter_ptr, selector!("count"));
-
-            loop {
-                if count == 0 {
-                    break;
-                }
-
-                let storage_item_ptr = ptrs::storage_item(player, count);
-                world.write_member(storage_item_ptr, selector!("itemId"), 0);
-
-                count -= 1;
-            }
-
-            // clear BackpackGrids
-            let mut i = 0;
-            let mut j = 0;
-            loop {
-                if i >= GRID_X {
-                    break;
-                }
-                loop {
-                    if j >= GRID_Y {
-                        break;
-                    }
-
-                    let grid_ptr = ptrs::backpack_grid(player, i, j);
-                    let grid_enabled: bool = world.read_member(grid_ptr, selector!("enabled"));
-                    let grid_occupied: bool = world.read_member(grid_ptr, selector!("occupied"));
-
-                    if grid_enabled || grid_occupied {
-                        world.write_member(grid_ptr, selector!("enabled"), false);
-                        world.write_member(grid_ptr, selector!("occupied"), false);
-                        world.write_member(grid_ptr, selector!("itemId"), 0);
-                        world.write_member(grid_ptr, selector!("inventoryItemId"), 0);
-                        world.write_member(grid_ptr, selector!("isWeapon"), false);
-                        world.write_member(grid_ptr, selector!("isPlugin"), false);
-                    }
-                    j += 1;
-                }
-                j = 0;
-                i += 1;
-            }
-
-            // clear shop
-            let shop_ptr = ptrs::shop(player);
-            world.write_member(shop_ptr, selector!("item1"), 0);
-            world.write_member(shop_ptr, selector!("item2"), 0);
-            world.write_member(shop_ptr, selector!("item3"), 0);
-            world.write_member(shop_ptr, selector!("item4"), 0);
-
-            world.write_member(inventory_counter_ptr, selector!("count"), 0);
-            world.write_member(storage_counter_ptr, selector!("count"), 0);
-
-            world.write_member(char_ptr, selector!("loss"), char.loss);
-            world.write_member(char_ptr, selector!("rating"), char.rating);
-            world.write_member(char_ptr, selector!("totalWins"), char.totalWins);
-            world.write_member(char_ptr, selector!("totalLoss"), char.totalLoss);
-            world.write_member(char_ptr, selector!("winStreak"), char.winStreak);
-            world.write_member(char_ptr, selector!("birthCount"), char.birthCount);
-            world.write_member(char_ptr, selector!("stamina"), char.stamina);
-            world.write_member(char_ptr, selector!("updatedAt"), char.updatedAt);
-
-            self.spawn(prev_name, char.wmClass);
         }
 
         fn withdraw_strk(ref self: ContractState, amount: u256, recipient: ContractAddress) {
@@ -267,6 +157,8 @@ mod actions {
 
             let gameConfig: GameConfig = world.read_model(GAME_CONFIG_ID);
             let STRK_ADDRESS: ContractAddress = gameConfig.strk_address;
+            let zero: ContractAddress = zero_address();
+            assert(STRK_ADDRESS != zero, 'strk not configured');
             IERC20Dispatcher { contract_address: STRK_ADDRESS }.transfer(recipient, amount);
         }
 
@@ -277,6 +169,8 @@ mod actions {
 
             let gameConfig: GameConfig = world.read_model(GAME_CONFIG_ID);
             let STRK_ADDRESS: ContractAddress = gameConfig.strk_address;
+            let zero: ContractAddress = zero_address();
+            assert(STRK_ADDRESS != zero, 'strk not configured');
             return IERC20Dispatcher { contract_address: STRK_ADDRESS }.balance_of(player);
         }
 
@@ -416,6 +310,158 @@ mod actions {
 
     #[generate_trait]
     impl InternalImpl of InternalTrait {
+        fn _charge_rebirth_fee(ref self: ContractState, player: ContractAddress) {
+            let mut world = self.world(@"Warpacks");
+
+            let config: GameConfig = world.read_model(GAME_CONFIG_ID);
+            let fee = config.rebirth_fee;
+            if fee == 0 {
+                return ();
+            }
+
+            let strk_address = config.strk_address;
+            let zero: ContractAddress = zero_address();
+            assert(strk_address != zero, 'strk not configured');
+
+            IERC20Dispatcher { contract_address: strk_address }
+                .transfer_from(player, starknet::get_contract_address(), fee);
+        }
+
+        fn _reset_player_state(ref self: ContractState, player: ContractAddress) {
+            let mut world = self.world(@"Warpacks");
+
+            let char_ptr = ptrs::character(player);
+            world
+                .write_member(
+                    char_ptr,
+                    selector!("name"),
+                    '',
+                );
+
+            let inventory_counter_ptr = ptrs::inventory_counter(player);
+            let mut count = world.read_member(inventory_counter_ptr, selector!("count"));
+
+            loop {
+                if count == 0 {
+                    break;
+                }
+
+                let item_ptr = ptrs::inventory_item(player, count);
+                world.write_member(item_ptr, selector!("itemId"), 0);
+                world.write_member(item_ptr, selector!("position"), Position { x: 0, y: 0 });
+                world.write_member(item_ptr, selector!("rotation"), 0);
+                world.write_member(item_ptr, selector!("plugins"), ArrayTrait::<(u8, u32, u32)>::new());
+
+                count -= 1;
+            }
+
+            let storage_counter_ptr = ptrs::storage_counter(player);
+            let mut storage_count = world.read_member(storage_counter_ptr, selector!("count"));
+
+            loop {
+                if storage_count == 0 {
+                    break;
+                }
+
+                let storage_item_ptr = ptrs::storage_item(player, storage_count);
+                world.write_member(storage_item_ptr, selector!("itemId"), 0);
+
+                storage_count -= 1;
+            }
+
+            // clear BackpackGrids
+            let mut i = 0;
+            let mut j = 0;
+            loop {
+                if i >= GRID_X {
+                    break;
+                }
+                loop {
+                    if j >= GRID_Y {
+                        break;
+                    }
+
+                    let grid_ptr = ptrs::backpack_grid(player, i, j);
+                    let grid_enabled: bool = world.read_member(grid_ptr, selector!("enabled"));
+                    let grid_occupied: bool = world.read_member(grid_ptr, selector!("occupied"));
+
+                    if grid_enabled || grid_occupied {
+                        world.write_member(grid_ptr, selector!("enabled"), false);
+                        world.write_member(grid_ptr, selector!("occupied"), false);
+                        world.write_member(grid_ptr, selector!("itemId"), 0);
+                        world.write_member(grid_ptr, selector!("inventoryItemId"), 0);
+                        world.write_member(grid_ptr, selector!("isWeapon"), false);
+                        world.write_member(grid_ptr, selector!("isPlugin"), false);
+                    }
+                    j += 1;
+                }
+                j = 0;
+                i += 1;
+            }
+
+            // clear shop
+            let shop_ptr = ptrs::shop(player);
+            world.write_member(shop_ptr, selector!("item1"), 0);
+            world.write_member(shop_ptr, selector!("item2"), 0);
+            world.write_member(shop_ptr, selector!("item3"), 0);
+            world.write_member(shop_ptr, selector!("item4"), 0);
+
+            world.write_member(inventory_counter_ptr, selector!("count"), 0);
+            world.write_member(storage_counter_ptr, selector!("count"), 0);
+        }
+
+        fn _initialize_character(
+            ref self: ContractState,
+            player: ContractAddress,
+            name: felt252,
+            wmClass: WMClass,
+            prev_rating: u32,
+            prev_total_wins: u32,
+            prev_total_loss: u32,
+            prev_birth_count: u32,
+        ) {
+            let mut world = self.world(@"Warpacks");
+
+            world.write_model(@CharacterName { name, player });
+
+            // Default the player has 2 Backpacks
+            // Must add two backpack items when setup the game
+            let item: Item = world.read_model(Backpack::id);
+            assert(item.itemType == 4, 'Invalid item type');
+            let item: Item = world.read_model(Pack::id);
+            assert(item.itemType == 4, 'Invalid item type');
+
+            world.write_model(@StorageItem { player, id: 1, itemId: Backpack::id });
+            world.write_model(@StorageItem { player, id: 2, itemId: Pack::id });
+            world.write_model(@StorageCounter { player, count: 2 });
+            world.write_model(@InventoryCounter { player, count: 0 });
+
+            self.move_item_from_storage_to_inventory(1, 4, 2, 0);
+            self.move_item_from_storage_to_inventory(2, 2, 2, 0);
+
+            self._mint_gold(player, INIT_GOLD.into() + 1);
+
+            // add one gold for reroll shop
+            let updatedAt = get_block_timestamp();
+            let character = Character {
+                player,
+                name,
+                wmClass,
+                gold: 0,
+                health: INIT_HEALTH,
+                wins: 0,
+                loss: 0,
+                rating: prev_rating,
+                totalWins: prev_total_wins,
+                totalLoss: prev_total_loss,
+                winStreak: 0,
+                stamina: INIT_STAMINA,
+                birthCount: prev_birth_count + 1,
+                updatedAt,
+            };
+            world.write_model(@character);
+        }
+
         fn _check_if_player_has_joined_a_matched_battle(
             ref self: ContractState, player: ContractAddress,
         ) {
