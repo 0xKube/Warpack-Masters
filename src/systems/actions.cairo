@@ -21,17 +21,15 @@ pub trait IActions<T> {
     fn craft_item(ref self: T, recipe_id: u32, storage_ids: Array<u32>);
 }
 
-// TODO: rename the count filed in counter model
-
 #[dojo::contract]
 mod actions {
     use core::array::{Array, ArrayTrait, SpanTrait};
     use core::bytes_31::bytes31;
     use core::dict::Felt252Dict;
-    use core::traits::TryInto;
+    use core::traits::{Into, TryInto};
     use dojo::event::EventStorage;
     use dojo::model::ModelStorage;
-    use dojo::world::IWorldDispatcherTrait;
+    use dojo::world::{IWorldDispatcherTrait, WorldStorage};
     use openzeppelin_interfaces::erc20::{IERC20Dispatcher, IERC20DispatcherTrait};
     use starknet::{ContractAddress, get_block_timestamp, get_caller_address};
     use warpack_masters::constants::constants::{
@@ -974,26 +972,8 @@ mod actions {
         fn _sell_item(ref self: ContractState, player: ContractAddress, item_id: u32) {
             let mut world = self.world(@"Warpacks");
 
-            let item: Item = world.read_model(item_id);
             let playerChar: Characters = world.read_model(player);
-
-            let item_price = item.price;
-            let sell_price = item_price / 2;
-
-            // playerChar.gold += sell_price;
-            self._mint_gold(player, sell_price.into());
-
-            world
-                .emit_event(
-                    @SellItem {
-                        player,
-                        itemId: item_id,
-                        price: sell_price,
-                        itemRarity: item.rarity,
-                        birthCount: playerChar.birthCount,
-                    },
-                );
-            // world.write_model(@playerChar);
+            sell_item_common(ref world, player, item_id, playerChar.birthCount);
         }
 
         fn _add_item_to_storage(ref self: ContractState, player: ContractAddress, item_id: u32) {
@@ -1076,5 +1056,159 @@ mod actions {
                 .transfer_from(player, starknet::get_contract_address(), token_amount);
         }
 
+    }
+
+    pub mod helpers {
+        use core::array::ArrayTrait;
+        use dojo::event::EventStorage;
+        use dojo::model::ModelStorage;
+        use dojo::world::WorldStorage;
+        use starknet::ContractAddress;
+        use warpack_masters::constants::constants::GOLD_ITEM_ID;
+        use warpack_masters::models::Character::Characters;
+        use warpack_masters::models::CharacterItem::{InventoryCounter, Position, StorageCounter};
+        use warpack_masters::models::Item::Item;
+        use warpack_masters::models::TokenRegistry::TokenRegistry;
+        use warpack_masters::utils::address::zero_address;
+        use warpack_masters::utils::storage_pointers as ptrs;
+        use super::SellItem;
+        use super::IERC20MINTABLEDispatcher;
+
+        /// Продаёт все предметы игрока (инвентарь + сторадж) и возвращает золото игроку.
+        /// Делает два прохода по инвентарю: сначала оружие/плагины, затем сумки, чтобы не словить конфликты занятости клеток.
+        pub fn auto_sell_player_items(ref world: WorldStorage, player: ContractAddress) {
+            let player_char: Characters = world.read_model(player);
+
+            // Инвентарь: проход 1 — всё, кроме сумок.
+            let inventory_counter: InventoryCounter = world.read_model(player);
+            let mut idx = inventory_counter.count;
+            loop {
+                if idx == 0 {
+                    break;
+                }
+                let item_ptr = ptrs::inventory_item(player, idx);
+                let item_id: u32 = world.read_member(item_ptr, selector!("itemId"));
+                if item_id != 0 {
+                    let item: Item = world.read_model(item_id);
+                    if item.itemType != 4 {
+                        sell_item_common(ref world, player, item_id, player_char.birthCount);
+                        clear_inventory_item(ref world, player, item, idx);
+                    }
+                }
+                idx -= 1;
+            }
+
+            // Инвентарь: проход 2 — сумки.
+            idx = inventory_counter.count;
+            loop {
+                if idx == 0 {
+                    break;
+                }
+                let item_ptr = ptrs::inventory_item(player, idx);
+                let item_id: u32 = world.read_member(item_ptr, selector!("itemId"));
+                if item_id != 0 {
+                    let item: Item = world.read_model(item_id);
+                    if item.itemType == 4 {
+                        sell_item_common(ref world, player, item_id, player_char.birthCount);
+                        clear_inventory_item(ref world, player, item, idx);
+                    }
+                }
+                idx -= 1;
+            }
+
+            // Сторадж.
+            let storage_counter: StorageCounter = world.read_model(player);
+            idx = storage_counter.count;
+            loop {
+                if idx == 0 {
+                    break;
+                }
+                let storage_ptr = ptrs::storage_item(player, idx);
+                let item_id: u32 = world.read_member(storage_ptr, selector!("itemId"));
+                if item_id != 0 {
+                    let item: Item = world.read_model(item_id);
+                    sell_item_common(ref world, player, item_id, player_char.birthCount);
+                    world.write_member(storage_ptr, selector!("itemId"), 0);
+                }
+                idx -= 1;
+            }
+        }
+
+        fn clear_inventory_item(
+            ref world: WorldStorage, player: ContractAddress, item: Item, slot: u32,
+        ) {
+            let item_ptr = ptrs::inventory_item(player, slot);
+            let position: Position = world.read_member(item_ptr, selector!("position"));
+            let rotation: u32 = world.read_member(item_ptr, selector!("rotation"));
+
+            let (width, height) = if rotation == 90 || rotation == 270 {
+                (item.height, item.width)
+            } else {
+                (item.width, item.height)
+            };
+
+            let x_max = position.x + width - 1;
+            let y_max = position.y + height - 1;
+
+            let mut x = position.x;
+            let mut y = position.y;
+            loop {
+                if x > x_max {
+                    break;
+                }
+                loop {
+                    if y > y_max {
+                        break;
+                    }
+                    let grid_ptr = ptrs::backpack_grid(player, x, y);
+                    // Для сумок выключаем клетки, иначе просто освобождаем.
+                    if item.itemType == 4 {
+                        world.write_member(grid_ptr, selector!("enabled"), false);
+                    }
+                    world.write_member(grid_ptr, selector!("occupied"), false);
+                    world.write_member(grid_ptr, selector!("itemId"), 0);
+                    world.write_member(grid_ptr, selector!("inventoryItemId"), 0);
+                    world.write_member(grid_ptr, selector!("isWeapon"), false);
+                    world.write_member(grid_ptr, selector!("isPlugin"), false);
+                    y += 1;
+                }
+                y = position.y;
+                x += 1;
+            }
+
+            // Сброс слота.
+            world.write_member(item_ptr, selector!("itemId"), 0);
+            world.write_member(item_ptr, selector!("position"), Position { x: 0, y: 0 });
+            world.write_member(item_ptr, selector!("rotation"), 0);
+            world.write_member(item_ptr, selector!("plugins"), ArrayTrait::<(u8, u32, u32)>::new());
+        }
+
+        fn sell_item_common(
+            ref world: WorldStorage, player: ContractAddress, item_id: u32, birth_count: u32,
+        ) {
+            let item: Item = world.read_model(item_id);
+            let sell_price = item.price / 2;
+
+            let registry: TokenRegistry = world.read_model(GOLD_ITEM_ID);
+            assert(registry.token_address != zero_address(), 'Token not registered');
+            assert(registry.is_active, 'Token not active');
+
+            let token_amount: u256 = sell_price.into() * 1_000_000_000_000_000_000;
+            let token_contract = IERC20MINTABLEDispatcher {
+                contract_address: registry.token_address,
+            };
+            token_contract.mint(player, token_amount);
+
+            world
+                .emit_event(
+                    @SellItem {
+                        player,
+                        itemId: item_id,
+                        price: sell_price,
+                        itemRarity: item.rarity,
+                        birthCount: birth_count,
+                    },
+                );
+        }
     }
 }
