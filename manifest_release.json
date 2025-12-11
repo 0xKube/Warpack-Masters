@@ -117,7 +117,7 @@
     },
     {
       "address": "0x5de82f88168fd0816686086dd11eb120f60d385b35c66031d5d624b7a37547",
-      "class_hash": "0x4da04060fa03499e1d4070709ea6d8facc754b14e9e8a6cebb4008a33c56f08",
+      "class_hash": "0x57fb3722abc1db2e4c4ab1ebbe5ddbcaee85569b9ec7eaefb7f8863250d7497",
       "init_calldata": [],
       "tag": "Warpacks-shop_system",
       "selector": "0x4fc6e53062bad497f56645e733043df064f1a4d8bb0ce745f62942d893b8dd",

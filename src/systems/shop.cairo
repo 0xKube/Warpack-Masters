@@ -67,13 +67,16 @@ mod shop_system {
 
             let (seed1, seed2, seed3, seed4) = pseudo_seed();
 
-            // common: 70%, rare: 20%, legendary: 10%
+            // common: 70%, rare: 20%, legendary: up to 10%
             let mut i = 0;
             for seed in array![seed1, seed2, seed3, seed4] {
                 let mut random_index = 0;
 
-                if char.wins < 21 {
+                if char.wins < 10 {
                     random_index = random(seed, 90);
+                } else if char.wins < 21 {
+                    // Give a small (~5%) legendary chance after 10 wins.
+                    random_index = random(seed, 95);
                 } else {
                     random_index = random(seed, 100);
                 }
