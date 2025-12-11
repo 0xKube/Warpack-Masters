@@ -34,7 +34,7 @@
   "contracts": [
     {
       "address": "0x6cf6450c132752fbf3ace05d82f5d61fac097a6f62d0abd0b2b04a204ac16e6",
-      "class_hash": "0x6635300160f6482c5284aa765c3db928e800b08fe8ad51a8c5e9d4adfff6b4a",
+      "class_hash": "0xd9d73917d390dc29ca10d8e64b5df68a40b1059725b47212cb5b0b4ff8db48",
       "init_calldata": [],
       "tag": "Warpacks-actions",
       "selector": "0x72c10aa5b1ff0c1599517beb7189673c59fa924c4753b33bab057a8c6200cb1",
@@ -55,7 +55,7 @@
     },
     {
       "address": "0x31693c679ca789499a357600e50437f0f12a750ec82c74c410bba494078e58b",
-      "class_hash": "0x59781c5e627b2810ac4c169a1438e8c7c598f8009af97e51214c08af4400ed2",
+      "class_hash": "0x3ebfc3c7b64f0c439036216004eff64aea805125a3c02986452dabd0c20cbeb",
       "init_calldata": [
         "0x04718f5a0fc34cc1af16a1cdee98ffb20c31f5cd61d6ab07201858f4287c938d"
       ],
@@ -63,6 +63,7 @@
       "selector": "0x6a040c0928ffc6a945e7efcd3576d8b6cbdb914afac47c911f85d89616c2dcb",
       "systems": [
         "dojo_init",
+        "set_rebirth_fee",
         "upgrade"
       ]
     },
@@ -80,7 +81,7 @@
     },
     {
       "address": "0x1e9c91163b28a0cf2ebeb8311df4f57f7788b8f9bc10707d8f5243df57d97ea",
-      "class_hash": "0x5517034aa9d6c2396ffef89b39f91ead3b632f72adc2acbeaa6caa58e5830b0",
+      "class_hash": "0x23c88cba302d0c834cfdc345f09b94992d1b0749cabf93a029e139d37b1d1d",
       "init_calldata": [],
       "tag": "Warpacks-fight_system",
       "selector": "0x7627186b5551a815f66c9d473067aa0639a516500356edd8a655b0bada60e3c",
@@ -533,9 +534,14 @@
           "name": "strk_address",
           "type": "core::starknet::contract_address::ContractAddress",
           "key": false
+        },
+        {
+          "name": "rebirth_fee",
+          "type": "core::integer::u256",
+          "key": false
         }
       ],
-      "class_hash": "0x4aa6ed3e1aea200eaf7c54c641f4981369833e6582a37e34162da1f032b7e86",
+      "class_hash": "0x5e04d73bf6f921d878404ed382c18063ecf9f20daf821adad5301a384970773",
       "tag": "Warpacks-GameConfig",
       "selector": "0x28b5af007fcc24010d8f1ae72d7baf968817c5c7b5e8c5b54cd13da9175eb9e"
     },
@@ -3745,6 +3751,10 @@
         {
           "name": "strk_address",
           "type": "core::starknet::contract_address::ContractAddress"
+        },
+        {
+          "name": "rebirth_fee",
+          "type": "core::integer::u256"
         }
       ]
     },
@@ -3755,6 +3765,10 @@
         {
           "name": "strk_address",
           "type": "core::starknet::contract_address::ContractAddress"
+        },
+        {
+          "name": "rebirth_fee",
+          "type": "core::integer::u256"
         }
       ]
     },
@@ -4536,6 +4550,24 @@
       "name": "warpack_masters::systems::actions::actions::e_SellItem::Event",
       "kind": "enum",
       "variants": []
+    },
+    {
+      "type": "interface",
+      "name": "warpack_masters::systems::config::IConfig",
+      "items": [
+        {
+          "type": "function",
+          "name": "set_rebirth_fee",
+          "inputs": [
+            {
+              "name": "rebirth_fee",
+              "type": "core::integer::u256"
+            }
+          ],
+          "outputs": [],
+          "state_mutability": "external"
+        }
+      ]
     },
     {
       "type": "event",

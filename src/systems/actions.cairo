@@ -124,6 +124,9 @@ mod actions {
 
             assert(char.loss >= 3, 'loss not reached');
 
+            // Продаём инвентарь/сторадж за золото, пока фронт ещё может показать прошлую битву.
+            helpers::auto_sell_player_items(ref world, player);
+
             let prev_name = char.name;
             let prev_rating = char.rating;
             let prev_total_wins = char.totalWins;
@@ -973,7 +976,7 @@ mod actions {
             let mut world = self.world(@"Warpacks");
 
             let playerChar: Characters = world.read_model(player);
-            sell_item_common(ref world, player, item_id, playerChar.birthCount);
+            helpers::sell_item_common(ref world, player, item_id, playerChar.birthCount);
         }
 
         fn _add_item_to_storage(ref self: ContractState, player: ContractAddress, item_id: u32) {
@@ -1072,7 +1075,7 @@ mod actions {
         use warpack_masters::utils::address::zero_address;
         use warpack_masters::utils::storage_pointers as ptrs;
         use super::SellItem;
-        use super::IERC20MINTABLEDispatcher;
+        use super::{IERC20MINTABLEDispatcher, IERC20MINTABLEDispatcherTrait};
 
         /// Продаёт все предметы игрока (инвентарь + сторадж) и возвращает золото игроку.
         /// Делает два прохода по инвентарю: сначала оружие/плагины, затем сумки, чтобы не словить конфликты занятости клеток.
@@ -1183,7 +1186,7 @@ mod actions {
             world.write_member(item_ptr, selector!("plugins"), ArrayTrait::<(u8, u32, u32)>::new());
         }
 
-        fn sell_item_common(
+        pub fn sell_item_common(
             ref world: WorldStorage, player: ContractAddress, item_id: u32, birth_count: u32,
         ) {
             let item: Item = world.read_model(item_id);

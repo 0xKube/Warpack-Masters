@@ -27,7 +27,7 @@ mod fight_system {
     };
     use warpack_masters::models::Item::Item;
     use warpack_masters::models::TokenRegistry::TokenRegistry;
-    use warpack_masters::systems::actions::helpers::auto_sell_player_items;
+    use warpack_masters::systems::actions::actions::helpers::auto_sell_player_items;
     use warpack_masters::utils::random::{pseudo_seed, random};
     use warpack_masters::utils::sort_items::{append_item, order_items};
     use super::IFight;
@@ -780,10 +780,6 @@ mod fight_system {
                 }
 
                 self._mint_gold(player, 2);
-
-                if character.loss >= 3 {
-                    auto_sell_player_items(ref world, player);
-                }
             }
             character.updatedAt = get_block_timestamp();
             world.write_model(@character);
