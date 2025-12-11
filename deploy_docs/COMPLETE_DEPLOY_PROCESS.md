@@ -32,7 +32,7 @@ The core Dojo world deployment was handled by the `sozo` toolchain.
     SCARB_CACHE=.scarb_cache SCARB_CONFIG=.scarb_config SCARB_TARGET_DIR=target \
       sozo migrate --profile release --wait --use-blake2s-casm-class-hash
     ```
-    *   **Outcome**: Successful. `manifest_release.json` updated (скопировать в фронт при деплое).
+    *   **Outcome**: Successful. `manifest_release.json` updated (copy to frontend on deploy).
     *   **World Address**: `0x07c7e6cbe015e7a1ee77c4e29b859894c8eae03ac1ff69361df6bd8c262c9d47`.
 
 ## 3. Post-Deployment Setup (GameConfig + Gold Token & Wiring)
@@ -40,7 +40,12 @@ The core Dojo world deployment was handled by the `sozo` toolchain.
 ### GameConfig (STRK + rebirth fee)
 
 *   **STRK address (immutable):** `config_system`'s `dojo_init` takes the STRK token address as calldata. Set it in `dojo_release.toml` before migrating; if a wrong address is used you must redeploy.
-*   **Rebirth fee (owner adjustable):** After deploy, the world owner can tune/disable the fee (in STRK wei) at any time:
+*   **Rebirth fee (owner adjustable):** After deploy, verify `rebirth_fee` is non-zero; if it is `0`, no fee is collected:
+    * Quick check via Torii GQL:
+      ```graphql
+      query { warpacksGameConfigModels { edges { node { id rebirth_fee strk_address } } } }
+      ```
+    * To set/update the fee (wei):
     ```bash
     SCARB_CACHE=.scarb_cache SCARB_CONFIG=.scarb_config SCARB_TARGET_DIR=target \
       sozo execute --profile release --wait --use-blake2s-casm-class-hash \
@@ -48,6 +53,14 @@ The core Dojo world deployment was handled by the `sozo` toolchain.
         Warpacks-config_system set_rebirth_fee <FEE_WEI>
     ```
     The fee accrues on the `actions` system; use `withdraw_strk` there to move funds. Setting `0` disables charging.
+    * After setting a non-zero fee, players must approve STRK to the `actions` address once; otherwise `spawn/rebirth` will revert on `transfer_from`:
+      ```bash
+      sncast --accounts-file <ACCOUNTS_JSON> --account <PLAYER_ACCOUNT> invoke \
+        --url <RPC> \
+        --contract-address <STRK_ERC20_ADDRESS> \
+        --function approve \
+        --calldata "<ACTIONS_ADDRESS> <ALLOWANCE_LOW> <ALLOWANCE_HIGH>"
+      ```
 
 After world deployment, Gold ERC20 was declared, deployed, and wired with sozo 1.8.2 (no starkli needed):
 
