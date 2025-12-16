@@ -277,7 +277,7 @@ pub mod Dummy3 {
                     itemId: AugmentedDagger::id,
                     position: Position { x: 2, y: 2 },
                     rotation: 0,
-                    plugins: array![].span(),
+                    plugins: array![(6, 55, 1)].span(),
                 },
             );
 
@@ -307,7 +307,7 @@ pub mod Dummy3 {
                     itemId: Crossbow::id,
                     position: Position { x: 3, y: 2 },
                     rotation: 0,
-                    plugins: array![].span(),
+                    plugins: array![(6, 80, 3), (6, 55, 1), (6, 55, 1)].span(),
                 },
             );
 
@@ -386,7 +386,7 @@ pub mod Dummy4 {
                     itemId: AugmentedSword::id,
                     position: Position { x: 5, y: 2 },
                     rotation: 0,
-                    plugins: array![].span(),
+                    plugins: array![(7, 65, 1), (7, 50, 3)].span(),
                 },
             );
 
@@ -582,7 +582,7 @@ pub mod Dummy6 {
                     itemId: AugmentedDagger::id,
                     position: Position { x: 4, y: 3 },
                     rotation: 0,
-                    plugins: array![].span(),
+                    plugins: array![(6, 80, 3)].span(),
                 },
             );
 
@@ -592,7 +592,7 @@ pub mod Dummy6 {
                     itemId: AugmentedDagger::id,
                     position: Position { x: 5, y: 3 },
                     rotation: 0,
-                    plugins: array![].span(),
+                    plugins: array![(6, 55, 1)].span(),
                 },
             );
 
@@ -722,7 +722,7 @@ pub mod Dummy7 {
                     itemId: AugmentedDagger::id,
                     position: Position { x: 3, y: 0 },
                     rotation: 0,
-                    plugins: array![].span(),
+                    plugins: array![(7, 55, 2)].span(),
                 },
             );
 
@@ -831,7 +831,7 @@ pub mod Dummy8 {
                     itemId: Bow::id,
                     position: Position { x: 4, y: 3 },
                     rotation: 0,
-                    plugins: array![].span(),
+                    plugins: array![(6, 55, 1)].span(),
                 },
             );
 
@@ -1001,7 +1001,7 @@ pub mod Dummy9 {
                     itemId: Crossbow::id,
                     position: Position { x: 3, y: 2 },
                     rotation: 0,
-                    plugins: array![].span(),
+                    plugins: array![(6, 80, 3), (6, 55, 1), (6, 55, 1)].span(),
                 },
             );
 
@@ -1100,7 +1100,7 @@ pub mod Dummy10 {
                     itemId: Greatsword::id,
                     position: Position { x: 2, y: 0 },
                     rotation: 0,
-                    plugins: array![].span(),
+                    plugins: array![(7, 50, 3)].span(),
                 },
             );
 
@@ -1230,7 +1230,7 @@ pub mod Dummy11 {
                     itemId: Bow::id,
                     position: Position { x: 2, y: 3 },
                     rotation: 0,
-                    plugins: array![].span(),
+                    plugins: array![(7, 50, 3)].span(),
                 },
             );
 
@@ -1300,7 +1300,7 @@ pub mod Dummy11 {
                     itemId: AugmentedDagger::id,
                     position: Position { x: 4, y: 3 },
                     rotation: 0,
-                    plugins: array![].span(),
+                    plugins: array![(6, 80, 3), (6, 80, 3)].span(),
                 },
             );
 
@@ -1450,7 +1450,7 @@ pub mod Dummy12 {
                     itemId: Crossbow::id,
                     position: Position { x: 5, y: 4 },
                     rotation: 0,
-                    plugins: array![].span(),
+                    plugins: array![(6, 55, 1)].span(),
                 },
             );
 
@@ -1550,7 +1550,7 @@ pub mod Dummy13 {
                     itemId: Greatsword::id,
                     position: Position { x: 2, y: 2 },
                     rotation: 0,
-                    plugins: array![].span(),
+                    plugins: array![(7, 50, 3)].span(),
                 },
             );
 
@@ -1570,7 +1570,7 @@ pub mod Dummy13 {
                     itemId: AugmentedSword::id,
                     position: Position { x: 6, y: 1 },
                     rotation: 0,
-                    plugins: array![].span(),
+                    plugins: array![(7, 65, 1), (7, 55, 2), (7, 50, 3)].span(),
                 },
             );
 
@@ -1920,7 +1920,7 @@ pub mod Dummy15 {
                     itemId: Crossbow::id,
                     position: Position { x: 6, y: 1 },
                     rotation: 0,
-                    plugins: array![].span(),
+                    plugins: array![(6, 80, 3), (6, 80, 3), (6, 55, 1), (6, 55, 1)].span(),
                 },
             );
 
@@ -1930,7 +1930,7 @@ pub mod Dummy15 {
                     itemId: AugmentedSword::id,
                     position: Position { x: 7, y: 1 },
                     rotation: 0,
-                    plugins: array![].span(),
+                    plugins: array![(7, 65, 1), (7, 50, 3)].span(),
                 },
             );
 
@@ -2080,7 +2080,7 @@ pub mod Dummy16 {
                     itemId: Greatsword::id,
                     position: Position { x: 4, y: 0 },
                     rotation: 0,
-                    plugins: array![].span(),
+                    plugins: array![(7, 50, 3)].span(),
                 },
             );
 
@@ -2490,7 +2490,7 @@ pub mod Dummy18 {
                     itemId: Bow::id,
                     position: Position { x: 2, y: 2 },
                     rotation: 90,
-                    plugins: array![].span(),
+                    plugins: array![(6, 80, 3), (6, 80, 3), (6, 55, 1)].span(),
                 },
             );
 
@@ -2880,7 +2880,7 @@ pub mod Dummy20 {
                     itemId: AugmentedSword::id,
                     position: Position { x: 2, y: 3 },
                     rotation: 0,
-                    plugins: array![].span(),
+                    plugins: array![(7, 65, 1), (7, 50, 3)].span(),
                 },
             );
 
@@ -2890,7 +2890,7 @@ pub mod Dummy20 {
                     itemId: Crossbow::id,
                     position: Position { x: 3, y: 3 },
                     rotation: 0,
-                    plugins: array![].span(),
+                    plugins: array![(6, 80, 3)].span(),
                 },
             );
 
