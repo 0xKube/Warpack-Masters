@@ -249,9 +249,9 @@ pub mod Poison {
     pub const height: u32 = 1;
     pub const price: u32 = 5;
     pub const effectType: u8 = 6;
-    pub const effectStacks: u32 = 2;
+    pub const effectStacks: u32 = 1;
     pub const effectActivationType: u8 = 0;
-    pub const chance: u32 = 100;
+    pub const chance: u32 = 55;
     pub const cooldown: u8 = 0;
     pub const energyCost: u8 = 0;
     pub const isPlugin: bool = true;
@@ -529,9 +529,9 @@ pub mod RageGauntlet {
     pub const height: u32 = 2;
     pub const price: u32 = 7;
     pub const effectType: u8 = 7;
-    pub const effectStacks: u32 = 1;
+    pub const effectStacks: u32 = 2;
     pub const effectActivationType: u8 = 0;
-    pub const chance: u32 = 45;
+    pub const chance: u32 = 55;
     pub const cooldown: u8 = 0;
     pub const energyCost: u8 = 0;
     pub const isPlugin: bool = true;

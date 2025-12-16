@@ -368,4 +368,73 @@ mod tests {
         assert(registry.token_address == token_address, 'Token address mismatch');
         assert(registry.is_active == true, 'Should be active');
     }
+
+    #[test]
+    #[available_gas(3000000000000000)]
+    fn test_register_token_for_item() {
+        let ndef = namespace_def();
+        let mut world = spawn_test_world([ndef].span());
+        world.sync_perms_and_inits(contract_defs());
+
+        let (item_contract_address, _) = world.dns(@"item_system").unwrap();
+        let mut item_system = IItemDispatcher { contract_address: item_contract_address };
+        add_items(ref item_system);
+
+        let (contract_address, _) = world.dns(@"token_factory").unwrap();
+        let token_factory = ITokenFactoryDispatcher { contract_address };
+
+        let token_address = warpack_masters::utils::address::address_from('dai');
+        token_factory.register_token_for_item(6, items::Dagger::name(), "DAG", token_address);
+
+        let registry: TokenRegistry = world.read_model(6);
+        assert(registry.item_id == 6, 'Item ID mismatch');
+        assert(registry.name == items::Dagger::name(), 'Name mismatch');
+        assert(registry.symbol == "DAG", 'Symbol mismatch');
+        assert(registry.token_address == token_address, 'Token address mismatch');
+        assert(registry.is_active == true, 'Should be active');
+    }
+
+    #[test]
+    #[available_gas(3000000000000000)]
+    #[should_panic(expected: ('caller not world owner', 'ENTRYPOINT_FAILED'))]
+    fn test_register_token_not_world_owner() {
+        let ndef = namespace_def();
+        let mut world = spawn_test_world([ndef].span());
+        world.sync_perms_and_inits(contract_defs());
+
+        let (item_contract_address, _) = world.dns(@"item_system").unwrap();
+        let mut item_system = IItemDispatcher { contract_address: item_contract_address };
+        add_items(ref item_system);
+
+        let (contract_address, _) = world.dns(@"token_factory").unwrap();
+        let token_factory = ITokenFactoryDispatcher { contract_address };
+
+        let non_owner = warpack_masters::utils::address::address_from(0x999);
+        set_contract_address(non_owner);
+
+        let token_address = warpack_masters::utils::address::address_from('dai');
+        token_factory.register_token_for_item(6, items::Dagger::name(), "DAG", token_address);
+    }
+
+    #[test]
+    #[available_gas(3000000000000000)]
+    #[should_panic(expected: ('Token already exists', 'ENTRYPOINT_FAILED'))]
+    fn test_register_token_already_exists() {
+        let ndef = namespace_def();
+        let mut world = spawn_test_world([ndef].span());
+        world.sync_perms_and_inits(contract_defs());
+
+        let (item_contract_address, _) = world.dns(@"item_system").unwrap();
+        let mut item_system = IItemDispatcher { contract_address: item_contract_address };
+        add_items(ref item_system);
+
+        let (contract_address, _) = world.dns(@"token_factory").unwrap();
+        let token_factory = ITokenFactoryDispatcher { contract_address };
+
+        let token_address = warpack_masters::utils::address::address_from('dai');
+        token_factory.register_token_for_item(6, items::Dagger::name(), "DAG", token_address);
+
+        let another_address = warpack_masters::utils::address::address_from('bob');
+        token_factory.register_token_for_item(6, items::Dagger::name(), "DAG", another_address);
+    }
 }

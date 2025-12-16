@@ -34,7 +34,7 @@
   "contracts": [
     {
       "address": "0x6cf6450c132752fbf3ace05d82f5d61fac097a6f62d0abd0b2b04a204ac16e6",
-      "class_hash": "0xd9d73917d390dc29ca10d8e64b5df68a40b1059725b47212cb5b0b4ff8db48",
+      "class_hash": "0x9dacbf798e85814dac5ce6665e17b392a7d2267994571dc7424c42688a302a",
       "init_calldata": [],
       "tag": "Warpacks-actions",
       "selector": "0x72c10aa5b1ff0c1599517beb7189673c59fa924c4753b33bab057a8c6200cb1",
@@ -81,7 +81,7 @@
     },
     {
       "address": "0x1e9c91163b28a0cf2ebeb8311df4f57f7788b8f9bc10707d8f5243df57d97ea",
-      "class_hash": "0x23c88cba302d0c834cfdc345f09b94992d1b0749cabf93a029e139d37b1d1d",
+      "class_hash": "0x5a1f446663e1397617f397431f4aa742a99800097bfd3ebc2e0ad4c653ee44c",
       "init_calldata": [],
       "tag": "Warpacks-fight_system",
       "selector": "0x7627186b5551a815f66c9d473067aa0639a516500356edd8a655b0bada60e3c",
@@ -93,7 +93,7 @@
     },
     {
       "address": "0x232de7196f70da6dac957ab521853f72edf76b10c2bbca2ccfdfc5e35ce2593",
-      "class_hash": "0x797be446838f42684bb43c0803b5ae5651d81e0812bcef6f46e5d6aeb50264d",
+      "class_hash": "0x5d982d4c3c3c672e6289d2d581565d0805a68275a0f99f2704d8a8bb6907093",
       "init_calldata": [],
       "tag": "Warpacks-item_system",
       "selector": "0x751ea9e8a6e94c7a6f55b05d4658b934ec62a17cfacbb4d859826e79d290cf1",
@@ -117,7 +117,7 @@
     },
     {
       "address": "0x5de82f88168fd0816686086dd11eb120f60d385b35c66031d5d624b7a37547",
-      "class_hash": "0x57fb3722abc1db2e4c4ab1ebbe5ddbcaee85569b9ec7eaefb7f8863250d7497",
+      "class_hash": "0x708c2c47825c55994cb0ad87693bd36839fb06c23cea3cbbb52ed2df31cad18",
       "init_calldata": [],
       "tag": "Warpacks-shop_system",
       "selector": "0x4fc6e53062bad497f56645e733043df064f1a4d8bb0ce745f62942d893b8dd",
@@ -128,7 +128,7 @@
     },
     {
       "address": "0x2bf6c0fd9d786872d8cb071daaa146466a77244de1dbfad9c5819b4567df1b2",
-      "class_hash": "0x78fa998a96b85e7299bb1ca91463f05e98b4fe5751e176f044784575e3294b7",
+      "class_hash": "0x7eecabd1fc2af41de95f487a0d0ed2fd3f6d53fddbfbeb48816aee2f74c5f",
       "init_calldata": [],
       "tag": "Warpacks-storage_bridge",
       "selector": "0x1461a8205382e5328c309a4375db95a6d6039df227e3aa2d206bc7c11c7919",
@@ -140,7 +140,7 @@
     },
     {
       "address": "0x1bf08ba7685ca7dd87c12375ada60ed042fb90c1ef5b33c354c7134734c6605",
-      "class_hash": "0x5c447c8325982cd12d659eda7c54e9660c51650afc718a93b07883c2902614f",
+      "class_hash": "0x2d548349fa536459bfcf3735086d2bfb70d96f0416715628a74ef5dcf0fe286",
       "init_calldata": [],
       "tag": "Warpacks-token_factory",
       "selector": "0xcdaa91e50a017caf9facf3591aa90e27ab6760193eff6a5bdee1edbdf6de90",
@@ -149,6 +149,8 @@
         "batch_create_tokens_for_items",
         "create_gold_token",
         "reigster_gold",
+        "register_token_for_item",
+        "update_token_for_item",
         "upgrade"
       ]
     }
@@ -844,9 +846,14 @@
           "name": "is_active",
           "type": "core::bool",
           "key": false
+        },
+        {
+          "name": "is_legacy",
+          "type": "core::bool",
+          "key": false
         }
       ],
-      "class_hash": "0x140cded519ab3334f6647254c80eae6adfa5fbe42500304a5a9a588d55b1063",
+      "class_hash": "0x26407a4683d7741602ed16d9baa81c9afede6f6a27c7e1817c8b463605b62ea",
       "tag": "Warpacks-TokenRegistry",
       "selector": "0x207a87e95c8cee5fbebd6e917101406eb15b1c07c605ec60f6e66381f708b36"
     }
@@ -4103,6 +4110,10 @@
         {
           "name": "is_active",
           "type": "core::bool"
+        },
+        {
+          "name": "is_legacy",
+          "type": "core::bool"
         }
       ]
     },
@@ -4124,6 +4135,10 @@
         },
         {
           "name": "is_active",
+          "type": "core::bool"
+        },
+        {
+          "name": "is_legacy",
           "type": "core::bool"
         }
       ]
@@ -5107,6 +5122,54 @@
             {
               "name": "gold_address",
               "type": "core::starknet::contract_address::ContractAddress"
+            }
+          ],
+          "outputs": [],
+          "state_mutability": "external"
+        },
+        {
+          "type": "function",
+          "name": "register_token_for_item",
+          "inputs": [
+            {
+              "name": "item_id",
+              "type": "core::integer::u32"
+            },
+            {
+              "name": "name",
+              "type": "core::byte_array::ByteArray"
+            },
+            {
+              "name": "symbol",
+              "type": "core::byte_array::ByteArray"
+            },
+            {
+              "name": "token_address",
+              "type": "core::starknet::contract_address::ContractAddress"
+            },
+            {
+              "name": "is_legacy",
+              "type": "core::bool"
+            }
+          ],
+          "outputs": [],
+          "state_mutability": "external"
+        },
+        {
+          "type": "function",
+          "name": "update_token_for_item",
+          "inputs": [
+            {
+              "name": "item_id",
+              "type": "core::integer::u32"
+            },
+            {
+              "name": "token_address",
+              "type": "core::starknet::contract_address::ContractAddress"
+            },
+            {
+              "name": "is_legacy",
+              "type": "core::bool"
             }
           ],
           "outputs": [],

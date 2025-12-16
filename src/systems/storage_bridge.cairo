@@ -4,6 +4,17 @@ pub trait IStorageBridge<TContractState> {
     fn withdraw_item(ref self: TContractState, item_id: u32);
 }
 
+#[starknet::interface]
+trait ILegacyERC20<TState> {
+    fn transfer(ref self: TState, recipient: starknet::ContractAddress, amount: u256) -> bool;
+    fn transferFrom(
+        ref self: TState,
+        sender: starknet::ContractAddress,
+        recipient: starknet::ContractAddress,
+        amount: u256,
+    ) -> bool;
+}
+
 #[dojo::contract]
 pub mod storage_bridge {
     use dojo::event::EventStorage;
@@ -16,6 +27,7 @@ pub mod storage_bridge {
     use warpack_masters::models::TokenRegistry::TokenRegistry;
     use warpack_masters::utils::storage_pointers as ptrs;
     use super::IStorageBridge;
+    use super::{ILegacyERC20Dispatcher, ILegacyERC20DispatcherTrait};
 
     #[derive(Copy, Drop, Serde)]
     #[dojo::event(historical: true)]
@@ -64,8 +76,16 @@ pub mod storage_bridge {
 
             // Transfer tokens to the player
             let token_amount = 1 * 1_000_000_000_000_000_000;
-            let token_contract = IERC20Dispatcher { contract_address: registry.token_address };
-            token_contract.transfer(caller, token_amount);
+
+            if registry.is_legacy {
+                let token_contract = ILegacyERC20Dispatcher {
+                    contract_address: registry.token_address,
+                };
+                token_contract.transfer(caller, token_amount);
+            } else {
+                let token_contract = IERC20Dispatcher { contract_address: registry.token_address };
+                token_contract.transfer(caller, token_amount);
+            }
 
             world
                 .emit_event(
@@ -91,8 +111,16 @@ pub mod storage_bridge {
             assert(registry.is_active, 'Token not active');
 
             let token_amount = 1 * 1_000_000_000_000_000_000;
-            let token_contract = IERC20Dispatcher { contract_address: registry.token_address };
-            token_contract.transfer_from(caller, get_contract_address(), token_amount);
+
+            if registry.is_legacy {
+                let token_contract = ILegacyERC20Dispatcher {
+                    contract_address: registry.token_address,
+                };
+                token_contract.transferFrom(caller, get_contract_address(), token_amount);
+            } else {
+                let token_contract = IERC20Dispatcher { contract_address: registry.token_address };
+                token_contract.transfer_from(caller, get_contract_address(), token_amount);
+            }
 
             // Add items to player's storage
             self._add_items_to_storage(caller, item_id);

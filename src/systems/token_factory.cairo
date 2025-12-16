@@ -22,6 +22,20 @@ pub trait ITokenFactory<TContractState> {
         erc20_class_hash: ClassHash,
     ) -> ContractAddress;
     fn reigster_gold(ref self: TContractState, gold_address: ContractAddress);
+    fn register_token_for_item(
+        ref self: TContractState,
+        item_id: u32,
+        name: ByteArray,
+        symbol: ByteArray,
+        token_address: ContractAddress,
+        is_legacy: bool,
+    );
+    fn update_token_for_item(
+        ref self: TContractState,
+        item_id: u32,
+        token_address: ContractAddress,
+        is_legacy: bool,
+    );
 }
 
 #[dojo::contract]
@@ -38,6 +52,68 @@ pub mod token_factory {
 
     #[abi(embed_v0)]
     impl TokenFactoryImpl of ITokenFactory<ContractState> {
+        fn register_token_for_item(
+            ref self: ContractState,
+            item_id: u32,
+            name: ByteArray,
+            symbol: ByteArray,
+            token_address: ContractAddress,
+            is_legacy: bool,
+        ) {
+            let mut world = self.world(@"Warpacks");
+
+            let caller = get_caller_address();
+            assert(world.dispatcher.is_owner(0, caller), 'caller not world owner');
+            assert(
+                token_address != warpack_masters::utils::address::zero_address(),
+                'Token address is zero',
+            );
+
+            // Validate item exists and name matches
+            let item: Item = world.read_model(item_id);
+            assert(item.name == name, 'Item name does not match');
+
+            // Ensure registry empty
+            let existing_registry: TokenRegistry = world.read_model(item_id);
+            assert(
+                existing_registry.token_address == warpack_masters::utils::address::zero_address(),
+                'Token already exists',
+            );
+
+    let token_registry = TokenRegistry {
+                item_id,
+                name,
+                symbol,
+                token_address,
+                is_active: true,
+                is_legacy,
+            };
+            world.write_model(@token_registry);
+        }
+
+        fn update_token_for_item(
+            ref self: ContractState,
+            item_id: u32,
+            token_address: ContractAddress,
+            is_legacy: bool,
+        ) {
+            let mut world = self.world(@"Warpacks");
+
+            let caller = get_caller_address();
+            assert(world.dispatcher.is_owner(0, caller), 'caller not world owner');
+            assert(
+                token_address != warpack_masters::utils::address::zero_address(),
+                'Token address is zero',
+            );
+
+            let mut registry: TokenRegistry = world.read_model(item_id);
+            assert(registry.is_active, 'Token not registered');
+
+            registry.token_address = token_address;
+            registry.is_legacy = is_legacy;
+            world.write_model(@registry);
+        }
+
         fn create_token_for_item(
             ref self: ContractState,
             item_id: u32,
@@ -78,7 +154,12 @@ pub mod token_factory {
 
             // Register the token
             let token_registry = TokenRegistry {
-                item_id, name, symbol, token_address, is_active: true,
+                item_id,
+                name,
+                symbol,
+                token_address,
+                is_active: true,
+                is_legacy: false,
             };
 
             world.write_model(@token_registry);
@@ -414,6 +495,7 @@ pub mod token_factory {
                 symbol: "gold",
                 token_address: gold_address,
                 is_active: true,
+                is_legacy: false,
             };
 
             world.write_model(@token_registry);

@@ -9,4 +9,5 @@ pub struct TokenRegistry {
     pub symbol: ByteArray,
     pub token_address: ContractAddress,
     pub is_active: bool,
+    pub is_legacy: bool,
 }

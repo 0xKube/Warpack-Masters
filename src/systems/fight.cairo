@@ -1213,17 +1213,228 @@ mod fight_system {
                             }
                         },
                         // Armor
-                        3 => { opponentStatus.armor += on_hit_item_stack; },
+                        3 => {
+                             opponentStatus.armor += on_hit_item_stack;
+                             battleLogsCount += 1;
+                             let (player_health, dummy_health, player_stamina, dummy_stamina) = if *attackStatus.curr_item_belongs == PLAYER {
+                                 (charStatus.hp, opponentStatus.hp, charStatus.stamina, opponentStatus.stamina)
+                             } else {
+                                 (opponentStatus.hp, charStatus.hp, opponentStatus.stamina, charStatus.stamina)
+                             };
+
+                             world.emit_event(
+                                 @BattleLogDetail {
+                                     player: *attackStatus.player,
+                                     battleLogId: *attackStatus.battleLogCounterCount,
+                                     id: battleLogsCount,
+                                     whoTriggered: *attackStatus.opponent,
+                                     whichItem: 0,
+                                     isDodged: false,
+                                     effectType: on_hit_item_type,
+                                     effectStacks: on_hit_item_stack,
+                                     player_remaining_health: player_health,
+                                     dummy_remaining_health: dummy_health,
+                                     player_stamina: player_stamina,
+                                     dummy_stamina: dummy_stamina,
+                                     player_stacks: if *attackStatus.curr_item_belongs == PLAYER {
+                                         (charStatus.armor, charStatus.regen, charStatus.reflect, charStatus.empower, charStatus.poison, charStatus.vampirism)
+                                     } else {
+                                         (opponentStatus.armor, opponentStatus.regen, opponentStatus.reflect, opponentStatus.empower, opponentStatus.poison, opponentStatus.vampirism)
+                                     },
+                                     dummy_stacks: if *attackStatus.curr_item_belongs == PLAYER {
+                                         (opponentStatus.armor, opponentStatus.regen, opponentStatus.reflect, opponentStatus.empower, opponentStatus.poison, opponentStatus.vampirism)
+                                     } else {
+                                         (charStatus.armor, charStatus.regen, charStatus.reflect, charStatus.empower, charStatus.poison, charStatus.vampirism)
+                                     },
+                                 }
+                             );
+                        },
                         // Regen
-                        4 => { opponentStatus.regen += on_hit_item_stack; },
+                        4 => {
+                             opponentStatus.regen += on_hit_item_stack;
+                             battleLogsCount += 1;
+                             let (player_health, dummy_health, player_stamina, dummy_stamina) = if *attackStatus.curr_item_belongs == PLAYER {
+                                 (charStatus.hp, opponentStatus.hp, charStatus.stamina, opponentStatus.stamina)
+                             } else {
+                                 (opponentStatus.hp, charStatus.hp, opponentStatus.stamina, charStatus.stamina)
+                             };
+
+                             world.emit_event(
+                                 @BattleLogDetail {
+                                     player: *attackStatus.player,
+                                     battleLogId: *attackStatus.battleLogCounterCount,
+                                     id: battleLogsCount,
+                                     whoTriggered: *attackStatus.opponent,
+                                     whichItem: 0,
+                                     isDodged: false,
+                                     effectType: on_hit_item_type,
+                                     effectStacks: on_hit_item_stack,
+                                     player_remaining_health: player_health,
+                                     dummy_remaining_health: dummy_health,
+                                     player_stamina: player_stamina,
+                                     dummy_stamina: dummy_stamina,
+                                     player_stacks: if *attackStatus.curr_item_belongs == PLAYER {
+                                         (charStatus.armor, charStatus.regen, charStatus.reflect, charStatus.empower, charStatus.poison, charStatus.vampirism)
+                                     } else {
+                                         (opponentStatus.armor, opponentStatus.regen, opponentStatus.reflect, opponentStatus.empower, opponentStatus.poison, opponentStatus.vampirism)
+                                     },
+                                     dummy_stacks: if *attackStatus.curr_item_belongs == PLAYER {
+                                         (opponentStatus.armor, opponentStatus.regen, opponentStatus.reflect, opponentStatus.empower, opponentStatus.poison, opponentStatus.vampirism)
+                                     } else {
+                                         (charStatus.armor, charStatus.regen, charStatus.reflect, charStatus.empower, charStatus.poison, charStatus.vampirism)
+                                     },
+                                 }
+                             );
+                        },
                         // Reflect
-                        5 => { opponentStatus.reflect += on_hit_item_stack; },
+                        5 => {
+                             opponentStatus.reflect += on_hit_item_stack;
+                             battleLogsCount += 1;
+                             let (player_health, dummy_health, player_stamina, dummy_stamina) = if *attackStatus.curr_item_belongs == PLAYER {
+                                 (charStatus.hp, opponentStatus.hp, charStatus.stamina, opponentStatus.stamina)
+                             } else {
+                                 (opponentStatus.hp, charStatus.hp, opponentStatus.stamina, charStatus.stamina)
+                             };
+
+                             world.emit_event(
+                                 @BattleLogDetail {
+                                     player: *attackStatus.player,
+                                     battleLogId: *attackStatus.battleLogCounterCount,
+                                     id: battleLogsCount,
+                                     whoTriggered: *attackStatus.opponent,
+                                     whichItem: 0,
+                                     isDodged: false,
+                                     effectType: on_hit_item_type,
+                                     effectStacks: on_hit_item_stack,
+                                     player_remaining_health: player_health,
+                                     dummy_remaining_health: dummy_health,
+                                     player_stamina: player_stamina,
+                                     dummy_stamina: dummy_stamina,
+                                     player_stacks: if *attackStatus.curr_item_belongs == PLAYER {
+                                         (charStatus.armor, charStatus.regen, charStatus.reflect, charStatus.empower, charStatus.poison, charStatus.vampirism)
+                                     } else {
+                                         (opponentStatus.armor, opponentStatus.regen, opponentStatus.reflect, opponentStatus.empower, opponentStatus.poison, opponentStatus.vampirism)
+                                     },
+                                     dummy_stacks: if *attackStatus.curr_item_belongs == PLAYER {
+                                         (opponentStatus.armor, opponentStatus.regen, opponentStatus.reflect, opponentStatus.empower, opponentStatus.poison, opponentStatus.vampirism)
+                                     } else {
+                                         (charStatus.armor, charStatus.regen, charStatus.reflect, charStatus.empower, charStatus.poison, charStatus.vampirism)
+                                     },
+                                 }
+                             );
+                        },
                         // Poison
-                        6 => { charStatus.poison += on_hit_item_stack; },
+                        6 => {
+                             charStatus.poison += on_hit_item_stack;
+                             battleLogsCount += 1;
+                             let (player_health, dummy_health, player_stamina, dummy_stamina) = if *attackStatus.curr_item_belongs == PLAYER {
+                                 (charStatus.hp, opponentStatus.hp, charStatus.stamina, opponentStatus.stamina)
+                             } else {
+                                 (opponentStatus.hp, charStatus.hp, opponentStatus.stamina, charStatus.stamina)
+                             };
+
+                             world.emit_event(
+                                 @BattleLogDetail {
+                                     player: *attackStatus.player,
+                                     battleLogId: *attackStatus.battleLogCounterCount,
+                                     id: battleLogsCount,
+                                     // Poison applies to attacker!
+                                     whoTriggered: *attackStatus.opponent,
+                                     whichItem: 0,
+                                     isDodged: false,
+                                     effectType: on_hit_item_type,
+                                     effectStacks: on_hit_item_stack,
+                                     player_remaining_health: player_health,
+                                     dummy_remaining_health: dummy_health,
+                                     player_stamina: player_stamina,
+                                     dummy_stamina: dummy_stamina,
+                                     player_stacks: if *attackStatus.curr_item_belongs == PLAYER {
+                                         (charStatus.armor, charStatus.regen, charStatus.reflect, charStatus.empower, charStatus.poison, charStatus.vampirism)
+                                     } else {
+                                         (opponentStatus.armor, opponentStatus.regen, opponentStatus.reflect, opponentStatus.empower, opponentStatus.poison, opponentStatus.vampirism)
+                                     },
+                                     dummy_stacks: if *attackStatus.curr_item_belongs == PLAYER {
+                                         (opponentStatus.armor, opponentStatus.regen, opponentStatus.reflect, opponentStatus.empower, opponentStatus.poison, opponentStatus.vampirism)
+                                     } else {
+                                         (charStatus.armor, charStatus.regen, charStatus.reflect, charStatus.empower, charStatus.poison, charStatus.vampirism)
+                                     },
+                                 }
+                             );
+                        },
                         // Empower
-                        7 => { opponentStatus.empower += on_hit_item_stack; },
+                        7 => {
+                             opponentStatus.empower += on_hit_item_stack;
+                             battleLogsCount += 1;
+                             let (player_health, dummy_health, player_stamina, dummy_stamina) = if *attackStatus.curr_item_belongs == PLAYER {
+                                 (charStatus.hp, opponentStatus.hp, charStatus.stamina, opponentStatus.stamina)
+                             } else {
+                                 (opponentStatus.hp, charStatus.hp, opponentStatus.stamina, charStatus.stamina)
+                             };
+
+                             world.emit_event(
+                                 @BattleLogDetail {
+                                     player: *attackStatus.player,
+                                     battleLogId: *attackStatus.battleLogCounterCount,
+                                     id: battleLogsCount,
+                                     whoTriggered: *attackStatus.opponent,
+                                     whichItem: 0,
+                                     isDodged: false,
+                                     effectType: on_hit_item_type,
+                                     effectStacks: on_hit_item_stack,
+                                     player_remaining_health: player_health,
+                                     dummy_remaining_health: dummy_health,
+                                     player_stamina: player_stamina,
+                                     dummy_stamina: dummy_stamina,
+                                     player_stacks: if *attackStatus.curr_item_belongs == PLAYER {
+                                         (charStatus.armor, charStatus.regen, charStatus.reflect, charStatus.empower, charStatus.poison, charStatus.vampirism)
+                                     } else {
+                                         (opponentStatus.armor, opponentStatus.regen, opponentStatus.reflect, opponentStatus.empower, opponentStatus.poison, opponentStatus.vampirism)
+                                     },
+                                     dummy_stacks: if *attackStatus.curr_item_belongs == PLAYER {
+                                         (opponentStatus.armor, opponentStatus.regen, opponentStatus.reflect, opponentStatus.empower, opponentStatus.poison, opponentStatus.vampirism)
+                                     } else {
+                                         (charStatus.armor, charStatus.regen, charStatus.reflect, charStatus.empower, charStatus.poison, charStatus.vampirism)
+                                     },
+                                 }
+                             );
+                        },
                         // Vampirism
-                        8 => { opponentStatus.vampirism += on_hit_item_stack; },
+                        8 => {
+                             opponentStatus.vampirism += on_hit_item_stack;
+                             battleLogsCount += 1;
+                             let (player_health, dummy_health, player_stamina, dummy_stamina) = if *attackStatus.curr_item_belongs == PLAYER {
+                                 (charStatus.hp, opponentStatus.hp, charStatus.stamina, opponentStatus.stamina)
+                             } else {
+                                 (opponentStatus.hp, charStatus.hp, opponentStatus.stamina, charStatus.stamina)
+                             };
+
+                             world.emit_event(
+                                 @BattleLogDetail {
+                                     player: *attackStatus.player,
+                                     battleLogId: *attackStatus.battleLogCounterCount,
+                                     id: battleLogsCount,
+                                     whoTriggered: *attackStatus.opponent,
+                                     whichItem: 0,
+                                     isDodged: false,
+                                     effectType: on_hit_item_type,
+                                     effectStacks: on_hit_item_stack,
+                                     player_remaining_health: player_health,
+                                     dummy_remaining_health: dummy_health,
+                                     player_stamina: player_stamina,
+                                     dummy_stamina: dummy_stamina,
+                                     player_stacks: if *attackStatus.curr_item_belongs == PLAYER {
+                                         (charStatus.armor, charStatus.regen, charStatus.reflect, charStatus.empower, charStatus.poison, charStatus.vampirism)
+                                     } else {
+                                         (opponentStatus.armor, opponentStatus.regen, opponentStatus.reflect, opponentStatus.empower, opponentStatus.poison, opponentStatus.vampirism)
+                                     },
+                                     dummy_stacks: if *attackStatus.curr_item_belongs == PLAYER {
+                                         (opponentStatus.armor, opponentStatus.regen, opponentStatus.reflect, opponentStatus.empower, opponentStatus.poison, opponentStatus.vampirism)
+                                     } else {
+                                         (charStatus.armor, charStatus.regen, charStatus.reflect, charStatus.empower, charStatus.poison, charStatus.vampirism)
+                                     },
+                                 }
+                             );
+                        },
                         _ => { assert(false, 'effect type not valid'); },
                     }
                 }
@@ -1414,17 +1625,228 @@ mod fight_system {
                             }
                         },
                         // Armor
-                        3 => { charStatus.armor += on_attack_item_stack; },
+                        3 => {
+                             charStatus.armor += on_attack_item_stack;
+                             battleLogsCount += 1;
+                             let (player_health, dummy_health, player_stamina, dummy_stamina) = if *attackStatus.curr_item_belongs == PLAYER {
+                                 (charStatus.hp, opponentStatus.hp, charStatus.stamina, opponentStatus.stamina)
+                             } else {
+                                 (opponentStatus.hp, charStatus.hp, opponentStatus.stamina, charStatus.stamina)
+                             };
+
+                             world.emit_event(
+                                 @BattleLogDetail {
+                                     player: *attackStatus.player,
+                                     battleLogId: *attackStatus.battleLogCounterCount,
+                                     id: battleLogsCount,
+                                     whoTriggered: *attackStatus.curr_item_belongs,
+                                     whichItem: 0,
+                                     isDodged: false,
+                                     effectType: on_attack_item_type,
+                                     effectStacks: on_attack_item_stack,
+                                     player_remaining_health: player_health,
+                                     dummy_remaining_health: dummy_health,
+                                     player_stamina: player_stamina,
+                                     dummy_stamina: dummy_stamina,
+                                     player_stacks: if *attackStatus.curr_item_belongs == PLAYER {
+                                         (charStatus.armor, charStatus.regen, charStatus.reflect, charStatus.empower, charStatus.poison, charStatus.vampirism)
+                                     } else {
+                                         (opponentStatus.armor, opponentStatus.regen, opponentStatus.reflect, opponentStatus.empower, opponentStatus.poison, opponentStatus.vampirism)
+                                     },
+                                     dummy_stacks: if *attackStatus.curr_item_belongs == PLAYER {
+                                         (opponentStatus.armor, opponentStatus.regen, opponentStatus.reflect, opponentStatus.empower, opponentStatus.poison, opponentStatus.vampirism)
+                                     } else {
+                                         (charStatus.armor, charStatus.regen, charStatus.reflect, charStatus.empower, charStatus.poison, charStatus.vampirism)
+                                     },
+                                 }
+                             );
+                        },
                         // Regen
-                        4 => { charStatus.regen += on_attack_item_stack; },
+                        4 => {
+                             charStatus.regen += on_attack_item_stack;
+                             battleLogsCount += 1;
+                             let (player_health, dummy_health, player_stamina, dummy_stamina) = if *attackStatus.curr_item_belongs == PLAYER {
+                                 (charStatus.hp, opponentStatus.hp, charStatus.stamina, opponentStatus.stamina)
+                             } else {
+                                 (opponentStatus.hp, charStatus.hp, opponentStatus.stamina, charStatus.stamina)
+                             };
+
+                             world.emit_event(
+                                 @BattleLogDetail {
+                                     player: *attackStatus.player,
+                                     battleLogId: *attackStatus.battleLogCounterCount,
+                                     id: battleLogsCount,
+                                     whoTriggered: *attackStatus.curr_item_belongs,
+                                     whichItem: 0,
+                                     isDodged: false,
+                                     effectType: on_attack_item_type,
+                                     effectStacks: on_attack_item_stack,
+                                     player_remaining_health: player_health,
+                                     dummy_remaining_health: dummy_health,
+                                     player_stamina: player_stamina,
+                                     dummy_stamina: dummy_stamina,
+                                     player_stacks: if *attackStatus.curr_item_belongs == PLAYER {
+                                         (charStatus.armor, charStatus.regen, charStatus.reflect, charStatus.empower, charStatus.poison, charStatus.vampirism)
+                                     } else {
+                                         (opponentStatus.armor, opponentStatus.regen, opponentStatus.reflect, opponentStatus.empower, opponentStatus.poison, opponentStatus.vampirism)
+                                     },
+                                     dummy_stacks: if *attackStatus.curr_item_belongs == PLAYER {
+                                         (opponentStatus.armor, opponentStatus.regen, opponentStatus.reflect, opponentStatus.empower, opponentStatus.poison, opponentStatus.vampirism)
+                                     } else {
+                                         (charStatus.armor, charStatus.regen, charStatus.reflect, charStatus.empower, charStatus.poison, charStatus.vampirism)
+                                     },
+                                 }
+                             );
+                        },
                         // Reflect
-                        5 => { charStatus.reflect += on_attack_item_stack; },
+                        5 => {
+                             charStatus.reflect += on_attack_item_stack;
+                             battleLogsCount += 1;
+                             let (player_health, dummy_health, player_stamina, dummy_stamina) = if *attackStatus.curr_item_belongs == PLAYER {
+                                 (charStatus.hp, opponentStatus.hp, charStatus.stamina, opponentStatus.stamina)
+                             } else {
+                                 (opponentStatus.hp, charStatus.hp, opponentStatus.stamina, charStatus.stamina)
+                             };
+
+                             world.emit_event(
+                                 @BattleLogDetail {
+                                     player: *attackStatus.player,
+                                     battleLogId: *attackStatus.battleLogCounterCount,
+                                     id: battleLogsCount,
+                                     whoTriggered: *attackStatus.curr_item_belongs,
+                                     whichItem: 0,
+                                     isDodged: false,
+                                     effectType: on_attack_item_type,
+                                     effectStacks: on_attack_item_stack,
+                                     player_remaining_health: player_health,
+                                     dummy_remaining_health: dummy_health,
+                                     player_stamina: player_stamina,
+                                     dummy_stamina: dummy_stamina,
+                                     player_stacks: if *attackStatus.curr_item_belongs == PLAYER {
+                                         (charStatus.armor, charStatus.regen, charStatus.reflect, charStatus.empower, charStatus.poison, charStatus.vampirism)
+                                     } else {
+                                         (opponentStatus.armor, opponentStatus.regen, opponentStatus.reflect, opponentStatus.empower, opponentStatus.poison, opponentStatus.vampirism)
+                                     },
+                                     dummy_stacks: if *attackStatus.curr_item_belongs == PLAYER {
+                                         (opponentStatus.armor, opponentStatus.regen, opponentStatus.reflect, opponentStatus.empower, opponentStatus.poison, opponentStatus.vampirism)
+                                     } else {
+                                         (charStatus.armor, charStatus.regen, charStatus.reflect, charStatus.empower, charStatus.poison, charStatus.vampirism)
+                                     },
+                                 }
+                             );
+                        },
                         // Poison
-                        6 => { opponentStatus.poison += on_attack_item_stack; },
+                        6 => {
+                             opponentStatus.poison += on_attack_item_stack;
+                             battleLogsCount += 1;
+                             let (player_health, dummy_health, player_stamina, dummy_stamina) = if *attackStatus.curr_item_belongs == PLAYER {
+                                 (charStatus.hp, opponentStatus.hp, charStatus.stamina, opponentStatus.stamina)
+                             } else {
+                                 (opponentStatus.hp, charStatus.hp, opponentStatus.stamina, charStatus.stamina)
+                             };
+
+                             world.emit_event(
+                                 @BattleLogDetail {
+                                     player: *attackStatus.player,
+                                     battleLogId: *attackStatus.battleLogCounterCount,
+                                     id: battleLogsCount,
+                                     // Poison applies to Defender (opponent)!
+                                     whoTriggered: *attackStatus.curr_item_belongs,
+                                     whichItem: 0,
+                                     isDodged: false,
+                                     effectType: on_attack_item_type,
+                                     effectStacks: on_attack_item_stack,
+                                     player_remaining_health: player_health,
+                                     dummy_remaining_health: dummy_health,
+                                     player_stamina: player_stamina,
+                                     dummy_stamina: dummy_stamina,
+                                     player_stacks: if *attackStatus.curr_item_belongs == PLAYER {
+                                         (charStatus.armor, charStatus.regen, charStatus.reflect, charStatus.empower, charStatus.poison, charStatus.vampirism)
+                                     } else {
+                                         (opponentStatus.armor, opponentStatus.regen, opponentStatus.reflect, opponentStatus.empower, opponentStatus.poison, opponentStatus.vampirism)
+                                     },
+                                     dummy_stacks: if *attackStatus.curr_item_belongs == PLAYER {
+                                         (opponentStatus.armor, opponentStatus.regen, opponentStatus.reflect, opponentStatus.empower, opponentStatus.poison, opponentStatus.vampirism)
+                                     } else {
+                                         (charStatus.armor, charStatus.regen, charStatus.reflect, charStatus.empower, charStatus.poison, charStatus.vampirism)
+                                     },
+                                 }
+                             );
+                        },
                         // Empower
-                        7 => { charStatus.empower += on_attack_item_stack; },
+                        7 => {
+                             charStatus.empower += on_attack_item_stack;
+                             battleLogsCount += 1;
+                             let (player_health, dummy_health, player_stamina, dummy_stamina) = if *attackStatus.curr_item_belongs == PLAYER {
+                                 (charStatus.hp, opponentStatus.hp, charStatus.stamina, opponentStatus.stamina)
+                             } else {
+                                 (opponentStatus.hp, charStatus.hp, opponentStatus.stamina, charStatus.stamina)
+                             };
+
+                             world.emit_event(
+                                 @BattleLogDetail {
+                                     player: *attackStatus.player,
+                                     battleLogId: *attackStatus.battleLogCounterCount,
+                                     id: battleLogsCount,
+                                     whoTriggered: *attackStatus.curr_item_belongs,
+                                     whichItem: 0,
+                                     isDodged: false,
+                                     effectType: on_attack_item_type,
+                                     effectStacks: on_attack_item_stack,
+                                     player_remaining_health: player_health,
+                                     dummy_remaining_health: dummy_health,
+                                     player_stamina: player_stamina,
+                                     dummy_stamina: dummy_stamina,
+                                     player_stacks: if *attackStatus.curr_item_belongs == PLAYER {
+                                         (charStatus.armor, charStatus.regen, charStatus.reflect, charStatus.empower, charStatus.poison, charStatus.vampirism)
+                                     } else {
+                                         (opponentStatus.armor, opponentStatus.regen, opponentStatus.reflect, opponentStatus.empower, opponentStatus.poison, opponentStatus.vampirism)
+                                     },
+                                     dummy_stacks: if *attackStatus.curr_item_belongs == PLAYER {
+                                         (opponentStatus.armor, opponentStatus.regen, opponentStatus.reflect, opponentStatus.empower, opponentStatus.poison, opponentStatus.vampirism)
+                                     } else {
+                                         (charStatus.armor, charStatus.regen, charStatus.reflect, charStatus.empower, charStatus.poison, charStatus.vampirism)
+                                     },
+                                 }
+                             );
+                        },
                         // Vampirism
-                        8 => { charStatus.vampirism += on_attack_item_stack; },
+                        8 => {
+                             charStatus.vampirism += on_attack_item_stack;
+                             battleLogsCount += 1;
+                             let (player_health, dummy_health, player_stamina, dummy_stamina) = if *attackStatus.curr_item_belongs == PLAYER {
+                                 (charStatus.hp, opponentStatus.hp, charStatus.stamina, opponentStatus.stamina)
+                             } else {
+                                 (opponentStatus.hp, charStatus.hp, opponentStatus.stamina, charStatus.stamina)
+                             };
+
+                             world.emit_event(
+                                 @BattleLogDetail {
+                                     player: *attackStatus.player,
+                                     battleLogId: *attackStatus.battleLogCounterCount,
+                                     id: battleLogsCount,
+                                     whoTriggered: *attackStatus.curr_item_belongs,
+                                     whichItem: 0,
+                                     isDodged: false,
+                                     effectType: on_attack_item_type,
+                                     effectStacks: on_attack_item_stack,
+                                     player_remaining_health: player_health,
+                                     dummy_remaining_health: dummy_health,
+                                     player_stamina: player_stamina,
+                                     dummy_stamina: dummy_stamina,
+                                     player_stacks: if *attackStatus.curr_item_belongs == PLAYER {
+                                         (charStatus.armor, charStatus.regen, charStatus.reflect, charStatus.empower, charStatus.poison, charStatus.vampirism)
+                                     } else {
+                                         (opponentStatus.armor, opponentStatus.regen, opponentStatus.reflect, opponentStatus.empower, opponentStatus.poison, opponentStatus.vampirism)
+                                     },
+                                     dummy_stacks: if *attackStatus.curr_item_belongs == PLAYER {
+                                         (opponentStatus.armor, opponentStatus.regen, opponentStatus.reflect, opponentStatus.empower, opponentStatus.poison, opponentStatus.vampirism)
+                                     } else {
+                                         (charStatus.armor, charStatus.regen, charStatus.reflect, charStatus.empower, charStatus.poison, charStatus.vampirism)
+                                     },
+                                 }
+                             );
+                        },
                         _ => { assert(false, 'effect type not valid'); },
                     }
                 }
