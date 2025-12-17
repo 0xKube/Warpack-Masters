@@ -4,6 +4,7 @@ pub mod constants {
     pub const INIT_GOLD: u32 = 8;
     pub const INIT_HEALTH: u32 = 25;
     pub const INIT_STAMINA: u8 = 100;
+    pub const MAX_LOSS: u32 = 5;
 
     pub const ITEMS_COUNTER_ID: felt252 = 'ITEMS_COUNTER_ID';
     pub const RECIPES_COUNTER_ID: felt252 = 'RECIPES_COUNTER_ID';

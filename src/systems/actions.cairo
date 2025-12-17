@@ -34,6 +34,7 @@ mod actions {
     use starknet::{ContractAddress, get_block_timestamp, get_caller_address};
     use warpack_masters::constants::constants::{
         GAME_CONFIG_ID, GOLD_ITEM_ID, GRID_X, GRID_Y, INIT_GOLD, INIT_HEALTH, INIT_STAMINA,
+        MAX_LOSS,
     };
     use warpack_masters::externals::interface::{
         IERC20MINTABLEDispatcher, IERC20MINTABLEDispatcherTrait,
@@ -122,7 +123,7 @@ mod actions {
 
             let char: Character = world.read_model(player);
 
-            assert(char.loss >= 3, 'loss not reached');
+            assert(char.loss >= MAX_LOSS, 'loss not reached');
 
             // Продаём инвентарь/сторадж за золото, пока фронт ещё может показать прошлую битву.
             helpers::auto_sell_player_items(ref world, player);

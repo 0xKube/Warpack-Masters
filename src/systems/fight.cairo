@@ -12,6 +12,7 @@ mod fight_system {
     use starknet::{ContractAddress, get_block_timestamp, get_caller_address};
     use warpack_masters::constants::constants::{
         EFFECT_POISON, EFFECT_REFLECT, EFFECT_REGEN, EFFECT_VAMPIRISM, GOLD_ITEM_ID, INIT_STAMINA,
+        MAX_LOSS,
     };
     use warpack_masters::externals::interface::{
         IERC20MINTABLEDispatcher, IERC20MINTABLEDispatcherTrait,
@@ -41,7 +42,7 @@ mod fight_system {
 
             let mut character: Character = world.read_model(player);
 
-            assert(character.loss < 3, 'max loss reached');
+            assert(character.loss < MAX_LOSS, 'max loss reached');
 
             let dummyCharCounter: DummyCharacterCounter = world.read_model(character.wins);
             assert(dummyCharCounter.count > 0, 'no dummy created');

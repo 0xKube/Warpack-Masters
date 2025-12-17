@@ -9,7 +9,7 @@ mod tests {
     use openzeppelin_interfaces::erc20::{IERC20Dispatcher, IERC20DispatcherTrait};
     use starknet::testing::{set_block_timestamp, set_contract_address};
     use warpack_masters::constants::constants::{
-        GAME_CONFIG_ID, INIT_GOLD, INIT_HEALTH, REBIRTH_FEE,
+        GAME_CONFIG_ID, INIT_GOLD, INIT_HEALTH, MAX_LOSS, REBIRTH_FEE,
     };
     use warpack_masters::externals::erc20::ERC20Token;
     use warpack_masters::models::Character::{
@@ -120,7 +120,7 @@ mod tests {
 
         set_contract_address(default_address);
         let mut char: Character = world.read_model(alice);
-        char.loss = 5;
+        char.loss = MAX_LOSS;
         char.rating = 300;
         char.totalWins = 10;
         char.totalLoss = 4;
@@ -284,7 +284,7 @@ mod tests {
         action_system.spawn('alice', WMClass::Warlock);
 
         let mut char: Character = world.read_model(alice);
-        char.loss = 4;
+        char.loss = MAX_LOSS - 1;
         world.write_model(@char);
 
         action_system.rebirth();
@@ -315,7 +315,7 @@ mod tests {
 
         set_contract_address(default_address);
         let mut char: Character = world.read_model(alice);
-        char.loss = 5;
+        char.loss = MAX_LOSS;
         world.write_model(@char);
 
         set_contract_address(bob);
@@ -369,7 +369,7 @@ mod tests {
         set_contract_address(default_address);
 
         let mut char: Character = world.read_model(alice);
-        char.loss = 5;
+        char.loss = MAX_LOSS;
         world.write_model(@char);
 
         set_contract_address(alice);
@@ -422,7 +422,7 @@ mod tests {
         assert(nameRecord.player == alice, 'player should be alice');
 
         let mut char: Character = world.read_model(alice);
-        char.loss = 5;
+        char.loss = MAX_LOSS;
         world.write_model(@char);
 
         set_contract_address(alice);

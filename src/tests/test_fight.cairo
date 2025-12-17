@@ -7,7 +7,7 @@ mod tests {
         spawn_test_world,
     };
     use starknet::testing::set_contract_address;
-    use warpack_masters::constants::constants::{INIT_GOLD, INIT_HEALTH};
+    use warpack_masters::constants::constants::{INIT_GOLD, INIT_HEALTH, MAX_LOSS};
     use warpack_masters::models::Character::{
         Character, CharacterName, PLAYER, WMClass, m_Character, m_CharacterName,
     };
@@ -191,7 +191,7 @@ mod tests {
 
         // Update character loss count
         let mut char: Character = world.read_model(alice);
-        char.loss = 5;
+        char.loss = MAX_LOSS;
         world.write_model(@char);
 
         fight_system.match_dummy();
@@ -377,4 +377,3 @@ mod tests {
         }
     }
 }
-
