@@ -1311,7 +1311,7 @@ pub mod Dummy11 {
 pub mod Dummy12 {
     use warpack_masters::items::{
         AugmentedDagger, Backpack, Crossbow, HealingPotion, MailArmor, Pack, PlagueFlower, Poison,
-        Pouch, Satchel,
+        Pouch, Satchel, Shield,
     };
     use warpack_masters::models::Character::WMClass;
     use warpack_masters::models::CharacterItem::Position;
