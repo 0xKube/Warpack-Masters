@@ -1397,7 +1397,7 @@ pub mod Dummy12 {
         items
             .append(
                 PredefinedItem {
-                    itemId: PlagueFlower::id,
+                    itemId: Shield::id,
                     position: Position { x: 2, y: 4 },
                     rotation: 0,
                     plugins: array![].span(),
@@ -2961,6 +2961,156 @@ pub mod Dummy20 {
                     position: Position { x: 4, y: 5 },
                     rotation: 0,
                     plugins: array![].span(),
+                },
+            );
+
+        items
+    }
+}
+
+pub mod Dummy21 {
+    use warpack_masters::items::{
+        AugmentedDagger, Backpack, Crossbow, HealingPotion, MailArmor, Pack, PlagueFlower, Poison,
+        Pouch, Satchel,
+    };
+    use warpack_masters::models::Character::WMClass;
+    use warpack_masters::models::CharacterItem::Position;
+    use super::PredefinedItem;
+
+    const level: u32 = 21;
+    const name: felt252 = 'Goldie';
+    const wmClass: WMClass = WMClass::Warlock;
+    const health: u32 = 80;
+
+    fn get_items() -> Array<PredefinedItem> {
+        let mut items: Array<PredefinedItem> = array![];
+        items
+            .append(
+                PredefinedItem {
+                    itemId: Backpack::id,
+                    position: Position { x: 4, y: 2 },
+                    rotation: 0,
+                    plugins: array![].span(),
+                },
+            );
+
+        items
+            .append(
+                PredefinedItem {
+                    itemId: Pack::id,
+                    position: Position { x: 2, y: 2 },
+                    rotation: 0,
+                    plugins: array![].span(),
+                },
+            );
+
+        items
+            .append(
+                PredefinedItem {
+                    itemId: Pack::id,
+                    position: Position { x: 2, y: 4 },
+                    rotation: 0,
+                    plugins: array![].span(),
+                },
+            );
+
+        items
+            .append(
+                PredefinedItem {
+                    itemId: Pack::id,
+                    position: Position { x: 4, y: 0 },
+                    rotation: 0,
+                    plugins: array![].span(),
+                },
+            );
+
+        items
+            .append(
+                PredefinedItem {
+                    itemId: Satchel::id,
+                    position: Position { x: 4, y: 5 },
+                    rotation: 0,
+                    plugins: array![].span(),
+                },
+            );
+
+        items
+            .append(
+                PredefinedItem {
+                    itemId: Pouch::id,
+                    position: Position { x: 6, y: 5 },
+                    rotation: 0,
+                    plugins: array![].span(),
+                },
+            );
+
+        items
+            .append(
+                PredefinedItem {
+                    itemId: PlagueFlower::id,
+                    position: Position { x: 2, y: 2 },
+                    rotation: 0,
+                    plugins: array![].span(),
+                },
+            );
+
+        items
+            .append(
+                PredefinedItem {
+                    itemId: PlagueFlower::id,
+                    position: Position { x: 2, y: 4 },
+                    rotation: 0,
+                    plugins: array![].span(),
+                },
+            );
+
+        items
+            .append(
+                PredefinedItem {
+                    itemId: AugmentedDagger::id,
+                    position: Position { x: 4, y: 3 },
+                    rotation: 0,
+                    plugins: array![].span(),
+                },
+            );
+
+        items
+            .append(
+                PredefinedItem {
+                    itemId: MailArmor::id,
+                    position: Position { x: 4, y: 0 },
+                    rotation: 0,
+                    plugins: array![].span(),
+                },
+            );
+
+        items
+            .append(
+                PredefinedItem {
+                    itemId: HealingPotion::id,
+                    position: Position { x: 6, y: 5 },
+                    rotation: 0,
+                    plugins: array![].span(),
+                },
+            );
+
+        items
+            .append(
+                PredefinedItem {
+                    itemId: Poison::id,
+                    position: Position { x: 4, y: 5 },
+                    rotation: 0,
+                    plugins: array![].span(),
+                },
+            );
+
+        items
+            .append(
+                PredefinedItem {
+                    itemId: Crossbow::id,
+                    position: Position { x: 5, y: 4 },
+                    rotation: 0,
+                    plugins: array![(6, 55, 1)].span(),
                 },
             );
 

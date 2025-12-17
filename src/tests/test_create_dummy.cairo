@@ -13,8 +13,8 @@ mod tests {
     use warpack_masters::constants::constants::{INIT_HEALTH, INIT_STAMINA};
     use warpack_masters::prdefined_dummies::{
         Dummy0, Dummy1, Dummy10, Dummy11, Dummy12, Dummy13, Dummy14, Dummy15, Dummy16, Dummy17,
-        Dummy18, Dummy19, Dummy2, Dummy20, Dummy3, Dummy4, Dummy5, Dummy6, Dummy7, Dummy8, Dummy9,
-        PredefinedItem,
+        Dummy18, Dummy19, Dummy2, Dummy20, Dummy21, Dummy3, Dummy4, Dummy5, Dummy6, Dummy7,
+        Dummy8, Dummy9, PredefinedItem,
     };
 
     // import test utils
@@ -415,6 +415,21 @@ mod tests {
             Dummy20::health,
             Dummy20::get_items(),
         );
+
+        let dummy21 = warpack_masters::utils::address::address_from(0x016);
+        create_dummy(
+            world,
+            action_system_address,
+            action_system,
+            item_system,
+            dummy_system,
+            dummy21,
+            Dummy21::level,
+            Dummy21::name,
+            Dummy21::wmClass,
+            Dummy21::health,
+            Dummy21::get_items(),
+        );
     }
 
     fn create_dummy(
@@ -511,4 +526,3 @@ mod tests {
         println!("{}", str);
     }
 }
-
