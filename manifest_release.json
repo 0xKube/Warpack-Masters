@@ -34,7 +34,7 @@
   "contracts": [
     {
       "address": "0x6cf6450c132752fbf3ace05d82f5d61fac097a6f62d0abd0b2b04a204ac16e6",
-      "class_hash": "0x9dacbf798e85814dac5ce6665e17b392a7d2267994571dc7424c42688a302a",
+      "class_hash": "0x3dabf3b4d65b72c184c9bd6c39e16ddcbf232fbd63501aa4104498f058fa1e4",
       "init_calldata": [],
       "tag": "Warpacks-actions",
       "selector": "0x72c10aa5b1ff0c1599517beb7189673c59fa924c4753b33bab057a8c6200cb1",
@@ -81,7 +81,7 @@
     },
     {
       "address": "0x1e9c91163b28a0cf2ebeb8311df4f57f7788b8f9bc10707d8f5243df57d97ea",
-      "class_hash": "0x5a1f446663e1397617f397431f4aa742a99800097bfd3ebc2e0ad4c653ee44c",
+      "class_hash": "0x4a14c3163ee452f98a9e25768c18b5d9fefa81184088300a6ab6590381afa9e",
       "init_calldata": [],
       "tag": "Warpacks-fight_system",
       "selector": "0x7627186b5551a815f66c9d473067aa0639a516500356edd8a655b0bada60e3c",
@@ -93,7 +93,7 @@
     },
     {
       "address": "0x232de7196f70da6dac957ab521853f72edf76b10c2bbca2ccfdfc5e35ce2593",
-      "class_hash": "0x5d982d4c3c3c672e6289d2d581565d0805a68275a0f99f2704d8a8bb6907093",
+      "class_hash": "0x754950723decf6cf3750dd1bf5a491f9eb42cce1e27115f49b8f6a3cec7665f",
       "init_calldata": [],
       "tag": "Warpacks-item_system",
       "selector": "0x751ea9e8a6e94c7a6f55b05d4658b934ec62a17cfacbb4d859826e79d290cf1",
