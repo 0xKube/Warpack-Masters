@@ -9,12 +9,16 @@ pub trait IActions<T> {
         ref self: T, storage_item_id: u32, x: u32, y: u32, rotation: u32,
     );
     fn move_item_from_inventory_to_storage(ref self: T, inventory_item_id: u32);
+    fn move_item_from_inventory_to_storage_at(
+        ref self: T, inventory_item_id: u32, storage_slot: u32,
+    );
     fn get_balance(self: @T) -> u256;
     fn withdraw_strk(ref self: T, amount: u256, recipient: ContractAddress);
     fn move_item_within_inventory(
         ref self: T, inventory_item_id: u32, x: u32, y: u32, rotation: u32,
     );
     fn move_item_from_shop_to_storage(ref self: T, item_id: u32);
+    fn move_item_from_shop_to_storage_at(ref self: T, item_id: u32, storage_slot: u32);
     fn move_item_from_storage_to_shop(ref self: T, storage_item_id: u32);
     fn move_item_from_shop_to_inventory(ref self: T, item_id: u32, x: u32, y: u32, rotation: u32);
     fn move_item_from_inventory_to_shop(ref self: T, inventory_item_id: u32);
@@ -74,6 +78,16 @@ mod actions {
         price: u32,
         itemRarity: u8,
         birthCount: u32,
+    }
+
+    #[derive(Copy, Drop, Serde)]
+    #[dojo::event(historical: true)]
+    struct StorageSlotUpdated {
+        #[key]
+        player: ContractAddress,
+        #[key]
+        slot: u32,
+        itemId: u32,
     }
 
     #[abi(embed_v0)]
@@ -201,6 +215,7 @@ mod actions {
             self._add_item_to_inventory(player, itemId, x, y, rotation);
 
             world.write_member(storage_item_ptr, selector!("itemId"), 0);
+            world.emit_event(@StorageSlotUpdated { player, slot: storage_item_id, itemId: 0 });
         }
 
         fn move_item_from_inventory_to_storage(ref self: ContractState, inventory_item_id: u32) {
@@ -212,6 +227,21 @@ mod actions {
             let item_id = self._remove_item_from_inventory(player, inventory_item_id);
 
             self._add_item_to_storage(player, item_id);
+        }
+
+        fn move_item_from_inventory_to_storage_at(
+            ref self: ContractState, inventory_item_id: u32, storage_slot: u32,
+        ) {
+            let player = get_caller_address();
+
+            // check if the player has joined the matching battle
+            self._check_if_player_has_joined_a_matched_battle(player);
+
+            assert(storage_slot != 0, 'storage slot required');
+
+            let item_id = self._remove_item_from_inventory(player, inventory_item_id);
+
+            self._add_item_to_storage_at(player, item_id, storage_slot);
         }
 
         fn move_item_within_inventory(
@@ -234,6 +264,18 @@ mod actions {
             self._add_item_to_storage(player, item_id);
         }
 
+        fn move_item_from_shop_to_storage_at(
+            ref self: ContractState, item_id: u32, storage_slot: u32,
+        ) {
+            let player = get_caller_address();
+
+            assert(storage_slot != 0, 'storage slot required');
+
+            self._buy_item(player, item_id);
+
+            self._add_item_to_storage_at(player, item_id, storage_slot);
+        }
+
         fn move_item_from_storage_to_shop(ref self: ContractState, storage_item_id: u32) {
             let mut world = self.world(@"Warpacks");
 
@@ -246,6 +288,7 @@ mod actions {
             self._sell_item(player, item_id);
 
             world.write_member(storage_item_ptr, selector!("itemId"), 0);
+            world.emit_event(@StorageSlotUpdated { player, slot: storage_item_id, itemId: 0 });
         }
 
         fn move_item_from_shop_to_inventory(
@@ -297,6 +340,7 @@ mod actions {
                 if (required_item_amount > 0) {
                     required_items.insert(storage_item_id.into(), required_item_amount - 1);
                     world.write_member(storage_item_ptr, selector!("itemId"), 0);
+                    world.emit_event(@StorageSlotUpdated { player, slot: storage_id, itemId: 0 });
                 }
             }
 
@@ -367,6 +411,10 @@ mod actions {
 
                 let storage_item_ptr = ptrs::storage_item(player, storage_count);
                 world.write_member(storage_item_ptr, selector!("itemId"), 0);
+                world
+                    .emit_event(
+                        @StorageSlotUpdated { player, slot: storage_count, itemId: 0 },
+                    );
 
                 storage_count -= 1;
             }
@@ -435,6 +483,8 @@ mod actions {
 
             world.write_model(@StorageItem { player, id: 1, itemId: Backpack::id });
             world.write_model(@StorageItem { player, id: 2, itemId: Pack::id });
+            world.emit_event(@StorageSlotUpdated { player, slot: 1, itemId: Backpack::id });
+            world.emit_event(@StorageSlotUpdated { player, slot: 2, itemId: Pack::id });
             world.write_model(@StorageCounter { player, count: 2 });
             world.write_model(@InventoryCounter { player, count: 0 });
 
@@ -981,10 +1031,37 @@ mod actions {
         }
 
         fn _add_item_to_storage(ref self: ContractState, player: ContractAddress, item_id: u32) {
+            self._add_item_to_storage_at(player, item_id, 0);
+        }
+
+        fn _add_item_to_storage_at(
+            ref self: ContractState, player: ContractAddress, item_id: u32, storage_slot: u32,
+        ) -> u32 {
             let mut world = self.world(@"Warpacks");
 
             let storage_counter_ptr = ptrs::storage_counter(player);
             let storage_count: u32 = world.read_member(storage_counter_ptr, selector!("count"));
+            if storage_slot != 0 {
+                assert(storage_slot <= storage_count + 1, 'storage slot out of range');
+
+                let storage_ptr = ptrs::storage_item(player, storage_slot);
+                let current_item_id: u32 = world.read_member(storage_ptr, selector!("itemId"));
+                assert(current_item_id == 0, 'storage slot occupied');
+
+                if storage_slot > storage_count {
+                    world.write_member(storage_counter_ptr, selector!("count"), storage_slot);
+                    world.write_model(@StorageItem { player, id: storage_slot, itemId: item_id });
+                } else {
+                    world.write_member(storage_ptr, selector!("itemId"), item_id);
+                }
+
+                world
+                    .emit_event(
+                        @StorageSlotUpdated { player, slot: storage_slot, itemId: item_id },
+                    );
+                return storage_slot;
+            }
+
             let mut slot = storage_count;
             loop {
                 if slot == 0 {
@@ -995,17 +1072,18 @@ mod actions {
                 let current_item_id: u32 = world.read_member(ptr, selector!("itemId"));
                 if current_item_id == 0 {
                     world.write_model(@StorageItem { player, id: slot, itemId: item_id });
-                    return;
+                    world.emit_event(@StorageSlotUpdated { player, slot, itemId: item_id });
+                    return slot;
                 }
 
                 slot -= 1;
             }
 
-            if slot == 0 {
-                let new_count = storage_count + 1;
-                world.write_member(storage_counter_ptr, selector!("count"), new_count);
-                world.write_model(@StorageItem { player, id: new_count, itemId: item_id });
-            }
+            let new_count = storage_count + 1;
+            world.write_member(storage_counter_ptr, selector!("count"), new_count);
+            world.write_model(@StorageItem { player, id: new_count, itemId: item_id });
+            world.emit_event(@StorageSlotUpdated { player, slot: new_count, itemId: item_id });
+            new_count
         }
 
         fn _mint_gold(ref self: ContractState, recipient: ContractAddress, amount: u256) {
@@ -1076,6 +1154,7 @@ mod actions {
         use warpack_masters::utils::address::zero_address;
         use warpack_masters::utils::storage_pointers as ptrs;
         use super::SellItem;
+        use super::StorageSlotUpdated;
         use super::{IERC20MINTABLEDispatcher, IERC20MINTABLEDispatcherTrait};
 
         /// Продаёт все предметы игрока (инвентарь + сторадж) и возвращает золото игроку.
@@ -1133,6 +1212,7 @@ mod actions {
                     let item: Item = world.read_model(item_id);
                     sell_item_common(ref world, player, item_id, player_char.birthCount);
                     world.write_member(storage_ptr, selector!("itemId"), 0);
+                    world.emit_event(@StorageSlotUpdated { player, slot: idx, itemId: 0 });
                 }
                 idx -= 1;
             }

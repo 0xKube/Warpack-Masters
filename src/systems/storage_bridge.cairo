@@ -47,6 +47,16 @@ pub mod storage_bridge {
         tokenAmount: u256,
     }
 
+    #[derive(Copy, Drop, Serde)]
+    #[dojo::event(historical: true)]
+    struct StorageSlotUpdated {
+        #[key]
+        player: ContractAddress,
+        #[key]
+        slot: u32,
+        itemId: u32,
+    }
+
     #[abi(embed_v0)]
     impl StorageBridgeImpl of IStorageBridge<ContractState> {
         // Convert storage item to token
@@ -143,6 +153,10 @@ pub mod storage_bridge {
             let existing_id: u32 = world.read_member(storage_item_ptr, selector!("itemId"));
             assert(existing_id != 0, 'Storage item does not exist');
             world.write_member(storage_item_ptr, selector!("itemId"), 0);
+            world
+                .emit_event(
+                    @StorageSlotUpdated { player, slot: storage_item_id, itemId: 0 },
+                );
         }
 
         fn _add_items_to_storage(ref self: ContractState, player: ContractAddress, item_id: u32) {
@@ -161,6 +175,7 @@ pub mod storage_bridge {
                 let existing_id: u32 = world.read_member(storage_item_ptr, selector!("itemId"));
                 if existing_id == 0 {
                     world.write_member(storage_item_ptr, selector!("itemId"), item_id);
+                    world.emit_event(@StorageSlotUpdated { player, slot, itemId: item_id });
                     return;
                 }
 
@@ -171,6 +186,7 @@ pub mod storage_bridge {
             world.write_member(storage_counter_ptr, selector!("count"), new_count);
 
             world.write_model(@StorageItem { player, id: new_count, itemId: item_id });
+            world.emit_event(@StorageSlotUpdated { player, slot: new_count, itemId: item_id });
         }
     }
 }

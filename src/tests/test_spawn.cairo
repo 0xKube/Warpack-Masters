@@ -45,6 +45,7 @@ mod tests {
                 TestResource::Model(m_Shop::TEST_CLASS_HASH.try_into().unwrap()),
                 TestResource::Contract(actions::TEST_CLASS_HASH),
                 TestResource::Contract(item_system::TEST_CLASS_HASH),
+                TestResource::Event(actions::e_StorageSlotUpdated::TEST_CLASS_HASH),
             ]
                 .span(),
         };
@@ -361,4 +362,3 @@ mod tests {
 //     assert(char.stamina == INIT_STAMINA, 'stamina mismatch');
 // }
 }
-

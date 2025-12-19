@@ -53,6 +53,8 @@ mod tests {
                 TestResource::Contract(actions::TEST_CLASS_HASH),
                 TestResource::Event(storage_bridge::e_DepositItem::TEST_CLASS_HASH),
                 TestResource::Event(storage_bridge::e_WithdrawItem::TEST_CLASS_HASH),
+                TestResource::Event(storage_bridge::e_StorageSlotUpdated::TEST_CLASS_HASH),
+                TestResource::Event(actions::e_StorageSlotUpdated::TEST_CLASS_HASH),
             ]
                 .span(),
         };

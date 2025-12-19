@@ -39,6 +39,7 @@ mod tests {
                 TestResource::Contract(shop_system::TEST_CLASS_HASH),
                 TestResource::Event(actions::e_BuyItem::TEST_CLASS_HASH),
                 TestResource::Event(actions::e_SellItem::TEST_CLASS_HASH),
+                TestResource::Event(actions::e_StorageSlotUpdated::TEST_CLASS_HASH),
             ]
                 .span(),
         };
@@ -223,4 +224,3 @@ mod tests {
         action_system.move_item_from_storage_to_shop(3);
     }
 }
-

@@ -34,7 +34,7 @@
   "contracts": [
     {
       "address": "0x6cf6450c132752fbf3ace05d82f5d61fac097a6f62d0abd0b2b04a204ac16e6",
-      "class_hash": "0x3dabf3b4d65b72c184c9bd6c39e16ddcbf232fbd63501aa4104498f058fa1e4",
+      "class_hash": "0x7f4d4e98d56fdccdfe3c3f788f84ecc13c188e84b83b0305158d146be327b05",
       "init_calldata": [],
       "tag": "Warpacks-actions",
       "selector": "0x72c10aa5b1ff0c1599517beb7189673c59fa924c4753b33bab057a8c6200cb1",
@@ -43,9 +43,11 @@
         "rebirth",
         "move_item_from_storage_to_inventory",
         "move_item_from_inventory_to_storage",
+        "move_item_from_inventory_to_storage_at",
         "withdraw_strk",
         "move_item_within_inventory",
         "move_item_from_shop_to_storage",
+        "move_item_from_shop_to_storage_at",
         "move_item_from_storage_to_shop",
         "move_item_from_shop_to_inventory",
         "move_item_from_inventory_to_shop",
@@ -128,7 +130,7 @@
     },
     {
       "address": "0x2bf6c0fd9d786872d8cb071daaa146466a77244de1dbfad9c5819b4567df1b2",
-      "class_hash": "0x7eecabd1fc2af41de95f487a0d0ed2fd3f6d53fddbfbeb48816aee2f74c5f",
+      "class_hash": "0x7499284bdea194b514814f432a50f4398da64b8e7a5a0b5aac806c169f85163",
       "init_calldata": [],
       "tag": "Warpacks-storage_bridge",
       "selector": "0x1461a8205382e5328c309a4375db95a6d6039df227e3aa2d206bc7c11c7919",
@@ -1021,6 +1023,28 @@
       "class_hash": "0x1d384e61d6a9e188ba0b902172cd9a9790243bd3b0e93bb2002131508756ecd",
       "tag": "Warpacks-SellItem",
       "selector": "0x17d7432b9e7cbae7e6d2920ef19d5a96f6ce2f428f22d820a7298f1864d7dff"
+    },
+    {
+      "members": [
+        {
+          "name": "player",
+          "type": "core::starknet::contract_address::ContractAddress",
+          "key": true
+        },
+        {
+          "name": "slot",
+          "type": "core::integer::u32",
+          "key": true
+        },
+        {
+          "name": "itemId",
+          "type": "core::integer::u32",
+          "key": false
+        }
+      ],
+      "class_hash": "0x528cd164a3b8c1f294a62124055ec755e212917badd5108c1c91f96e5bd9485",
+      "tag": "Warpacks-StorageSlotUpdated",
+      "selector": "0x4a9821c74d9d1f098fbce3cba6cf85b0e68c2aa9a5dad567c2e1fdd8cb2b15"
     },
     {
       "members": [
@@ -4314,6 +4338,22 @@
         },
         {
           "type": "function",
+          "name": "move_item_from_inventory_to_storage_at",
+          "inputs": [
+            {
+              "name": "inventory_item_id",
+              "type": "core::integer::u32"
+            },
+            {
+              "name": "storage_slot",
+              "type": "core::integer::u32"
+            }
+          ],
+          "outputs": [],
+          "state_mutability": "external"
+        },
+        {
+          "type": "function",
           "name": "get_balance",
           "inputs": [],
           "outputs": [
@@ -4369,6 +4409,22 @@
           "inputs": [
             {
               "name": "item_id",
+              "type": "core::integer::u32"
+            }
+          ],
+          "outputs": [],
+          "state_mutability": "external"
+        },
+        {
+          "type": "function",
+          "name": "move_item_from_shop_to_storage_at",
+          "inputs": [
+            {
+              "name": "item_id",
+              "type": "core::integer::u32"
+            },
+            {
+              "name": "storage_slot",
               "type": "core::integer::u32"
             }
           ],
@@ -4977,6 +5033,34 @@
     },
     {
       "type": "struct",
+      "name": "warpack_masters::systems::storage_bridge::storage_bridge::StorageSlotUpdated",
+      "members": [
+        {
+          "name": "player",
+          "type": "core::starknet::contract_address::ContractAddress"
+        },
+        {
+          "name": "slot",
+          "type": "core::integer::u32"
+        },
+        {
+          "name": "itemId",
+          "type": "core::integer::u32"
+        }
+      ]
+    },
+    {
+      "type": "struct",
+      "name": "warpack_masters::systems::storage_bridge::storage_bridge::StorageSlotUpdatedValue",
+      "members": [
+        {
+          "name": "itemId",
+          "type": "core::integer::u32"
+        }
+      ]
+    },
+    {
+      "type": "struct",
       "name": "warpack_masters::systems::storage_bridge::storage_bridge::WithdrawItem",
       "members": [
         {
@@ -5010,6 +5094,12 @@
     {
       "type": "event",
       "name": "warpack_masters::systems::storage_bridge::storage_bridge::e_DepositItem::Event",
+      "kind": "enum",
+      "variants": []
+    },
+    {
+      "type": "event",
+      "name": "warpack_masters::systems::storage_bridge::storage_bridge::e_StorageSlotUpdated::Event",
       "kind": "enum",
       "variants": []
     },

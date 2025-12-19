@@ -32,6 +32,7 @@ mod tests {
                 TestResource::Contract(item_system::TEST_CLASS_HASH),
                 TestResource::Contract(recipe_system::TEST_CLASS_HASH),
                 TestResource::Contract(actions::TEST_CLASS_HASH),
+                TestResource::Event(actions::e_StorageSlotUpdated::TEST_CLASS_HASH),
             ]
                 .span(),
         };

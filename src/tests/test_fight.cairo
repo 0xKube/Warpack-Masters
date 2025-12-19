@@ -56,6 +56,7 @@ mod tests {
                 TestResource::Contract(item_system::TEST_CLASS_HASH),
                 TestResource::Contract(fight_system::TEST_CLASS_HASH),
                 TestResource::Contract(dummy_system::TEST_CLASS_HASH),
+                TestResource::Event(actions::e_StorageSlotUpdated::TEST_CLASS_HASH),
             ]
                 .span(),
         };

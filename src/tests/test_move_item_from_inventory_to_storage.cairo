@@ -38,6 +38,7 @@ mod tests {
                 TestResource::Contract(shop_system::TEST_CLASS_HASH),
                 TestResource::Event(actions::e_BuyItem::TEST_CLASS_HASH),
                 TestResource::Event(actions::e_SellItem::TEST_CLASS_HASH),
+                TestResource::Event(actions::e_StorageSlotUpdated::TEST_CLASS_HASH),
             ]
                 .span(),
         };
@@ -392,5 +393,48 @@ mod tests {
         assert(invetoryItem.rotation == 0, 'rotation mismatch');
         assert(invetoryItem.plugins.len() == 0, 'plugins length mismatch');
     }
-}
 
+    #[test]
+    #[available_gas(3000000000000000)]
+    fn test_move_item_from_inventory_to_storage_with_explicit_slot() {
+        let ndef = namespace_def();
+        let mut world = spawn_test_world([ndef].span());
+        world.sync_perms_and_inits(contract_defs());
+
+        let (contract_address, _) = world.dns(@"actions").unwrap();
+        let action_system = IActionsDispatcher { contract_address };
+
+        let (contract_address, _) = world.dns(@"item_system").unwrap();
+        let mut item_system = IItemDispatcher { contract_address };
+
+        let alice = warpack_masters::utils::address::zero_address();
+
+        add_items(ref item_system);
+
+        action_system.spawn('Alice', WMClass::Warlock);
+
+        let mut player_data: Character = world.read_model(alice);
+        player_data.gold = 100;
+        world.write_model(@player_data);
+
+        let mut shop_data: Shop = world.read_model(alice);
+        shop_data.item1 = 5;
+        shop_data.item2 = 6;
+        shop_data.item3 = 8;
+        shop_data.item4 = 1;
+        world.write_model(@shop_data);
+
+        action_system.move_item_from_shop_to_storage(5);
+        action_system.move_item_from_storage_to_inventory(2, 4, 2, 0);
+
+        action_system.move_item_from_inventory_to_storage_at(3, 1);
+
+        let storageItemCounter: StorageCounter = world.read_model(alice);
+        assert(storageItemCounter.count == 2, 'storage item count mismatch');
+
+        let storageItem: CharacterItemStorage = world.read_model((alice, 1));
+        assert(storageItem.itemId == 5, 'item should be stored in provided slot');
+        let storageItem: CharacterItemStorage = world.read_model((alice, 2));
+        assert(storageItem.itemId == 0, 'other slot should remain empty');
+    }
+}

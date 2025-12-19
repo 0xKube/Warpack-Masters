@@ -39,6 +39,7 @@ mod tests {
                 TestResource::Contract(shop_system::TEST_CLASS_HASH),
                 TestResource::Event(actions::e_BuyItem::TEST_CLASS_HASH),
                 TestResource::Event(actions::e_SellItem::TEST_CLASS_HASH),
+                TestResource::Event(actions::e_StorageSlotUpdated::TEST_CLASS_HASH),
             ]
                 .span(),
         };
@@ -598,4 +599,3 @@ mod tests {
         assert(*inventoryItem.plugins.at(1) == (6, 80, 3), 'plugin length mismatch');
     }
 }
-
