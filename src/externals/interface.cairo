@@ -17,3 +17,15 @@ pub trait IERC20MINTABLE<TState> {
     fn burn(ref self: TState, value: u256);
     fn mint(ref self: TState, recipient: ContractAddress, amount: u256);
 }
+
+#[derive(Drop, Copy, Clone, Serde)]
+pub enum Source {
+    Nonce: ContractAddress,
+    Salt: felt252,
+}
+
+#[starknet::interface]
+pub trait IVrfProvider<TState> {
+    fn request_random(self: @TState, caller: ContractAddress, source: Source);
+    fn consume_random(ref self: TState, source: Source) -> felt252;
+}

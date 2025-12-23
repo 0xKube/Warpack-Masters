@@ -29,7 +29,7 @@ mod fight_system {
     use warpack_masters::models::Item::Item;
     use warpack_masters::models::TokenRegistry::TokenRegistry;
     use warpack_masters::systems::actions::actions::helpers::auto_sell_player_items;
-    use warpack_masters::utils::random::{pseudo_seed, random};
+    use warpack_masters::utils::random::{random_stream_from_vrf_nonce, random_stream_next};
     use warpack_masters::utils::sort_items::{append_item, order_items};
     use super::IFight;
 
@@ -328,7 +328,7 @@ mod fight_system {
             let mut winner = '';
 
             let mut rand = 0;
-            let mut v = 0;
+            let mut rng = random_stream_from_vrf_nonce();
 
             world
                 .emit_event(
@@ -426,10 +426,8 @@ mod fight_system {
                         dummy_health_flag
                     };
                     // each second is treated as 1 unit of cooldown
-                    let (_, seed2, _, _) = pseudo_seed();
                     if seconds % cooldown == 0 {
-                        v += seconds.into();
-                        rand = random(seed2 + v, 100);
+                        rand = random_stream_next(ref rng, 100);
                         if rand < chance {
                             let attackStatus = AttackStatus {
                                 player,

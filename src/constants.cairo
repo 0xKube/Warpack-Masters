@@ -9,6 +9,8 @@ pub mod constants {
     pub const ITEMS_COUNTER_ID: felt252 = 'ITEMS_COUNTER_ID';
     pub const RECIPES_COUNTER_ID: felt252 = 'RECIPES_COUNTER_ID';
     pub const STORAGE_FLAG: u32 = 999;
+    pub const VRF_PROVIDER_ADDRESS: felt252 =
+        0x051fea4450da9d6aee758bdeba88b2f665bcbf549d2c61421aa724e9ac0ced8f;
 
     // const EFFECT_ARMOR: felt252 = 'armor';
     // const EFFECT_REGEN: felt252 = 'regen';

@@ -16,7 +16,7 @@ mod shop_system {
     use warpack_masters::models::Item::{Item, ItemsCounter};
     use warpack_masters::models::Shop::Shop;
     use warpack_masters::models::TokenRegistry::TokenRegistry;
-    use warpack_masters::utils::random::{pseudo_seed, random};
+    use warpack_masters::utils::random::{random_stream_from_vrf_nonce, random_stream_next};
     use super::IShop;
 
     #[abi(embed_v0)]
@@ -65,30 +65,35 @@ mod shop_system {
 
             let mut shop: Shop = world.read_model(player);
 
-            let (seed1, seed2, seed3, seed4) = pseudo_seed();
+            // One VRF request per reroll: derive all draws from a single consume_random.
+            let mut rng = random_stream_from_vrf_nonce();
 
             // common: 70%, rare: 20%, legendary: up to 10%
             let mut i = 0;
-            for seed in array![seed1, seed2, seed3, seed4] {
+            loop {
+                if i == 4 {
+                    break;
+                }
+
                 let mut random_index = 0;
 
                 if char.wins < 10 {
-                    random_index = random(seed, 90);
+                    random_index = random_stream_next(ref rng, 90);
                 } else if char.wins < 21 {
                     // Give a small (~5%) legendary chance after 10 wins.
-                    random_index = random(seed, 95);
+                    random_index = random_stream_next(ref rng, 95);
                 } else {
-                    random_index = random(seed, 100);
+                    random_index = random_stream_next(ref rng, 100);
                 }
 
                 let itemId = if random_index < 70 {
-                    random_index = random(seed, common.len());
+                    random_index = random_stream_next(ref rng, common.len());
                     *common.at(random_index)
                 } else if random_index < 90 {
-                    random_index = random(seed, rare.len());
+                    random_index = random_stream_next(ref rng, rare.len());
                     *rare.at(random_index)
                 } else {
-                    random_index = random(seed, legendary.len());
+                    random_index = random_stream_next(ref rng, legendary.len());
                     *legendary.at(random_index)
                 };
 
