@@ -1,0 +1,5288 @@
+{
+  "world": {
+    "class_hash": "0x613551abceb2b37073b1149bb862ea70cf029981ce1ca47e9dd7c7ab97cb65d",
+    "address": "0x5a709be85a3f656230e4887a1c212fdf90d50e7b67c047cf5c153e030603e61",
+    "seed": "warpack_masters_1",
+    "name": "Warpack Masters",
+    "entrypoints": [
+      "uuid",
+      "set_metadata",
+      "register_namespace",
+      "register_event",
+      "register_model",
+      "register_contract",
+      "register_external_contract",
+      "register_library",
+      "init_contract",
+      "upgrade_event",
+      "upgrade_model",
+      "upgrade_contract",
+      "upgrade_external_contract",
+      "emit_event",
+      "emit_events",
+      "set_entity",
+      "set_entities",
+      "delete_entity",
+      "delete_entities",
+      "grant_owner",
+      "revoke_owner",
+      "grant_writer",
+      "revoke_writer",
+      "upgrade"
+    ]
+  },
+  "contracts": [
+    {
+      "address": "0x75d86e23a85d1bad48579dfe7c0b0db77e331da2a6d53f06eacf23a0da9d7db",
+      "class_hash": "0x7f4d4e98d56fdccdfe3c3f788f84ecc13c188e84b83b0305158d146be327b05",
+      "init_calldata": [],
+      "tag": "Warpacks-actions",
+      "selector": "0x72c10aa5b1ff0c1599517beb7189673c59fa924c4753b33bab057a8c6200cb1",
+      "systems": [
+        "spawn",
+        "rebirth",
+        "move_item_from_storage_to_inventory",
+        "move_item_from_inventory_to_storage",
+        "move_item_from_inventory_to_storage_at",
+        "withdraw_strk",
+        "move_item_within_inventory",
+        "move_item_from_shop_to_storage",
+        "move_item_from_shop_to_storage_at",
+        "move_item_from_storage_to_shop",
+        "move_item_from_shop_to_inventory",
+        "move_item_from_inventory_to_shop",
+        "craft_item",
+        "upgrade"
+      ]
+    },
+    {
+      "address": "0x38f48c8fa2d70de1b2fb26db45a0271bec86427253484851958d3e58191e700",
+      "class_hash": "0x3ebfc3c7b64f0c439036216004eff64aea805125a3c02986452dabd0c20cbeb",
+      "init_calldata": [
+        "0x04718f5a0fc34cc1af16a1cdee98ffb20c31f5cd61d6ab07201858f4287c938d"
+      ],
+      "tag": "Warpacks-config_system",
+      "selector": "0x6a040c0928ffc6a945e7efcd3576d8b6cbdb914afac47c911f85d89616c2dcb",
+      "systems": [
+        "dojo_init",
+        "set_rebirth_fee",
+        "upgrade"
+      ]
+    },
+    {
+      "address": "0x5a4ea0d5f684c0eaba4ed0931f195660e9f997bc0b155fe66822a2d90b2445f",
+      "class_hash": "0x6f904de7690c89c17b338dfe41d0eec12914fa71ca463962279b4b7f76cceea",
+      "init_calldata": [],
+      "tag": "Warpacks-dummy_system",
+      "selector": "0x7681287c4e556e3720525417a49926b5cebd94a26abca05bb47cbc85abb3ab8",
+      "systems": [
+        "prefine_dummy",
+        "update_prefine_dummy",
+        "upgrade"
+      ]
+    },
+    {
+      "address": "0x25a57cd019193ee74a28332a257d93c3e7cff013c8aecfef13feef66eaeb1d9",
+      "class_hash": "0x66c81ef0dc8e68252cc02f66ab6618725f864e38a4c390592bd5a838bc46b36",
+      "init_calldata": [],
+      "tag": "Warpacks-fight_system",
+      "selector": "0x7627186b5551a815f66c9d473067aa0639a516500356edd8a655b0bada60e3c",
+      "systems": [
+        "match_dummy",
+        "fight",
+        "upgrade"
+      ]
+    },
+    {
+      "address": "0x1582ce9b6213e55fd167112864934841a9d3442c08b9c235d1b2cfefa1f3637",
+      "class_hash": "0x754950723decf6cf3750dd1bf5a491f9eb42cce1e27115f49b8f6a3cec7665f",
+      "init_calldata": [],
+      "tag": "Warpacks-item_system",
+      "selector": "0x751ea9e8a6e94c7a6f55b05d4658b934ec62a17cfacbb4d859826e79d290cf1",
+      "systems": [
+        "add_item",
+        "batch_add_items",
+        "update_item_enabled",
+        "upgrade"
+      ]
+    },
+    {
+      "address": "0x5689e551db81c38e2782ac6a1f99f671732718cdadc4c84cee37734f9a3cea6",
+      "class_hash": "0x3c6bc78f5a5a63b72abaac0c18cd581ec7a84eaec53c0973d625127caba5468",
+      "init_calldata": [],
+      "tag": "Warpacks-recipe_system",
+      "selector": "0x50e7fbb7b06f98479b3360e5e61dbc63d249552de73a8b797e3ebafccc5730d",
+      "systems": [
+        "add_recipe",
+        "upgrade"
+      ]
+    },
+    {
+      "address": "0x281732e9fa7caea3a9fc4676a1ef0ac8b5fa4cbc2a5429c3df44b060bf2af05",
+      "class_hash": "0x4eb58c480392e578b8622150ac9b2d109b29a0bcee3509db9f8125279177105",
+      "init_calldata": [],
+      "tag": "Warpacks-shop_system",
+      "selector": "0x4fc6e53062bad497f56645e733043df064f1a4d8bb0ce745f62942d893b8dd",
+      "systems": [
+        "reroll_shop",
+        "upgrade"
+      ]
+    },
+    {
+      "address": "0x27e47807bbe73f9f67e8bbfcb456dfe96129c4c0a9ba01d799183384fe4cdb9",
+      "class_hash": "0x7499284bdea194b514814f432a50f4398da64b8e7a5a0b5aac806c169f85163",
+      "init_calldata": [],
+      "tag": "Warpacks-storage_bridge",
+      "selector": "0x1461a8205382e5328c309a4375db95a6d6039df227e3aa2d206bc7c11c7919",
+      "systems": [
+        "deposit_item",
+        "withdraw_item",
+        "upgrade"
+      ]
+    },
+    {
+      "address": "0x1f31fdd2e84add132f61a63737d8371939b2307749ba63dc395016773d02a20",
+      "class_hash": "0x2d548349fa536459bfcf3735086d2bfb70d96f0416715628a74ef5dcf0fe286",
+      "init_calldata": [],
+      "tag": "Warpacks-token_factory",
+      "selector": "0xcdaa91e50a017caf9facf3591aa90e27ab6760193eff6a5bdee1edbdf6de90",
+      "systems": [
+        "create_token_for_item",
+        "batch_create_tokens_for_items",
+        "create_gold_token",
+        "reigster_gold",
+        "register_token_for_item",
+        "update_token_for_item",
+        "upgrade"
+      ]
+    }
+  ],
+  "libraries": [],
+  "models": [
+    {
+      "members": [
+        {
+          "name": "player",
+          "type": "core::starknet::contract_address::ContractAddress",
+          "key": true
+        },
+        {
+          "name": "x",
+          "type": "core::integer::u32",
+          "key": true
+        },
+        {
+          "name": "y",
+          "type": "core::integer::u32",
+          "key": true
+        },
+        {
+          "name": "enabled",
+          "type": "core::bool",
+          "key": false
+        },
+        {
+          "name": "occupied",
+          "type": "core::bool",
+          "key": false
+        },
+        {
+          "name": "inventoryItemId",
+          "type": "core::integer::u32",
+          "key": false
+        },
+        {
+          "name": "itemId",
+          "type": "core::integer::u32",
+          "key": false
+        },
+        {
+          "name": "isWeapon",
+          "type": "core::bool",
+          "key": false
+        },
+        {
+          "name": "isPlugin",
+          "type": "core::bool",
+          "key": false
+        }
+      ],
+      "class_hash": "0x5d130fb33a3735b71fb86f7b52c345ef7900f30017e98fc8de2b593cba1a4fc",
+      "tag": "Warpacks-BackpackGrids",
+      "selector": "0x986c2508988b7609b021c5d073d387121acac96ff97c8450118dec41a2ef38"
+    },
+    {
+      "members": [
+        {
+          "name": "player",
+          "type": "core::starknet::contract_address::ContractAddress",
+          "key": true
+        },
+        {
+          "name": "id",
+          "type": "core::integer::u32",
+          "key": true
+        },
+        {
+          "name": "dummyLevel",
+          "type": "core::integer::u32",
+          "key": false
+        },
+        {
+          "name": "dummyCharId",
+          "type": "core::integer::u32",
+          "key": false
+        },
+        {
+          "name": "sorted_items",
+          "type": "core::array::Span::<(core::felt252, core::integer::u32, core::integer::u8, core::integer::u8, core::integer::u32, core::integer::u32, core::integer::u8, core::integer::u8, core::array::Span::<(core::integer::u8, core::integer::u32, core::integer::u32)>)>",
+          "key": false
+        },
+        {
+          "name": "items_length",
+          "type": "core::integer::u32",
+          "key": false
+        },
+        {
+          "name": "player_buffs",
+          "type": "core::array::Span::<core::integer::u32>",
+          "key": false
+        },
+        {
+          "name": "dummy_buffs",
+          "type": "core::array::Span::<core::integer::u32>",
+          "key": false
+        },
+        {
+          "name": "player_on_hit_items",
+          "type": "core::array::Span::<(core::integer::u8, core::integer::u32, core::integer::u32)>",
+          "key": false
+        },
+        {
+          "name": "dummy_on_hit_items",
+          "type": "core::array::Span::<(core::integer::u8, core::integer::u32, core::integer::u32)>",
+          "key": false
+        },
+        {
+          "name": "player_on_attack_items",
+          "type": "core::array::Span::<(core::integer::u8, core::integer::u32, core::integer::u32)>",
+          "key": false
+        },
+        {
+          "name": "dummy_on_attack_items",
+          "type": "core::array::Span::<(core::integer::u8, core::integer::u32, core::integer::u32)>",
+          "key": false
+        },
+        {
+          "name": "winner",
+          "type": "core::felt252",
+          "key": false
+        },
+        {
+          "name": "seconds",
+          "type": "core::integer::u8",
+          "key": false
+        }
+      ],
+      "class_hash": "0x1f9d80020fc05e50324c5a7417e43ee31a6f0c5e9d6ce84ad09a12d5923a4aa",
+      "tag": "Warpacks-BattleLog",
+      "selector": "0x35d6bf7b6d49c2c5793d540953d4679fec20c49df24789cd4fbe7b04f05092"
+    },
+    {
+      "members": [
+        {
+          "name": "player",
+          "type": "core::starknet::contract_address::ContractAddress",
+          "key": true
+        },
+        {
+          "name": "count",
+          "type": "core::integer::u32",
+          "key": false
+        }
+      ],
+      "class_hash": "0x66e6a1498b9aa79a00dbdf91e2c096da0a65f8b7182c56191fdf7c9d62400c8",
+      "tag": "Warpacks-BattleLogCounter",
+      "selector": "0x66bc89dc8dab6ea7e056ab976525032353059f15f1a73facb9b83248b2db7b2"
+    },
+    {
+      "members": [
+        {
+          "name": "player",
+          "type": "core::starknet::contract_address::ContractAddress",
+          "key": true
+        },
+        {
+          "name": "name",
+          "type": "core::felt252",
+          "key": false
+        },
+        {
+          "name": "wmClass",
+          "type": "warpack_masters::models::Character::WMClass",
+          "key": false
+        },
+        {
+          "name": "gold",
+          "type": "core::integer::u32",
+          "key": false
+        },
+        {
+          "name": "health",
+          "type": "core::integer::u32",
+          "key": false
+        },
+        {
+          "name": "wins",
+          "type": "core::integer::u32",
+          "key": false
+        },
+        {
+          "name": "loss",
+          "type": "core::integer::u32",
+          "key": false
+        },
+        {
+          "name": "rating",
+          "type": "core::integer::u32",
+          "key": false
+        },
+        {
+          "name": "totalWins",
+          "type": "core::integer::u32",
+          "key": false
+        },
+        {
+          "name": "totalLoss",
+          "type": "core::integer::u32",
+          "key": false
+        },
+        {
+          "name": "winStreak",
+          "type": "core::integer::u32",
+          "key": false
+        },
+        {
+          "name": "stamina",
+          "type": "core::integer::u8",
+          "key": false
+        },
+        {
+          "name": "birthCount",
+          "type": "core::integer::u32",
+          "key": false
+        },
+        {
+          "name": "updatedAt",
+          "type": "core::integer::u64",
+          "key": false
+        }
+      ],
+      "class_hash": "0x2f90704c30cf9af22703be34e101d10f6b89fa4fcb14f7d492ea7df3ec134d7",
+      "tag": "Warpacks-Character",
+      "selector": "0x3030f8e8721c693f184e1b390810bfc254a21b970d70f54713c93e11051b9c5"
+    },
+    {
+      "members": [
+        {
+          "name": "name",
+          "type": "core::felt252",
+          "key": true
+        },
+        {
+          "name": "player",
+          "type": "core::starknet::contract_address::ContractAddress",
+          "key": false
+        }
+      ],
+      "class_hash": "0x1593413c6f6e15ebeea2868be18afd9a7b5cf4192fa11b1e62f448cc7f5baa7",
+      "tag": "Warpacks-CharacterName",
+      "selector": "0x757f74be70c5a528264ceb911d29dea860626bfdaeb33c81ad7977a3697ea40"
+    },
+    {
+      "members": [
+        {
+          "name": "level",
+          "type": "core::integer::u32",
+          "key": true
+        },
+        {
+          "name": "id",
+          "type": "core::integer::u32",
+          "key": true
+        },
+        {
+          "name": "name",
+          "type": "core::felt252",
+          "key": false
+        },
+        {
+          "name": "wmClass",
+          "type": "warpack_masters::models::Character::WMClass",
+          "key": false
+        },
+        {
+          "name": "health",
+          "type": "core::integer::u32",
+          "key": false
+        },
+        {
+          "name": "player",
+          "type": "core::starknet::contract_address::ContractAddress",
+          "key": false
+        },
+        {
+          "name": "rating",
+          "type": "core::integer::u32",
+          "key": false
+        },
+        {
+          "name": "stamina",
+          "type": "core::integer::u8",
+          "key": false
+        }
+      ],
+      "class_hash": "0x7b84e6f2813454b1e17084cac0b97a154471cfcacb3738964cb1bccb5fa1d31",
+      "tag": "Warpacks-DummyCharacter",
+      "selector": "0x1870dbfed5e68287ac805cfb3a424086af7e3885914032041f9442f62f8c24e"
+    },
+    {
+      "members": [
+        {
+          "name": "level",
+          "type": "core::integer::u32",
+          "key": true
+        },
+        {
+          "name": "count",
+          "type": "core::integer::u32",
+          "key": false
+        }
+      ],
+      "class_hash": "0x1c0280b4c89c0f00fef60024af79f7a8c1e950ec09217eb70b2b129cf56d97b",
+      "tag": "Warpacks-DummyCharacterCounter",
+      "selector": "0x52126e21b1ed0a7932ae073f48a6963182edf4788f74821202348ffb73d329c"
+    },
+    {
+      "members": [
+        {
+          "name": "level",
+          "type": "core::integer::u32",
+          "key": true
+        },
+        {
+          "name": "dummyCharId",
+          "type": "core::integer::u32",
+          "key": true
+        },
+        {
+          "name": "counterId",
+          "type": "core::integer::u32",
+          "key": true
+        },
+        {
+          "name": "itemId",
+          "type": "core::integer::u32",
+          "key": false
+        },
+        {
+          "name": "position",
+          "type": "warpack_masters::models::CharacterItem::Position",
+          "key": false
+        },
+        {
+          "name": "rotation",
+          "type": "core::integer::u32",
+          "key": false
+        },
+        {
+          "name": "plugins",
+          "type": "core::array::Span::<(core::integer::u8, core::integer::u32, core::integer::u32)>",
+          "key": false
+        }
+      ],
+      "class_hash": "0x407f1ac0829f60d71df50407ef0a55e6e1650614a3f64f8da6663bb98e5cef0",
+      "tag": "Warpacks-DummyCharacterItem",
+      "selector": "0x2f6c06f25cf5f2aaa2ffe26cdf56c038339085616267d66385e6bd14c2f9f17"
+    },
+    {
+      "members": [
+        {
+          "name": "level",
+          "type": "core::integer::u32",
+          "key": true
+        },
+        {
+          "name": "dummyCharId",
+          "type": "core::integer::u32",
+          "key": true
+        },
+        {
+          "name": "count",
+          "type": "core::integer::u32",
+          "key": false
+        }
+      ],
+      "class_hash": "0x6e8c14d8cc2c38560b7dd169cd1fe6f3de28e97d9c3acefe4a34a1c068f32a0",
+      "tag": "Warpacks-DummyCharacterItemsCounter",
+      "selector": "0x2d45ca9a5d3d2f9fb0d7731ddb1e0210fcd9adb42fa80a55607732277864da3"
+    },
+    {
+      "members": [
+        {
+          "name": "id",
+          "type": "core::felt252",
+          "key": true
+        },
+        {
+          "name": "strk_address",
+          "type": "core::starknet::contract_address::ContractAddress",
+          "key": false
+        },
+        {
+          "name": "rebirth_fee",
+          "type": "core::integer::u256",
+          "key": false
+        }
+      ],
+      "class_hash": "0x5e04d73bf6f921d878404ed382c18063ecf9f20daf821adad5301a384970773",
+      "tag": "Warpacks-GameConfig",
+      "selector": "0x28b5af007fcc24010d8f1ae72d7baf968817c5c7b5e8c5b54cd13da9175eb9e"
+    },
+    {
+      "members": [
+        {
+          "name": "player",
+          "type": "core::starknet::contract_address::ContractAddress",
+          "key": true
+        },
+        {
+          "name": "count",
+          "type": "core::integer::u32",
+          "key": false
+        }
+      ],
+      "class_hash": "0x7e551e04c0e5f5a0753d709436611fc8427ce6c6daeca28bfe7ea99bdb14ad1",
+      "tag": "Warpacks-InventoryCounter",
+      "selector": "0x7cccec74da05f6fc0357aeaea409a3d5506d57f3782dc4cb382ccd69bbde66f"
+    },
+    {
+      "members": [
+        {
+          "name": "player",
+          "type": "core::starknet::contract_address::ContractAddress",
+          "key": true
+        },
+        {
+          "name": "id",
+          "type": "core::integer::u32",
+          "key": true
+        },
+        {
+          "name": "itemId",
+          "type": "core::integer::u32",
+          "key": false
+        },
+        {
+          "name": "position",
+          "type": "warpack_masters::models::CharacterItem::Position",
+          "key": false
+        },
+        {
+          "name": "rotation",
+          "type": "core::integer::u32",
+          "key": false
+        },
+        {
+          "name": "plugins",
+          "type": "core::array::Array::<(core::integer::u8, core::integer::u32, core::integer::u32)>",
+          "key": false
+        }
+      ],
+      "class_hash": "0x57b5c69b390fbf795bf23e13cb04d49dd83fc4d8e81b3420bb8ca5cd0da9313",
+      "tag": "Warpacks-InventoryItem",
+      "selector": "0x19dc947498d7d1d8dc7c72643fab78662635531e4043f83b6381d4d5bbb839d"
+    },
+    {
+      "members": [
+        {
+          "name": "id",
+          "type": "core::integer::u32",
+          "key": true
+        },
+        {
+          "name": "name",
+          "type": "core::byte_array::ByteArray",
+          "key": false
+        },
+        {
+          "name": "itemType",
+          "type": "core::integer::u8",
+          "key": false
+        },
+        {
+          "name": "rarity",
+          "type": "core::integer::u8",
+          "key": false
+        },
+        {
+          "name": "width",
+          "type": "core::integer::u32",
+          "key": false
+        },
+        {
+          "name": "height",
+          "type": "core::integer::u32",
+          "key": false
+        },
+        {
+          "name": "price",
+          "type": "core::integer::u32",
+          "key": false
+        },
+        {
+          "name": "effectType",
+          "type": "core::integer::u8",
+          "key": false
+        },
+        {
+          "name": "effectStacks",
+          "type": "core::integer::u32",
+          "key": false
+        },
+        {
+          "name": "effectActivationType",
+          "type": "core::integer::u8",
+          "key": false
+        },
+        {
+          "name": "chance",
+          "type": "core::integer::u32",
+          "key": false
+        },
+        {
+          "name": "cooldown",
+          "type": "core::integer::u8",
+          "key": false
+        },
+        {
+          "name": "energyCost",
+          "type": "core::integer::u8",
+          "key": false
+        },
+        {
+          "name": "isPlugin",
+          "type": "core::bool",
+          "key": false
+        },
+        {
+          "name": "enabled",
+          "type": "core::bool",
+          "key": false
+        }
+      ],
+      "class_hash": "0x4804996b464f22942d3e15e1325f640b19c2d12bf3b0d82f05de96733f247c4",
+      "tag": "Warpacks-Item",
+      "selector": "0x7de0a1a6e53c8570967a20ee3f8af0c328eec4f3203d197b95d163e363862d6"
+    },
+    {
+      "members": [
+        {
+          "name": "id",
+          "type": "core::felt252",
+          "key": true
+        },
+        {
+          "name": "count",
+          "type": "core::integer::u32",
+          "key": false
+        }
+      ],
+      "class_hash": "0x70a0b192eb7a0ec2fd0d895b43aa672ca577d4fa2016baa4d0fbf4718d4c7f7",
+      "tag": "Warpacks-ItemsCounter",
+      "selector": "0x37ea17be1edf854d4c5941a21d7752746a2903ca919377df8e5f863b890bd5f"
+    },
+    {
+      "members": [
+        {
+          "name": "id",
+          "type": "core::integer::u32",
+          "key": true
+        },
+        {
+          "name": "item_ids",
+          "type": "core::array::Array::<core::integer::u32>",
+          "key": false
+        },
+        {
+          "name": "item_amounts",
+          "type": "core::array::Array::<core::integer::u32>",
+          "key": false
+        },
+        {
+          "name": "result_item_id",
+          "type": "core::integer::u32",
+          "key": false
+        },
+        {
+          "name": "enabled",
+          "type": "core::bool",
+          "key": false
+        }
+      ],
+      "class_hash": "0xa573fac4295b64354b99ab9470be140596208fee21e6e077a18e227b4386d5",
+      "tag": "Warpacks-RecipeV2",
+      "selector": "0x35ff569d8f257d8fc47ad932dd67d1005fbfb8974a4cd0a67bd3a356ace65ec"
+    },
+    {
+      "members": [
+        {
+          "name": "id",
+          "type": "core::felt252",
+          "key": true
+        },
+        {
+          "name": "count",
+          "type": "core::integer::u32",
+          "key": false
+        }
+      ],
+      "class_hash": "0x5d4f6159aa61f2509580c066695783577d0c24d156d47e604cd0c0a80e93963",
+      "tag": "Warpacks-RecipesCounter",
+      "selector": "0x45fef67c13a5377473295dcfb02c0afb61dabc8e1d71111acb4f459255ba4c"
+    },
+    {
+      "members": [
+        {
+          "name": "player",
+          "type": "core::starknet::contract_address::ContractAddress",
+          "key": true
+        },
+        {
+          "name": "item1",
+          "type": "core::integer::u32",
+          "key": false
+        },
+        {
+          "name": "item2",
+          "type": "core::integer::u32",
+          "key": false
+        },
+        {
+          "name": "item3",
+          "type": "core::integer::u32",
+          "key": false
+        },
+        {
+          "name": "item4",
+          "type": "core::integer::u32",
+          "key": false
+        }
+      ],
+      "class_hash": "0x4d894c588a016710ea5240b9042d58d7d976c4b76de01cac9ff8f60061b3eae",
+      "tag": "Warpacks-Shop",
+      "selector": "0x78fb8e91ceb3682be44b8916bb3c07f016bdb8bbf1bc1cad81eca46f300e361"
+    },
+    {
+      "members": [
+        {
+          "name": "player",
+          "type": "core::starknet::contract_address::ContractAddress",
+          "key": true
+        },
+        {
+          "name": "count",
+          "type": "core::integer::u32",
+          "key": false
+        }
+      ],
+      "class_hash": "0x16dfc20b7e8f3c5eb2ebf718ed65f3e0359d53eeeb35b2418394944bae0caeb",
+      "tag": "Warpacks-StorageCounter",
+      "selector": "0x6eae85ba4dcab5b82032b2bf1e01c65dabf729ad643c95e7b417b911b972923"
+    },
+    {
+      "members": [
+        {
+          "name": "player",
+          "type": "core::starknet::contract_address::ContractAddress",
+          "key": true
+        },
+        {
+          "name": "id",
+          "type": "core::integer::u32",
+          "key": true
+        },
+        {
+          "name": "itemId",
+          "type": "core::integer::u32",
+          "key": false
+        }
+      ],
+      "class_hash": "0x7571d2640f23b3e7e27e2490aa9072c754c54e53c06105430ec121124184b35",
+      "tag": "Warpacks-StorageItem",
+      "selector": "0x5c1a6f2cc11bb69f0dbb060a873f2326e3a5a37c093a7c8a75b1ebec1565ace"
+    },
+    {
+      "members": [
+        {
+          "name": "item_id",
+          "type": "core::integer::u32",
+          "key": true
+        },
+        {
+          "name": "name",
+          "type": "core::byte_array::ByteArray",
+          "key": false
+        },
+        {
+          "name": "symbol",
+          "type": "core::byte_array::ByteArray",
+          "key": false
+        },
+        {
+          "name": "token_address",
+          "type": "core::starknet::contract_address::ContractAddress",
+          "key": false
+        },
+        {
+          "name": "is_active",
+          "type": "core::bool",
+          "key": false
+        },
+        {
+          "name": "is_legacy",
+          "type": "core::bool",
+          "key": false
+        }
+      ],
+      "class_hash": "0x26407a4683d7741602ed16d9baa81c9afede6f6a27c7e1817c8b463605b62ea",
+      "tag": "Warpacks-TokenRegistry",
+      "selector": "0x207a87e95c8cee5fbebd6e917101406eb15b1c07c605ec60f6e66381f708b36"
+    }
+  ],
+  "events": [
+    {
+      "members": [
+        {
+          "name": "player",
+          "type": "core::starknet::contract_address::ContractAddress",
+          "key": true
+        },
+        {
+          "name": "battleLogId",
+          "type": "core::integer::u32",
+          "key": true
+        },
+        {
+          "name": "id",
+          "type": "core::integer::u8",
+          "key": true
+        },
+        {
+          "name": "whoTriggered",
+          "type": "core::felt252",
+          "key": false
+        },
+        {
+          "name": "whichItem",
+          "type": "core::integer::u32",
+          "key": false
+        },
+        {
+          "name": "isDodged",
+          "type": "core::bool",
+          "key": false
+        },
+        {
+          "name": "effectType",
+          "type": "core::integer::u8",
+          "key": false
+        },
+        {
+          "name": "effectStacks",
+          "type": "core::integer::u32",
+          "key": false
+        },
+        {
+          "name": "player_remaining_health",
+          "type": "core::integer::u32",
+          "key": false
+        },
+        {
+          "name": "dummy_remaining_health",
+          "type": "core::integer::u32",
+          "key": false
+        },
+        {
+          "name": "player_stamina",
+          "type": "core::integer::u8",
+          "key": false
+        },
+        {
+          "name": "dummy_stamina",
+          "type": "core::integer::u8",
+          "key": false
+        },
+        {
+          "name": "player_stacks",
+          "type": "(core::integer::u32, core::integer::u32, core::integer::u32, core::integer::u32, core::integer::u32, core::integer::u32)",
+          "key": false
+        },
+        {
+          "name": "dummy_stacks",
+          "type": "(core::integer::u32, core::integer::u32, core::integer::u32, core::integer::u32, core::integer::u32, core::integer::u32)",
+          "key": false
+        }
+      ],
+      "class_hash": "0x4096357245353e5a75116861a355cfa7b5fa0f53c5938d842ea58a098bace71",
+      "tag": "Warpacks-BattleLogDetail",
+      "selector": "0x59f2a3726f025bd9295ee0e3f58ec2237849b9038d7adbe8567d5aab906429e"
+    },
+    {
+      "members": [
+        {
+          "name": "player",
+          "type": "core::starknet::contract_address::ContractAddress",
+          "key": true
+        },
+        {
+          "name": "itemId",
+          "type": "core::integer::u32",
+          "key": false
+        },
+        {
+          "name": "cost",
+          "type": "core::integer::u32",
+          "key": false
+        },
+        {
+          "name": "itemRarity",
+          "type": "core::integer::u8",
+          "key": false
+        },
+        {
+          "name": "birthCount",
+          "type": "core::integer::u32",
+          "key": false
+        }
+      ],
+      "class_hash": "0x1579e379bc178e0e3327fd6c200338bee0ccee760f525c703b8d69c18dcee6b",
+      "tag": "Warpacks-BuyItem",
+      "selector": "0x222c957197f3def390ba92afb039775d6feeca9d6048ef5585392fbb8a5ab9"
+    },
+    {
+      "members": [
+        {
+          "name": "player",
+          "type": "core::starknet::contract_address::ContractAddress",
+          "key": true
+        },
+        {
+          "name": "itemId",
+          "type": "core::integer::u32",
+          "key": false
+        },
+        {
+          "name": "tokenAmount",
+          "type": "core::integer::u256",
+          "key": false
+        }
+      ],
+      "class_hash": "0x4e666427bdd117a454c926d5da4f38e7d01c273a5beba86de372cd3c21134f4",
+      "tag": "Warpacks-DepositItem",
+      "selector": "0x6971b92755d3dc85aa8ce24b77cf59df674f743fd8b657d2dcc311c093ead82"
+    },
+    {
+      "members": [
+        {
+          "name": "player",
+          "type": "core::starknet::contract_address::ContractAddress",
+          "key": true
+        },
+        {
+          "name": "itemId",
+          "type": "core::integer::u32",
+          "key": false
+        },
+        {
+          "name": "price",
+          "type": "core::integer::u32",
+          "key": false
+        },
+        {
+          "name": "itemRarity",
+          "type": "core::integer::u8",
+          "key": false
+        },
+        {
+          "name": "birthCount",
+          "type": "core::integer::u32",
+          "key": false
+        }
+      ],
+      "class_hash": "0x1d384e61d6a9e188ba0b902172cd9a9790243bd3b0e93bb2002131508756ecd",
+      "tag": "Warpacks-SellItem",
+      "selector": "0x17d7432b9e7cbae7e6d2920ef19d5a96f6ce2f428f22d820a7298f1864d7dff"
+    },
+    {
+      "members": [
+        {
+          "name": "player",
+          "type": "core::starknet::contract_address::ContractAddress",
+          "key": true
+        },
+        {
+          "name": "slot",
+          "type": "core::integer::u32",
+          "key": true
+        },
+        {
+          "name": "itemId",
+          "type": "core::integer::u32",
+          "key": false
+        }
+      ],
+      "class_hash": "0x528cd164a3b8c1f294a62124055ec755e212917badd5108c1c91f96e5bd9485",
+      "tag": "Warpacks-StorageSlotUpdated",
+      "selector": "0x4a9821c74d9d1f098fbce3cba6cf85b0e68c2aa9a5dad567c2e1fdd8cb2b15"
+    },
+    {
+      "members": [
+        {
+          "name": "player",
+          "type": "core::starknet::contract_address::ContractAddress",
+          "key": true
+        },
+        {
+          "name": "itemId",
+          "type": "core::integer::u32",
+          "key": false
+        },
+        {
+          "name": "tokenAmount",
+          "type": "core::integer::u256",
+          "key": false
+        }
+      ],
+      "class_hash": "0x705643106b66d59be69af055b467c44efd1951c58b3bbd8ed2d5aca226459f1",
+      "tag": "Warpacks-WithdrawItem",
+      "selector": "0x1f4a79ecc13b9194c63515ccd3080a7093d21baec32f5290b00b819d9e8b60d"
+    }
+  ],
+  "external_contracts": [],
+  "abis": [
+    {
+      "type": "constructor",
+      "name": "constructor",
+      "inputs": []
+    },
+    {
+      "type": "struct",
+      "name": "core::array::Span::<(core::felt252, core::integer::u32, core::integer::u8, core::integer::u8, core::integer::u32, core::integer::u32, core::integer::u8, core::integer::u8, core::array::Span::<(core::integer::u8, core::integer::u32, core::integer::u32)>)>",
+      "members": [
+        {
+          "name": "snapshot",
+          "type": "@core::array::Array::<(core::felt252, core::integer::u32, core::integer::u8, core::integer::u8, core::integer::u32, core::integer::u32, core::integer::u8, core::integer::u8, core::array::Span::<(core::integer::u8, core::integer::u32, core::integer::u32)>)>"
+        }
+      ]
+    },
+    {
+      "type": "struct",
+      "name": "core::array::Span::<(core::felt252, dojo::meta::introspect::Ty)>",
+      "members": [
+        {
+          "name": "snapshot",
+          "type": "@core::array::Array::<(core::felt252, dojo::meta::introspect::Ty)>"
+        }
+      ]
+    },
+    {
+      "type": "struct",
+      "name": "core::array::Span::<(core::integer::u8, core::integer::u32, core::integer::u32)>",
+      "members": [
+        {
+          "name": "snapshot",
+          "type": "@core::array::Array::<(core::integer::u8, core::integer::u32, core::integer::u32)>"
+        }
+      ]
+    },
+    {
+      "type": "struct",
+      "name": "core::array::Span::<core::array::Span::<core::felt252>>",
+      "members": [
+        {
+          "name": "snapshot",
+          "type": "@core::array::Array::<core::array::Span::<core::felt252>>"
+        }
+      ]
+    },
+    {
+      "type": "struct",
+      "name": "core::array::Span::<core::felt252>",
+      "members": [
+        {
+          "name": "snapshot",
+          "type": "@core::array::Array::<core::felt252>"
+        }
+      ]
+    },
+    {
+      "type": "struct",
+      "name": "core::array::Span::<core::integer::u32>",
+      "members": [
+        {
+          "name": "snapshot",
+          "type": "@core::array::Array::<core::integer::u32>"
+        }
+      ]
+    },
+    {
+      "type": "struct",
+      "name": "core::array::Span::<core::integer::u8>",
+      "members": [
+        {
+          "name": "snapshot",
+          "type": "@core::array::Array::<core::integer::u8>"
+        }
+      ]
+    },
+    {
+      "type": "struct",
+      "name": "core::array::Span::<dojo::meta::introspect::Member>",
+      "members": [
+        {
+          "name": "snapshot",
+          "type": "@core::array::Array::<dojo::meta::introspect::Member>"
+        }
+      ]
+    },
+    {
+      "type": "struct",
+      "name": "core::array::Span::<dojo::meta::introspect::Ty>",
+      "members": [
+        {
+          "name": "snapshot",
+          "type": "@core::array::Array::<dojo::meta::introspect::Ty>"
+        }
+      ]
+    },
+    {
+      "type": "struct",
+      "name": "core::array::Span::<dojo::meta::layout::FieldLayout>",
+      "members": [
+        {
+          "name": "snapshot",
+          "type": "@core::array::Array::<dojo::meta::layout::FieldLayout>"
+        }
+      ]
+    },
+    {
+      "type": "struct",
+      "name": "core::array::Span::<dojo::meta::layout::Layout>",
+      "members": [
+        {
+          "name": "snapshot",
+          "type": "@core::array::Array::<dojo::meta::layout::Layout>"
+        }
+      ]
+    },
+    {
+      "type": "struct",
+      "name": "core::array::Span::<dojo::model::definition::ModelIndex>",
+      "members": [
+        {
+          "name": "snapshot",
+          "type": "@core::array::Array::<dojo::model::definition::ModelIndex>"
+        }
+      ]
+    },
+    {
+      "type": "enum",
+      "name": "core::bool",
+      "variants": [
+        {
+          "name": "False",
+          "type": "()"
+        },
+        {
+          "name": "True",
+          "type": "()"
+        }
+      ]
+    },
+    {
+      "type": "struct",
+      "name": "core::byte_array::ByteArray",
+      "members": [
+        {
+          "name": "data",
+          "type": "core::array::Array::<core::bytes_31::bytes31>"
+        },
+        {
+          "name": "pending_word",
+          "type": "core::felt252"
+        },
+        {
+          "name": "pending_word_len",
+          "type": "core::internal::bounded_int::BoundedInt::<0, 30>"
+        }
+      ]
+    },
+    {
+      "type": "struct",
+      "name": "core::integer::u256",
+      "members": [
+        {
+          "name": "low",
+          "type": "core::integer::u128"
+        },
+        {
+          "name": "high",
+          "type": "core::integer::u128"
+        }
+      ]
+    },
+    {
+      "type": "enum",
+      "name": "core::option::Option::<core::integer::u32>",
+      "variants": [
+        {
+          "name": "Some",
+          "type": "core::integer::u32"
+        },
+        {
+          "name": "None",
+          "type": "()"
+        }
+      ]
+    },
+    {
+      "type": "interface",
+      "name": "dojo::contract::components::upgradeable::IUpgradeable",
+      "items": [
+        {
+          "type": "function",
+          "name": "upgrade",
+          "inputs": [
+            {
+              "name": "new_class_hash",
+              "type": "core::starknet::class_hash::ClassHash"
+            }
+          ],
+          "outputs": [],
+          "state_mutability": "external"
+        }
+      ]
+    },
+    {
+      "type": "event",
+      "name": "dojo::contract::components::upgradeable::upgradeable_cpt::Event",
+      "kind": "enum",
+      "variants": [
+        {
+          "name": "Upgraded",
+          "type": "dojo::contract::components::upgradeable::upgradeable_cpt::Upgraded",
+          "kind": "nested"
+        }
+      ]
+    },
+    {
+      "type": "event",
+      "name": "dojo::contract::components::upgradeable::upgradeable_cpt::Upgraded",
+      "kind": "struct",
+      "members": [
+        {
+          "name": "class_hash",
+          "type": "core::starknet::class_hash::ClassHash",
+          "kind": "data"
+        }
+      ]
+    },
+    {
+      "type": "interface",
+      "name": "dojo::contract::components::world_provider::IWorldProvider",
+      "items": [
+        {
+          "type": "function",
+          "name": "world_dispatcher",
+          "inputs": [],
+          "outputs": [
+            {
+              "type": "dojo::world::iworld::IWorldDispatcher"
+            }
+          ],
+          "state_mutability": "view"
+        }
+      ]
+    },
+    {
+      "type": "event",
+      "name": "dojo::contract::components::world_provider::world_provider_cpt::Event",
+      "kind": "enum",
+      "variants": []
+    },
+    {
+      "type": "interface",
+      "name": "dojo::contract::interface::IContract",
+      "items": []
+    },
+    {
+      "type": "struct",
+      "name": "dojo::event::event::EventDef",
+      "members": [
+        {
+          "name": "name",
+          "type": "core::byte_array::ByteArray"
+        },
+        {
+          "name": "layout",
+          "type": "dojo::meta::layout::Layout"
+        },
+        {
+          "name": "schema",
+          "type": "dojo::meta::introspect::Struct"
+        }
+      ]
+    },
+    {
+      "type": "interface",
+      "name": "dojo::event::interface::IEvent",
+      "items": [
+        {
+          "type": "function",
+          "name": "definition",
+          "inputs": [],
+          "outputs": [
+            {
+              "type": "dojo::event::event::EventDef"
+            }
+          ],
+          "state_mutability": "view"
+        }
+      ]
+    },
+    {
+      "type": "interface",
+      "name": "dojo::meta::interface::IDeployedResource",
+      "items": [
+        {
+          "type": "function",
+          "name": "dojo_name",
+          "inputs": [],
+          "outputs": [
+            {
+              "type": "core::byte_array::ByteArray"
+            }
+          ],
+          "state_mutability": "view"
+        }
+      ]
+    },
+    {
+      "type": "interface",
+      "name": "dojo::meta::interface::IStoredResource",
+      "items": [
+        {
+          "type": "function",
+          "name": "layout",
+          "inputs": [],
+          "outputs": [
+            {
+              "type": "dojo::meta::layout::Layout"
+            }
+          ],
+          "state_mutability": "view"
+        },
+        {
+          "type": "function",
+          "name": "schema",
+          "inputs": [],
+          "outputs": [
+            {
+              "type": "dojo::meta::introspect::Struct"
+            }
+          ],
+          "state_mutability": "view"
+        }
+      ]
+    },
+    {
+      "type": "struct",
+      "name": "dojo::meta::introspect::Enum",
+      "members": [
+        {
+          "name": "name",
+          "type": "core::felt252"
+        },
+        {
+          "name": "attrs",
+          "type": "core::array::Span::<core::felt252>"
+        },
+        {
+          "name": "children",
+          "type": "core::array::Span::<(core::felt252, dojo::meta::introspect::Ty)>"
+        }
+      ]
+    },
+    {
+      "type": "struct",
+      "name": "dojo::meta::introspect::Member",
+      "members": [
+        {
+          "name": "name",
+          "type": "core::felt252"
+        },
+        {
+          "name": "attrs",
+          "type": "core::array::Span::<core::felt252>"
+        },
+        {
+          "name": "ty",
+          "type": "dojo::meta::introspect::Ty"
+        }
+      ]
+    },
+    {
+      "type": "struct",
+      "name": "dojo::meta::introspect::Struct",
+      "members": [
+        {
+          "name": "name",
+          "type": "core::felt252"
+        },
+        {
+          "name": "attrs",
+          "type": "core::array::Span::<core::felt252>"
+        },
+        {
+          "name": "children",
+          "type": "core::array::Span::<dojo::meta::introspect::Member>"
+        }
+      ]
+    },
+    {
+      "type": "enum",
+      "name": "dojo::meta::introspect::Ty",
+      "variants": [
+        {
+          "name": "Primitive",
+          "type": "core::felt252"
+        },
+        {
+          "name": "Struct",
+          "type": "dojo::meta::introspect::Struct"
+        },
+        {
+          "name": "Enum",
+          "type": "dojo::meta::introspect::Enum"
+        },
+        {
+          "name": "Tuple",
+          "type": "core::array::Span::<dojo::meta::introspect::Ty>"
+        },
+        {
+          "name": "Array",
+          "type": "core::array::Span::<dojo::meta::introspect::Ty>"
+        },
+        {
+          "name": "ByteArray",
+          "type": "()"
+        },
+        {
+          "name": "FixedArray",
+          "type": "(core::array::Span::<dojo::meta::introspect::Ty>, core::integer::u32)"
+        }
+      ]
+    },
+    {
+      "type": "struct",
+      "name": "dojo::meta::layout::FieldLayout",
+      "members": [
+        {
+          "name": "selector",
+          "type": "core::felt252"
+        },
+        {
+          "name": "layout",
+          "type": "dojo::meta::layout::Layout"
+        }
+      ]
+    },
+    {
+      "type": "enum",
+      "name": "dojo::meta::layout::Layout",
+      "variants": [
+        {
+          "name": "Fixed",
+          "type": "core::array::Span::<core::integer::u8>"
+        },
+        {
+          "name": "Struct",
+          "type": "core::array::Span::<dojo::meta::layout::FieldLayout>"
+        },
+        {
+          "name": "Tuple",
+          "type": "core::array::Span::<dojo::meta::layout::Layout>"
+        },
+        {
+          "name": "Array",
+          "type": "core::array::Span::<dojo::meta::layout::Layout>"
+        },
+        {
+          "name": "ByteArray",
+          "type": "()"
+        },
+        {
+          "name": "Enum",
+          "type": "core::array::Span::<dojo::meta::layout::FieldLayout>"
+        },
+        {
+          "name": "FixedArray",
+          "type": "(core::array::Span::<dojo::meta::layout::Layout>, core::integer::u32)"
+        }
+      ]
+    },
+    {
+      "type": "struct",
+      "name": "dojo::model::definition::ModelDef",
+      "members": [
+        {
+          "name": "name",
+          "type": "core::byte_array::ByteArray"
+        },
+        {
+          "name": "layout",
+          "type": "dojo::meta::layout::Layout"
+        },
+        {
+          "name": "schema",
+          "type": "dojo::meta::introspect::Struct"
+        },
+        {
+          "name": "packed_size",
+          "type": "core::option::Option::<core::integer::u32>"
+        },
+        {
+          "name": "unpacked_size",
+          "type": "core::option::Option::<core::integer::u32>"
+        }
+      ]
+    },
+    {
+      "type": "enum",
+      "name": "dojo::model::definition::ModelIndex",
+      "variants": [
+        {
+          "name": "Keys",
+          "type": "core::array::Span::<core::felt252>"
+        },
+        {
+          "name": "Id",
+          "type": "core::felt252"
+        },
+        {
+          "name": "MemberId",
+          "type": "(core::felt252, core::felt252)"
+        }
+      ]
+    },
+    {
+      "type": "interface",
+      "name": "dojo::model::interface::IModel",
+      "items": [
+        {
+          "type": "function",
+          "name": "unpacked_size",
+          "inputs": [],
+          "outputs": [
+            {
+              "type": "core::option::Option::<core::integer::u32>"
+            }
+          ],
+          "state_mutability": "view"
+        },
+        {
+          "type": "function",
+          "name": "packed_size",
+          "inputs": [],
+          "outputs": [
+            {
+              "type": "core::option::Option::<core::integer::u32>"
+            }
+          ],
+          "state_mutability": "view"
+        },
+        {
+          "type": "function",
+          "name": "definition",
+          "inputs": [],
+          "outputs": [
+            {
+              "type": "dojo::model::definition::ModelDef"
+            }
+          ],
+          "state_mutability": "view"
+        },
+        {
+          "type": "function",
+          "name": "use_legacy_storage",
+          "inputs": [],
+          "outputs": [
+            {
+              "type": "core::bool"
+            }
+          ],
+          "state_mutability": "view"
+        }
+      ]
+    },
+    {
+      "type": "struct",
+      "name": "dojo::model::metadata::ResourceMetadata",
+      "members": [
+        {
+          "name": "resource_id",
+          "type": "core::felt252"
+        },
+        {
+          "name": "metadata_uri",
+          "type": "core::byte_array::ByteArray"
+        },
+        {
+          "name": "metadata_hash",
+          "type": "core::felt252"
+        }
+      ]
+    },
+    {
+      "type": "interface",
+      "name": "dojo::world::iworld::IUpgradeableWorld",
+      "items": [
+        {
+          "type": "function",
+          "name": "upgrade",
+          "inputs": [
+            {
+              "name": "new_class_hash",
+              "type": "core::starknet::class_hash::ClassHash"
+            }
+          ],
+          "outputs": [],
+          "state_mutability": "external"
+        }
+      ]
+    },
+    {
+      "type": "interface",
+      "name": "dojo::world::iworld::IWorld",
+      "items": [
+        {
+          "type": "function",
+          "name": "resource",
+          "inputs": [
+            {
+              "name": "selector",
+              "type": "core::felt252"
+            }
+          ],
+          "outputs": [
+            {
+              "type": "dojo::world::resource::Resource"
+            }
+          ],
+          "state_mutability": "view"
+        },
+        {
+          "type": "function",
+          "name": "world_version",
+          "inputs": [],
+          "outputs": [
+            {
+              "type": "core::felt252"
+            }
+          ],
+          "state_mutability": "view"
+        },
+        {
+          "type": "function",
+          "name": "uuid",
+          "inputs": [],
+          "outputs": [
+            {
+              "type": "core::integer::u32"
+            }
+          ],
+          "state_mutability": "external"
+        },
+        {
+          "type": "function",
+          "name": "metadata",
+          "inputs": [
+            {
+              "name": "resource_selector",
+              "type": "core::felt252"
+            }
+          ],
+          "outputs": [
+            {
+              "type": "dojo::model::metadata::ResourceMetadata"
+            }
+          ],
+          "state_mutability": "view"
+        },
+        {
+          "type": "function",
+          "name": "set_metadata",
+          "inputs": [
+            {
+              "name": "metadata",
+              "type": "dojo::model::metadata::ResourceMetadata"
+            }
+          ],
+          "outputs": [],
+          "state_mutability": "external"
+        },
+        {
+          "type": "function",
+          "name": "register_namespace",
+          "inputs": [
+            {
+              "name": "namespace",
+              "type": "core::byte_array::ByteArray"
+            }
+          ],
+          "outputs": [],
+          "state_mutability": "external"
+        },
+        {
+          "type": "function",
+          "name": "register_event",
+          "inputs": [
+            {
+              "name": "namespace",
+              "type": "core::byte_array::ByteArray"
+            },
+            {
+              "name": "class_hash",
+              "type": "core::starknet::class_hash::ClassHash"
+            }
+          ],
+          "outputs": [],
+          "state_mutability": "external"
+        },
+        {
+          "type": "function",
+          "name": "register_model",
+          "inputs": [
+            {
+              "name": "namespace",
+              "type": "core::byte_array::ByteArray"
+            },
+            {
+              "name": "class_hash",
+              "type": "core::starknet::class_hash::ClassHash"
+            }
+          ],
+          "outputs": [],
+          "state_mutability": "external"
+        },
+        {
+          "type": "function",
+          "name": "register_contract",
+          "inputs": [
+            {
+              "name": "salt",
+              "type": "core::felt252"
+            },
+            {
+              "name": "namespace",
+              "type": "core::byte_array::ByteArray"
+            },
+            {
+              "name": "class_hash",
+              "type": "core::starknet::class_hash::ClassHash"
+            }
+          ],
+          "outputs": [
+            {
+              "type": "core::starknet::contract_address::ContractAddress"
+            }
+          ],
+          "state_mutability": "external"
+        },
+        {
+          "type": "function",
+          "name": "register_external_contract",
+          "inputs": [
+            {
+              "name": "namespace",
+              "type": "core::byte_array::ByteArray"
+            },
+            {
+              "name": "contract_name",
+              "type": "core::byte_array::ByteArray"
+            },
+            {
+              "name": "instance_name",
+              "type": "core::byte_array::ByteArray"
+            },
+            {
+              "name": "contract_address",
+              "type": "core::starknet::contract_address::ContractAddress"
+            },
+            {
+              "name": "block_number",
+              "type": "core::integer::u64"
+            }
+          ],
+          "outputs": [],
+          "state_mutability": "external"
+        },
+        {
+          "type": "function",
+          "name": "register_library",
+          "inputs": [
+            {
+              "name": "namespace",
+              "type": "core::byte_array::ByteArray"
+            },
+            {
+              "name": "class_hash",
+              "type": "core::starknet::class_hash::ClassHash"
+            },
+            {
+              "name": "name",
+              "type": "core::byte_array::ByteArray"
+            },
+            {
+              "name": "version",
+              "type": "core::byte_array::ByteArray"
+            }
+          ],
+          "outputs": [
+            {
+              "type": "core::starknet::class_hash::ClassHash"
+            }
+          ],
+          "state_mutability": "external"
+        },
+        {
+          "type": "function",
+          "name": "init_contract",
+          "inputs": [
+            {
+              "name": "selector",
+              "type": "core::felt252"
+            },
+            {
+              "name": "init_calldata",
+              "type": "core::array::Span::<core::felt252>"
+            }
+          ],
+          "outputs": [],
+          "state_mutability": "external"
+        },
+        {
+          "type": "function",
+          "name": "upgrade_event",
+          "inputs": [
+            {
+              "name": "namespace",
+              "type": "core::byte_array::ByteArray"
+            },
+            {
+              "name": "class_hash",
+              "type": "core::starknet::class_hash::ClassHash"
+            }
+          ],
+          "outputs": [],
+          "state_mutability": "external"
+        },
+        {
+          "type": "function",
+          "name": "upgrade_model",
+          "inputs": [
+            {
+              "name": "namespace",
+              "type": "core::byte_array::ByteArray"
+            },
+            {
+              "name": "class_hash",
+              "type": "core::starknet::class_hash::ClassHash"
+            }
+          ],
+          "outputs": [],
+          "state_mutability": "external"
+        },
+        {
+          "type": "function",
+          "name": "upgrade_contract",
+          "inputs": [
+            {
+              "name": "namespace",
+              "type": "core::byte_array::ByteArray"
+            },
+            {
+              "name": "class_hash",
+              "type": "core::starknet::class_hash::ClassHash"
+            }
+          ],
+          "outputs": [
+            {
+              "type": "core::starknet::class_hash::ClassHash"
+            }
+          ],
+          "state_mutability": "external"
+        },
+        {
+          "type": "function",
+          "name": "upgrade_external_contract",
+          "inputs": [
+            {
+              "name": "namespace",
+              "type": "core::byte_array::ByteArray"
+            },
+            {
+              "name": "instance_name",
+              "type": "core::byte_array::ByteArray"
+            },
+            {
+              "name": "contract_address",
+              "type": "core::starknet::contract_address::ContractAddress"
+            },
+            {
+              "name": "block_number",
+              "type": "core::integer::u64"
+            }
+          ],
+          "outputs": [],
+          "state_mutability": "external"
+        },
+        {
+          "type": "function",
+          "name": "emit_event",
+          "inputs": [
+            {
+              "name": "event_selector",
+              "type": "core::felt252"
+            },
+            {
+              "name": "keys",
+              "type": "core::array::Span::<core::felt252>"
+            },
+            {
+              "name": "values",
+              "type": "core::array::Span::<core::felt252>"
+            }
+          ],
+          "outputs": [],
+          "state_mutability": "external"
+        },
+        {
+          "type": "function",
+          "name": "emit_events",
+          "inputs": [
+            {
+              "name": "event_selector",
+              "type": "core::felt252"
+            },
+            {
+              "name": "keys",
+              "type": "core::array::Span::<core::array::Span::<core::felt252>>"
+            },
+            {
+              "name": "values",
+              "type": "core::array::Span::<core::array::Span::<core::felt252>>"
+            }
+          ],
+          "outputs": [],
+          "state_mutability": "external"
+        },
+        {
+          "type": "function",
+          "name": "entity",
+          "inputs": [
+            {
+              "name": "model_selector",
+              "type": "core::felt252"
+            },
+            {
+              "name": "index",
+              "type": "dojo::model::definition::ModelIndex"
+            },
+            {
+              "name": "layout",
+              "type": "dojo::meta::layout::Layout"
+            }
+          ],
+          "outputs": [
+            {
+              "type": "core::array::Span::<core::felt252>"
+            }
+          ],
+          "state_mutability": "view"
+        },
+        {
+          "type": "function",
+          "name": "entities",
+          "inputs": [
+            {
+              "name": "model_selector",
+              "type": "core::felt252"
+            },
+            {
+              "name": "indexes",
+              "type": "core::array::Span::<dojo::model::definition::ModelIndex>"
+            },
+            {
+              "name": "layout",
+              "type": "dojo::meta::layout::Layout"
+            }
+          ],
+          "outputs": [
+            {
+              "type": "core::array::Span::<core::array::Span::<core::felt252>>"
+            }
+          ],
+          "state_mutability": "view"
+        },
+        {
+          "type": "function",
+          "name": "set_entity",
+          "inputs": [
+            {
+              "name": "model_selector",
+              "type": "core::felt252"
+            },
+            {
+              "name": "index",
+              "type": "dojo::model::definition::ModelIndex"
+            },
+            {
+              "name": "values",
+              "type": "core::array::Span::<core::felt252>"
+            },
+            {
+              "name": "layout",
+              "type": "dojo::meta::layout::Layout"
+            }
+          ],
+          "outputs": [],
+          "state_mutability": "external"
+        },
+        {
+          "type": "function",
+          "name": "set_entities",
+          "inputs": [
+            {
+              "name": "model_selector",
+              "type": "core::felt252"
+            },
+            {
+              "name": "indexes",
+              "type": "core::array::Span::<dojo::model::definition::ModelIndex>"
+            },
+            {
+              "name": "values",
+              "type": "core::array::Span::<core::array::Span::<core::felt252>>"
+            },
+            {
+              "name": "layout",
+              "type": "dojo::meta::layout::Layout"
+            }
+          ],
+          "outputs": [],
+          "state_mutability": "external"
+        },
+        {
+          "type": "function",
+          "name": "delete_entity",
+          "inputs": [
+            {
+              "name": "model_selector",
+              "type": "core::felt252"
+            },
+            {
+              "name": "index",
+              "type": "dojo::model::definition::ModelIndex"
+            },
+            {
+              "name": "layout",
+              "type": "dojo::meta::layout::Layout"
+            }
+          ],
+          "outputs": [],
+          "state_mutability": "external"
+        },
+        {
+          "type": "function",
+          "name": "delete_entities",
+          "inputs": [
+            {
+              "name": "model_selector",
+              "type": "core::felt252"
+            },
+            {
+              "name": "indexes",
+              "type": "core::array::Span::<dojo::model::definition::ModelIndex>"
+            },
+            {
+              "name": "layout",
+              "type": "dojo::meta::layout::Layout"
+            }
+          ],
+          "outputs": [],
+          "state_mutability": "external"
+        },
+        {
+          "type": "function",
+          "name": "is_owner",
+          "inputs": [
+            {
+              "name": "resource",
+              "type": "core::felt252"
+            },
+            {
+              "name": "address",
+              "type": "core::starknet::contract_address::ContractAddress"
+            }
+          ],
+          "outputs": [
+            {
+              "type": "core::bool"
+            }
+          ],
+          "state_mutability": "view"
+        },
+        {
+          "type": "function",
+          "name": "grant_owner",
+          "inputs": [
+            {
+              "name": "resource",
+              "type": "core::felt252"
+            },
+            {
+              "name": "address",
+              "type": "core::starknet::contract_address::ContractAddress"
+            }
+          ],
+          "outputs": [],
+          "state_mutability": "external"
+        },
+        {
+          "type": "function",
+          "name": "revoke_owner",
+          "inputs": [
+            {
+              "name": "resource",
+              "type": "core::felt252"
+            },
+            {
+              "name": "address",
+              "type": "core::starknet::contract_address::ContractAddress"
+            }
+          ],
+          "outputs": [],
+          "state_mutability": "external"
+        },
+        {
+          "type": "function",
+          "name": "owners_count",
+          "inputs": [
+            {
+              "name": "resource",
+              "type": "core::felt252"
+            }
+          ],
+          "outputs": [
+            {
+              "type": "core::integer::u64"
+            }
+          ],
+          "state_mutability": "view"
+        },
+        {
+          "type": "function",
+          "name": "is_writer",
+          "inputs": [
+            {
+              "name": "resource",
+              "type": "core::felt252"
+            },
+            {
+              "name": "contract",
+              "type": "core::starknet::contract_address::ContractAddress"
+            }
+          ],
+          "outputs": [
+            {
+              "type": "core::bool"
+            }
+          ],
+          "state_mutability": "view"
+        },
+        {
+          "type": "function",
+          "name": "grant_writer",
+          "inputs": [
+            {
+              "name": "resource",
+              "type": "core::felt252"
+            },
+            {
+              "name": "contract",
+              "type": "core::starknet::contract_address::ContractAddress"
+            }
+          ],
+          "outputs": [],
+          "state_mutability": "external"
+        },
+        {
+          "type": "function",
+          "name": "revoke_writer",
+          "inputs": [
+            {
+              "name": "resource",
+              "type": "core::felt252"
+            },
+            {
+              "name": "contract",
+              "type": "core::starknet::contract_address::ContractAddress"
+            }
+          ],
+          "outputs": [],
+          "state_mutability": "external"
+        }
+      ]
+    },
+    {
+      "type": "struct",
+      "name": "dojo::world::iworld::IWorldDispatcher",
+      "members": [
+        {
+          "name": "contract_address",
+          "type": "core::starknet::contract_address::ContractAddress"
+        }
+      ]
+    },
+    {
+      "type": "enum",
+      "name": "dojo::world::resource::Resource",
+      "variants": [
+        {
+          "name": "Model",
+          "type": "(core::starknet::contract_address::ContractAddress, core::felt252)"
+        },
+        {
+          "name": "Event",
+          "type": "(core::starknet::contract_address::ContractAddress, core::felt252)"
+        },
+        {
+          "name": "Contract",
+          "type": "(core::starknet::contract_address::ContractAddress, core::felt252)"
+        },
+        {
+          "name": "Namespace",
+          "type": "core::byte_array::ByteArray"
+        },
+        {
+          "name": "World",
+          "type": "()"
+        },
+        {
+          "name": "Unregistered",
+          "type": "()"
+        },
+        {
+          "name": "Library",
+          "type": "(core::starknet::class_hash::ClassHash, core::felt252)"
+        },
+        {
+          "name": "ExternalContract",
+          "type": "(core::starknet::contract_address::ContractAddress, core::felt252)"
+        }
+      ]
+    },
+    {
+      "type": "event",
+      "name": "dojo::world::world_contract::world::ContractInitialized",
+      "kind": "struct",
+      "members": [
+        {
+          "name": "selector",
+          "type": "core::felt252",
+          "kind": "key"
+        },
+        {
+          "name": "init_calldata",
+          "type": "core::array::Span::<core::felt252>",
+          "kind": "data"
+        }
+      ]
+    },
+    {
+      "type": "event",
+      "name": "dojo::world::world_contract::world::ContractRegistered",
+      "kind": "struct",
+      "members": [
+        {
+          "name": "name",
+          "type": "core::byte_array::ByteArray",
+          "kind": "key"
+        },
+        {
+          "name": "namespace",
+          "type": "core::byte_array::ByteArray",
+          "kind": "key"
+        },
+        {
+          "name": "address",
+          "type": "core::starknet::contract_address::ContractAddress",
+          "kind": "data"
+        },
+        {
+          "name": "class_hash",
+          "type": "core::starknet::class_hash::ClassHash",
+          "kind": "data"
+        },
+        {
+          "name": "salt",
+          "type": "core::felt252",
+          "kind": "data"
+        }
+      ]
+    },
+    {
+      "type": "event",
+      "name": "dojo::world::world_contract::world::ContractUpgraded",
+      "kind": "struct",
+      "members": [
+        {
+          "name": "selector",
+          "type": "core::felt252",
+          "kind": "key"
+        },
+        {
+          "name": "class_hash",
+          "type": "core::starknet::class_hash::ClassHash",
+          "kind": "data"
+        }
+      ]
+    },
+    {
+      "type": "event",
+      "name": "dojo::world::world_contract::world::Event",
+      "kind": "enum",
+      "variants": [
+        {
+          "name": "WorldSpawned",
+          "type": "dojo::world::world_contract::world::WorldSpawned",
+          "kind": "nested"
+        },
+        {
+          "name": "WorldUpgraded",
+          "type": "dojo::world::world_contract::world::WorldUpgraded",
+          "kind": "nested"
+        },
+        {
+          "name": "NamespaceRegistered",
+          "type": "dojo::world::world_contract::world::NamespaceRegistered",
+          "kind": "nested"
+        },
+        {
+          "name": "ModelRegistered",
+          "type": "dojo::world::world_contract::world::ModelRegistered",
+          "kind": "nested"
+        },
+        {
+          "name": "EventRegistered",
+          "type": "dojo::world::world_contract::world::EventRegistered",
+          "kind": "nested"
+        },
+        {
+          "name": "ContractRegistered",
+          "type": "dojo::world::world_contract::world::ContractRegistered",
+          "kind": "nested"
+        },
+        {
+          "name": "ExternalContractRegistered",
+          "type": "dojo::world::world_contract::world::ExternalContractRegistered",
+          "kind": "nested"
+        },
+        {
+          "name": "ExternalContractUpgraded",
+          "type": "dojo::world::world_contract::world::ExternalContractUpgraded",
+          "kind": "nested"
+        },
+        {
+          "name": "ModelUpgraded",
+          "type": "dojo::world::world_contract::world::ModelUpgraded",
+          "kind": "nested"
+        },
+        {
+          "name": "EventUpgraded",
+          "type": "dojo::world::world_contract::world::EventUpgraded",
+          "kind": "nested"
+        },
+        {
+          "name": "ContractUpgraded",
+          "type": "dojo::world::world_contract::world::ContractUpgraded",
+          "kind": "nested"
+        },
+        {
+          "name": "ContractInitialized",
+          "type": "dojo::world::world_contract::world::ContractInitialized",
+          "kind": "nested"
+        },
+        {
+          "name": "LibraryRegistered",
+          "type": "dojo::world::world_contract::world::LibraryRegistered",
+          "kind": "nested"
+        },
+        {
+          "name": "EventEmitted",
+          "type": "dojo::world::world_contract::world::EventEmitted",
+          "kind": "nested"
+        },
+        {
+          "name": "MetadataUpdate",
+          "type": "dojo::world::world_contract::world::MetadataUpdate",
+          "kind": "nested"
+        },
+        {
+          "name": "StoreSetRecord",
+          "type": "dojo::world::world_contract::world::StoreSetRecord",
+          "kind": "nested"
+        },
+        {
+          "name": "StoreUpdateRecord",
+          "type": "dojo::world::world_contract::world::StoreUpdateRecord",
+          "kind": "nested"
+        },
+        {
+          "name": "StoreUpdateMember",
+          "type": "dojo::world::world_contract::world::StoreUpdateMember",
+          "kind": "nested"
+        },
+        {
+          "name": "StoreDelRecord",
+          "type": "dojo::world::world_contract::world::StoreDelRecord",
+          "kind": "nested"
+        },
+        {
+          "name": "WriterUpdated",
+          "type": "dojo::world::world_contract::world::WriterUpdated",
+          "kind": "nested"
+        },
+        {
+          "name": "OwnerUpdated",
+          "type": "dojo::world::world_contract::world::OwnerUpdated",
+          "kind": "nested"
+        }
+      ]
+    },
+    {
+      "type": "event",
+      "name": "dojo::world::world_contract::world::EventEmitted",
+      "kind": "struct",
+      "members": [
+        {
+          "name": "selector",
+          "type": "core::felt252",
+          "kind": "key"
+        },
+        {
+          "name": "system_address",
+          "type": "core::starknet::contract_address::ContractAddress",
+          "kind": "key"
+        },
+        {
+          "name": "keys",
+          "type": "core::array::Span::<core::felt252>",
+          "kind": "data"
+        },
+        {
+          "name": "values",
+          "type": "core::array::Span::<core::felt252>",
+          "kind": "data"
+        }
+      ]
+    },
+    {
+      "type": "event",
+      "name": "dojo::world::world_contract::world::EventRegistered",
+      "kind": "struct",
+      "members": [
+        {
+          "name": "name",
+          "type": "core::byte_array::ByteArray",
+          "kind": "key"
+        },
+        {
+          "name": "namespace",
+          "type": "core::byte_array::ByteArray",
+          "kind": "key"
+        },
+        {
+          "name": "class_hash",
+          "type": "core::starknet::class_hash::ClassHash",
+          "kind": "data"
+        },
+        {
+          "name": "address",
+          "type": "core::starknet::contract_address::ContractAddress",
+          "kind": "data"
+        }
+      ]
+    },
+    {
+      "type": "event",
+      "name": "dojo::world::world_contract::world::EventUpgraded",
+      "kind": "struct",
+      "members": [
+        {
+          "name": "selector",
+          "type": "core::felt252",
+          "kind": "key"
+        },
+        {
+          "name": "class_hash",
+          "type": "core::starknet::class_hash::ClassHash",
+          "kind": "data"
+        },
+        {
+          "name": "address",
+          "type": "core::starknet::contract_address::ContractAddress",
+          "kind": "data"
+        },
+        {
+          "name": "prev_address",
+          "type": "core::starknet::contract_address::ContractAddress",
+          "kind": "data"
+        }
+      ]
+    },
+    {
+      "type": "event",
+      "name": "dojo::world::world_contract::world::ExternalContractRegistered",
+      "kind": "struct",
+      "members": [
+        {
+          "name": "namespace",
+          "type": "core::byte_array::ByteArray",
+          "kind": "key"
+        },
+        {
+          "name": "contract_name",
+          "type": "core::byte_array::ByteArray",
+          "kind": "key"
+        },
+        {
+          "name": "instance_name",
+          "type": "core::byte_array::ByteArray",
+          "kind": "key"
+        },
+        {
+          "name": "contract_selector",
+          "type": "core::felt252",
+          "kind": "key"
+        },
+        {
+          "name": "class_hash",
+          "type": "core::starknet::class_hash::ClassHash",
+          "kind": "data"
+        },
+        {
+          "name": "contract_address",
+          "type": "core::starknet::contract_address::ContractAddress",
+          "kind": "data"
+        },
+        {
+          "name": "block_number",
+          "type": "core::integer::u64",
+          "kind": "data"
+        }
+      ]
+    },
+    {
+      "type": "event",
+      "name": "dojo::world::world_contract::world::ExternalContractUpgraded",
+      "kind": "struct",
+      "members": [
+        {
+          "name": "namespace",
+          "type": "core::byte_array::ByteArray",
+          "kind": "key"
+        },
+        {
+          "name": "instance_name",
+          "type": "core::byte_array::ByteArray",
+          "kind": "key"
+        },
+        {
+          "name": "contract_selector",
+          "type": "core::felt252",
+          "kind": "key"
+        },
+        {
+          "name": "class_hash",
+          "type": "core::starknet::class_hash::ClassHash",
+          "kind": "data"
+        },
+        {
+          "name": "contract_address",
+          "type": "core::starknet::contract_address::ContractAddress",
+          "kind": "data"
+        },
+        {
+          "name": "block_number",
+          "type": "core::integer::u64",
+          "kind": "data"
+        }
+      ]
+    },
+    {
+      "type": "event",
+      "name": "dojo::world::world_contract::world::LibraryRegistered",
+      "kind": "struct",
+      "members": [
+        {
+          "name": "name",
+          "type": "core::byte_array::ByteArray",
+          "kind": "key"
+        },
+        {
+          "name": "namespace",
+          "type": "core::byte_array::ByteArray",
+          "kind": "key"
+        },
+        {
+          "name": "class_hash",
+          "type": "core::starknet::class_hash::ClassHash",
+          "kind": "data"
+        }
+      ]
+    },
+    {
+      "type": "event",
+      "name": "dojo::world::world_contract::world::MetadataUpdate",
+      "kind": "struct",
+      "members": [
+        {
+          "name": "resource",
+          "type": "core::felt252",
+          "kind": "key"
+        },
+        {
+          "name": "uri",
+          "type": "core::byte_array::ByteArray",
+          "kind": "data"
+        },
+        {
+          "name": "hash",
+          "type": "core::felt252",
+          "kind": "data"
+        }
+      ]
+    },
+    {
+      "type": "event",
+      "name": "dojo::world::world_contract::world::ModelRegistered",
+      "kind": "struct",
+      "members": [
+        {
+          "name": "name",
+          "type": "core::byte_array::ByteArray",
+          "kind": "key"
+        },
+        {
+          "name": "namespace",
+          "type": "core::byte_array::ByteArray",
+          "kind": "key"
+        },
+        {
+          "name": "class_hash",
+          "type": "core::starknet::class_hash::ClassHash",
+          "kind": "data"
+        },
+        {
+          "name": "address",
+          "type": "core::starknet::contract_address::ContractAddress",
+          "kind": "data"
+        }
+      ]
+    },
+    {
+      "type": "event",
+      "name": "dojo::world::world_contract::world::ModelUpgraded",
+      "kind": "struct",
+      "members": [
+        {
+          "name": "selector",
+          "type": "core::felt252",
+          "kind": "key"
+        },
+        {
+          "name": "class_hash",
+          "type": "core::starknet::class_hash::ClassHash",
+          "kind": "data"
+        },
+        {
+          "name": "address",
+          "type": "core::starknet::contract_address::ContractAddress",
+          "kind": "data"
+        },
+        {
+          "name": "prev_address",
+          "type": "core::starknet::contract_address::ContractAddress",
+          "kind": "data"
+        }
+      ]
+    },
+    {
+      "type": "event",
+      "name": "dojo::world::world_contract::world::NamespaceRegistered",
+      "kind": "struct",
+      "members": [
+        {
+          "name": "namespace",
+          "type": "core::byte_array::ByteArray",
+          "kind": "key"
+        },
+        {
+          "name": "hash",
+          "type": "core::felt252",
+          "kind": "data"
+        }
+      ]
+    },
+    {
+      "type": "event",
+      "name": "dojo::world::world_contract::world::OwnerUpdated",
+      "kind": "struct",
+      "members": [
+        {
+          "name": "resource",
+          "type": "core::felt252",
+          "kind": "key"
+        },
+        {
+          "name": "contract",
+          "type": "core::starknet::contract_address::ContractAddress",
+          "kind": "key"
+        },
+        {
+          "name": "value",
+          "type": "core::bool",
+          "kind": "data"
+        }
+      ]
+    },
+    {
+      "type": "event",
+      "name": "dojo::world::world_contract::world::StoreDelRecord",
+      "kind": "struct",
+      "members": [
+        {
+          "name": "selector",
+          "type": "core::felt252",
+          "kind": "key"
+        },
+        {
+          "name": "entity_id",
+          "type": "core::felt252",
+          "kind": "key"
+        }
+      ]
+    },
+    {
+      "type": "event",
+      "name": "dojo::world::world_contract::world::StoreSetRecord",
+      "kind": "struct",
+      "members": [
+        {
+          "name": "selector",
+          "type": "core::felt252",
+          "kind": "key"
+        },
+        {
+          "name": "entity_id",
+          "type": "core::felt252",
+          "kind": "key"
+        },
+        {
+          "name": "keys",
+          "type": "core::array::Span::<core::felt252>",
+          "kind": "data"
+        },
+        {
+          "name": "values",
+          "type": "core::array::Span::<core::felt252>",
+          "kind": "data"
+        }
+      ]
+    },
+    {
+      "type": "event",
+      "name": "dojo::world::world_contract::world::StoreUpdateMember",
+      "kind": "struct",
+      "members": [
+        {
+          "name": "selector",
+          "type": "core::felt252",
+          "kind": "key"
+        },
+        {
+          "name": "entity_id",
+          "type": "core::felt252",
+          "kind": "key"
+        },
+        {
+          "name": "member_selector",
+          "type": "core::felt252",
+          "kind": "key"
+        },
+        {
+          "name": "values",
+          "type": "core::array::Span::<core::felt252>",
+          "kind": "data"
+        }
+      ]
+    },
+    {
+      "type": "event",
+      "name": "dojo::world::world_contract::world::StoreUpdateRecord",
+      "kind": "struct",
+      "members": [
+        {
+          "name": "selector",
+          "type": "core::felt252",
+          "kind": "key"
+        },
+        {
+          "name": "entity_id",
+          "type": "core::felt252",
+          "kind": "key"
+        },
+        {
+          "name": "values",
+          "type": "core::array::Span::<core::felt252>",
+          "kind": "data"
+        }
+      ]
+    },
+    {
+      "type": "event",
+      "name": "dojo::world::world_contract::world::WorldSpawned",
+      "kind": "struct",
+      "members": [
+        {
+          "name": "creator",
+          "type": "core::starknet::contract_address::ContractAddress",
+          "kind": "data"
+        },
+        {
+          "name": "class_hash",
+          "type": "core::starknet::class_hash::ClassHash",
+          "kind": "data"
+        }
+      ]
+    },
+    {
+      "type": "event",
+      "name": "dojo::world::world_contract::world::WorldUpgraded",
+      "kind": "struct",
+      "members": [
+        {
+          "name": "class_hash",
+          "type": "core::starknet::class_hash::ClassHash",
+          "kind": "data"
+        }
+      ]
+    },
+    {
+      "type": "event",
+      "name": "dojo::world::world_contract::world::WriterUpdated",
+      "kind": "struct",
+      "members": [
+        {
+          "name": "resource",
+          "type": "core::felt252",
+          "kind": "key"
+        },
+        {
+          "name": "contract",
+          "type": "core::starknet::contract_address::ContractAddress",
+          "kind": "key"
+        },
+        {
+          "name": "value",
+          "type": "core::bool",
+          "kind": "data"
+        }
+      ]
+    },
+    {
+      "type": "function",
+      "name": "dojo_init",
+      "inputs": [],
+      "outputs": [],
+      "state_mutability": "view"
+    },
+    {
+      "type": "function",
+      "name": "ensure_abi",
+      "inputs": [
+        {
+          "name": "event",
+          "type": "warpack_masters::systems::storage_bridge::storage_bridge::WithdrawItem"
+        }
+      ],
+      "outputs": [],
+      "state_mutability": "view"
+    },
+    {
+      "type": "function",
+      "name": "ensure_unique",
+      "inputs": [],
+      "outputs": [],
+      "state_mutability": "view"
+    },
+    {
+      "type": "function",
+      "name": "ensure_values",
+      "inputs": [
+        {
+          "name": "value",
+          "type": "warpack_masters::systems::storage_bridge::storage_bridge::WithdrawItemValue"
+        }
+      ],
+      "outputs": [],
+      "state_mutability": "view"
+    },
+    {
+      "type": "struct",
+      "name": "warpack_masters::models::Character::Character",
+      "members": [
+        {
+          "name": "player",
+          "type": "core::starknet::contract_address::ContractAddress"
+        },
+        {
+          "name": "name",
+          "type": "core::felt252"
+        },
+        {
+          "name": "wmClass",
+          "type": "warpack_masters::models::Character::WMClass"
+        },
+        {
+          "name": "gold",
+          "type": "core::integer::u32"
+        },
+        {
+          "name": "health",
+          "type": "core::integer::u32"
+        },
+        {
+          "name": "wins",
+          "type": "core::integer::u32"
+        },
+        {
+          "name": "loss",
+          "type": "core::integer::u32"
+        },
+        {
+          "name": "rating",
+          "type": "core::integer::u32"
+        },
+        {
+          "name": "totalWins",
+          "type": "core::integer::u32"
+        },
+        {
+          "name": "totalLoss",
+          "type": "core::integer::u32"
+        },
+        {
+          "name": "winStreak",
+          "type": "core::integer::u32"
+        },
+        {
+          "name": "stamina",
+          "type": "core::integer::u8"
+        },
+        {
+          "name": "birthCount",
+          "type": "core::integer::u32"
+        },
+        {
+          "name": "updatedAt",
+          "type": "core::integer::u64"
+        }
+      ]
+    },
+    {
+      "type": "struct",
+      "name": "warpack_masters::models::Character::CharacterName",
+      "members": [
+        {
+          "name": "name",
+          "type": "core::felt252"
+        },
+        {
+          "name": "player",
+          "type": "core::starknet::contract_address::ContractAddress"
+        }
+      ]
+    },
+    {
+      "type": "struct",
+      "name": "warpack_masters::models::Character::CharacterNameValue",
+      "members": [
+        {
+          "name": "player",
+          "type": "core::starknet::contract_address::ContractAddress"
+        }
+      ]
+    },
+    {
+      "type": "struct",
+      "name": "warpack_masters::models::Character::CharacterValue",
+      "members": [
+        {
+          "name": "name",
+          "type": "core::felt252"
+        },
+        {
+          "name": "wmClass",
+          "type": "warpack_masters::models::Character::WMClass"
+        },
+        {
+          "name": "gold",
+          "type": "core::integer::u32"
+        },
+        {
+          "name": "health",
+          "type": "core::integer::u32"
+        },
+        {
+          "name": "wins",
+          "type": "core::integer::u32"
+        },
+        {
+          "name": "loss",
+          "type": "core::integer::u32"
+        },
+        {
+          "name": "rating",
+          "type": "core::integer::u32"
+        },
+        {
+          "name": "totalWins",
+          "type": "core::integer::u32"
+        },
+        {
+          "name": "totalLoss",
+          "type": "core::integer::u32"
+        },
+        {
+          "name": "winStreak",
+          "type": "core::integer::u32"
+        },
+        {
+          "name": "stamina",
+          "type": "core::integer::u8"
+        },
+        {
+          "name": "birthCount",
+          "type": "core::integer::u32"
+        },
+        {
+          "name": "updatedAt",
+          "type": "core::integer::u64"
+        }
+      ]
+    },
+    {
+      "type": "enum",
+      "name": "warpack_masters::models::Character::WMClass",
+      "variants": [
+        {
+          "name": "Warrior",
+          "type": "()"
+        },
+        {
+          "name": "Warlock",
+          "type": "()"
+        },
+        {
+          "name": "Archer",
+          "type": "()"
+        }
+      ]
+    },
+    {
+      "type": "event",
+      "name": "warpack_masters::models::Character::m_Character::Event",
+      "kind": "enum",
+      "variants": []
+    },
+    {
+      "type": "event",
+      "name": "warpack_masters::models::Character::m_CharacterName::Event",
+      "kind": "enum",
+      "variants": []
+    },
+    {
+      "type": "struct",
+      "name": "warpack_masters::models::CharacterItem::InventoryCounter",
+      "members": [
+        {
+          "name": "player",
+          "type": "core::starknet::contract_address::ContractAddress"
+        },
+        {
+          "name": "count",
+          "type": "core::integer::u32"
+        }
+      ]
+    },
+    {
+      "type": "struct",
+      "name": "warpack_masters::models::CharacterItem::InventoryCounterValue",
+      "members": [
+        {
+          "name": "count",
+          "type": "core::integer::u32"
+        }
+      ]
+    },
+    {
+      "type": "struct",
+      "name": "warpack_masters::models::CharacterItem::InventoryItem",
+      "members": [
+        {
+          "name": "player",
+          "type": "core::starknet::contract_address::ContractAddress"
+        },
+        {
+          "name": "id",
+          "type": "core::integer::u32"
+        },
+        {
+          "name": "itemId",
+          "type": "core::integer::u32"
+        },
+        {
+          "name": "position",
+          "type": "warpack_masters::models::CharacterItem::Position"
+        },
+        {
+          "name": "rotation",
+          "type": "core::integer::u32"
+        },
+        {
+          "name": "plugins",
+          "type": "core::array::Array::<(core::integer::u8, core::integer::u32, core::integer::u32)>"
+        }
+      ]
+    },
+    {
+      "type": "struct",
+      "name": "warpack_masters::models::CharacterItem::InventoryItemValue",
+      "members": [
+        {
+          "name": "itemId",
+          "type": "core::integer::u32"
+        },
+        {
+          "name": "position",
+          "type": "warpack_masters::models::CharacterItem::Position"
+        },
+        {
+          "name": "rotation",
+          "type": "core::integer::u32"
+        },
+        {
+          "name": "plugins",
+          "type": "core::array::Array::<(core::integer::u8, core::integer::u32, core::integer::u32)>"
+        }
+      ]
+    },
+    {
+      "type": "struct",
+      "name": "warpack_masters::models::CharacterItem::Position",
+      "members": [
+        {
+          "name": "x",
+          "type": "core::integer::u32"
+        },
+        {
+          "name": "y",
+          "type": "core::integer::u32"
+        }
+      ]
+    },
+    {
+      "type": "struct",
+      "name": "warpack_masters::models::CharacterItem::StorageCounter",
+      "members": [
+        {
+          "name": "player",
+          "type": "core::starknet::contract_address::ContractAddress"
+        },
+        {
+          "name": "count",
+          "type": "core::integer::u32"
+        }
+      ]
+    },
+    {
+      "type": "struct",
+      "name": "warpack_masters::models::CharacterItem::StorageCounterValue",
+      "members": [
+        {
+          "name": "count",
+          "type": "core::integer::u32"
+        }
+      ]
+    },
+    {
+      "type": "struct",
+      "name": "warpack_masters::models::CharacterItem::StorageItem",
+      "members": [
+        {
+          "name": "player",
+          "type": "core::starknet::contract_address::ContractAddress"
+        },
+        {
+          "name": "id",
+          "type": "core::integer::u32"
+        },
+        {
+          "name": "itemId",
+          "type": "core::integer::u32"
+        }
+      ]
+    },
+    {
+      "type": "struct",
+      "name": "warpack_masters::models::CharacterItem::StorageItemValue",
+      "members": [
+        {
+          "name": "itemId",
+          "type": "core::integer::u32"
+        }
+      ]
+    },
+    {
+      "type": "event",
+      "name": "warpack_masters::models::CharacterItem::m_InventoryCounter::Event",
+      "kind": "enum",
+      "variants": []
+    },
+    {
+      "type": "event",
+      "name": "warpack_masters::models::CharacterItem::m_InventoryItem::Event",
+      "kind": "enum",
+      "variants": []
+    },
+    {
+      "type": "event",
+      "name": "warpack_masters::models::CharacterItem::m_StorageCounter::Event",
+      "kind": "enum",
+      "variants": []
+    },
+    {
+      "type": "event",
+      "name": "warpack_masters::models::CharacterItem::m_StorageItem::Event",
+      "kind": "enum",
+      "variants": []
+    },
+    {
+      "type": "struct",
+      "name": "warpack_masters::models::DummyCharacter::DummyCharacter",
+      "members": [
+        {
+          "name": "level",
+          "type": "core::integer::u32"
+        },
+        {
+          "name": "id",
+          "type": "core::integer::u32"
+        },
+        {
+          "name": "name",
+          "type": "core::felt252"
+        },
+        {
+          "name": "wmClass",
+          "type": "warpack_masters::models::Character::WMClass"
+        },
+        {
+          "name": "health",
+          "type": "core::integer::u32"
+        },
+        {
+          "name": "player",
+          "type": "core::starknet::contract_address::ContractAddress"
+        },
+        {
+          "name": "rating",
+          "type": "core::integer::u32"
+        },
+        {
+          "name": "stamina",
+          "type": "core::integer::u8"
+        }
+      ]
+    },
+    {
+      "type": "struct",
+      "name": "warpack_masters::models::DummyCharacter::DummyCharacterCounter",
+      "members": [
+        {
+          "name": "level",
+          "type": "core::integer::u32"
+        },
+        {
+          "name": "count",
+          "type": "core::integer::u32"
+        }
+      ]
+    },
+    {
+      "type": "struct",
+      "name": "warpack_masters::models::DummyCharacter::DummyCharacterCounterValue",
+      "members": [
+        {
+          "name": "count",
+          "type": "core::integer::u32"
+        }
+      ]
+    },
+    {
+      "type": "struct",
+      "name": "warpack_masters::models::DummyCharacter::DummyCharacterValue",
+      "members": [
+        {
+          "name": "name",
+          "type": "core::felt252"
+        },
+        {
+          "name": "wmClass",
+          "type": "warpack_masters::models::Character::WMClass"
+        },
+        {
+          "name": "health",
+          "type": "core::integer::u32"
+        },
+        {
+          "name": "player",
+          "type": "core::starknet::contract_address::ContractAddress"
+        },
+        {
+          "name": "rating",
+          "type": "core::integer::u32"
+        },
+        {
+          "name": "stamina",
+          "type": "core::integer::u8"
+        }
+      ]
+    },
+    {
+      "type": "event",
+      "name": "warpack_masters::models::DummyCharacter::m_DummyCharacter::Event",
+      "kind": "enum",
+      "variants": []
+    },
+    {
+      "type": "event",
+      "name": "warpack_masters::models::DummyCharacter::m_DummyCharacterCounter::Event",
+      "kind": "enum",
+      "variants": []
+    },
+    {
+      "type": "struct",
+      "name": "warpack_masters::models::DummyCharacterItem::DummyCharacterItem",
+      "members": [
+        {
+          "name": "level",
+          "type": "core::integer::u32"
+        },
+        {
+          "name": "dummyCharId",
+          "type": "core::integer::u32"
+        },
+        {
+          "name": "counterId",
+          "type": "core::integer::u32"
+        },
+        {
+          "name": "itemId",
+          "type": "core::integer::u32"
+        },
+        {
+          "name": "position",
+          "type": "warpack_masters::models::CharacterItem::Position"
+        },
+        {
+          "name": "rotation",
+          "type": "core::integer::u32"
+        },
+        {
+          "name": "plugins",
+          "type": "core::array::Span::<(core::integer::u8, core::integer::u32, core::integer::u32)>"
+        }
+      ]
+    },
+    {
+      "type": "struct",
+      "name": "warpack_masters::models::DummyCharacterItem::DummyCharacterItemValue",
+      "members": [
+        {
+          "name": "itemId",
+          "type": "core::integer::u32"
+        },
+        {
+          "name": "position",
+          "type": "warpack_masters::models::CharacterItem::Position"
+        },
+        {
+          "name": "rotation",
+          "type": "core::integer::u32"
+        },
+        {
+          "name": "plugins",
+          "type": "core::array::Span::<(core::integer::u8, core::integer::u32, core::integer::u32)>"
+        }
+      ]
+    },
+    {
+      "type": "struct",
+      "name": "warpack_masters::models::DummyCharacterItem::DummyCharacterItemsCounter",
+      "members": [
+        {
+          "name": "level",
+          "type": "core::integer::u32"
+        },
+        {
+          "name": "dummyCharId",
+          "type": "core::integer::u32"
+        },
+        {
+          "name": "count",
+          "type": "core::integer::u32"
+        }
+      ]
+    },
+    {
+      "type": "struct",
+      "name": "warpack_masters::models::DummyCharacterItem::DummyCharacterItemsCounterValue",
+      "members": [
+        {
+          "name": "count",
+          "type": "core::integer::u32"
+        }
+      ]
+    },
+    {
+      "type": "event",
+      "name": "warpack_masters::models::DummyCharacterItem::m_DummyCharacterItem::Event",
+      "kind": "enum",
+      "variants": []
+    },
+    {
+      "type": "event",
+      "name": "warpack_masters::models::DummyCharacterItem::m_DummyCharacterItemsCounter::Event",
+      "kind": "enum",
+      "variants": []
+    },
+    {
+      "type": "struct",
+      "name": "warpack_masters::models::Fight::BattleLog",
+      "members": [
+        {
+          "name": "player",
+          "type": "core::starknet::contract_address::ContractAddress"
+        },
+        {
+          "name": "id",
+          "type": "core::integer::u32"
+        },
+        {
+          "name": "dummyLevel",
+          "type": "core::integer::u32"
+        },
+        {
+          "name": "dummyCharId",
+          "type": "core::integer::u32"
+        },
+        {
+          "name": "sorted_items",
+          "type": "core::array::Span::<(core::felt252, core::integer::u32, core::integer::u8, core::integer::u8, core::integer::u32, core::integer::u32, core::integer::u8, core::integer::u8, core::array::Span::<(core::integer::u8, core::integer::u32, core::integer::u32)>)>"
+        },
+        {
+          "name": "items_length",
+          "type": "core::integer::u32"
+        },
+        {
+          "name": "player_buffs",
+          "type": "core::array::Span::<core::integer::u32>"
+        },
+        {
+          "name": "dummy_buffs",
+          "type": "core::array::Span::<core::integer::u32>"
+        },
+        {
+          "name": "player_on_hit_items",
+          "type": "core::array::Span::<(core::integer::u8, core::integer::u32, core::integer::u32)>"
+        },
+        {
+          "name": "dummy_on_hit_items",
+          "type": "core::array::Span::<(core::integer::u8, core::integer::u32, core::integer::u32)>"
+        },
+        {
+          "name": "player_on_attack_items",
+          "type": "core::array::Span::<(core::integer::u8, core::integer::u32, core::integer::u32)>"
+        },
+        {
+          "name": "dummy_on_attack_items",
+          "type": "core::array::Span::<(core::integer::u8, core::integer::u32, core::integer::u32)>"
+        },
+        {
+          "name": "winner",
+          "type": "core::felt252"
+        },
+        {
+          "name": "seconds",
+          "type": "core::integer::u8"
+        }
+      ]
+    },
+    {
+      "type": "struct",
+      "name": "warpack_masters::models::Fight::BattleLogCounter",
+      "members": [
+        {
+          "name": "player",
+          "type": "core::starknet::contract_address::ContractAddress"
+        },
+        {
+          "name": "count",
+          "type": "core::integer::u32"
+        }
+      ]
+    },
+    {
+      "type": "struct",
+      "name": "warpack_masters::models::Fight::BattleLogCounterValue",
+      "members": [
+        {
+          "name": "count",
+          "type": "core::integer::u32"
+        }
+      ]
+    },
+    {
+      "type": "struct",
+      "name": "warpack_masters::models::Fight::BattleLogDetail",
+      "members": [
+        {
+          "name": "player",
+          "type": "core::starknet::contract_address::ContractAddress"
+        },
+        {
+          "name": "battleLogId",
+          "type": "core::integer::u32"
+        },
+        {
+          "name": "id",
+          "type": "core::integer::u8"
+        },
+        {
+          "name": "whoTriggered",
+          "type": "core::felt252"
+        },
+        {
+          "name": "whichItem",
+          "type": "core::integer::u32"
+        },
+        {
+          "name": "isDodged",
+          "type": "core::bool"
+        },
+        {
+          "name": "effectType",
+          "type": "core::integer::u8"
+        },
+        {
+          "name": "effectStacks",
+          "type": "core::integer::u32"
+        },
+        {
+          "name": "player_remaining_health",
+          "type": "core::integer::u32"
+        },
+        {
+          "name": "dummy_remaining_health",
+          "type": "core::integer::u32"
+        },
+        {
+          "name": "player_stamina",
+          "type": "core::integer::u8"
+        },
+        {
+          "name": "dummy_stamina",
+          "type": "core::integer::u8"
+        },
+        {
+          "name": "player_stacks",
+          "type": "(core::integer::u32, core::integer::u32, core::integer::u32, core::integer::u32, core::integer::u32, core::integer::u32)"
+        },
+        {
+          "name": "dummy_stacks",
+          "type": "(core::integer::u32, core::integer::u32, core::integer::u32, core::integer::u32, core::integer::u32, core::integer::u32)"
+        }
+      ]
+    },
+    {
+      "type": "struct",
+      "name": "warpack_masters::models::Fight::BattleLogDetailValue",
+      "members": [
+        {
+          "name": "whoTriggered",
+          "type": "core::felt252"
+        },
+        {
+          "name": "whichItem",
+          "type": "core::integer::u32"
+        },
+        {
+          "name": "isDodged",
+          "type": "core::bool"
+        },
+        {
+          "name": "effectType",
+          "type": "core::integer::u8"
+        },
+        {
+          "name": "effectStacks",
+          "type": "core::integer::u32"
+        },
+        {
+          "name": "player_remaining_health",
+          "type": "core::integer::u32"
+        },
+        {
+          "name": "dummy_remaining_health",
+          "type": "core::integer::u32"
+        },
+        {
+          "name": "player_stamina",
+          "type": "core::integer::u8"
+        },
+        {
+          "name": "dummy_stamina",
+          "type": "core::integer::u8"
+        },
+        {
+          "name": "player_stacks",
+          "type": "(core::integer::u32, core::integer::u32, core::integer::u32, core::integer::u32, core::integer::u32, core::integer::u32)"
+        },
+        {
+          "name": "dummy_stacks",
+          "type": "(core::integer::u32, core::integer::u32, core::integer::u32, core::integer::u32, core::integer::u32, core::integer::u32)"
+        }
+      ]
+    },
+    {
+      "type": "struct",
+      "name": "warpack_masters::models::Fight::BattleLogValue",
+      "members": [
+        {
+          "name": "dummyLevel",
+          "type": "core::integer::u32"
+        },
+        {
+          "name": "dummyCharId",
+          "type": "core::integer::u32"
+        },
+        {
+          "name": "sorted_items",
+          "type": "core::array::Span::<(core::felt252, core::integer::u32, core::integer::u8, core::integer::u8, core::integer::u32, core::integer::u32, core::integer::u8, core::integer::u8, core::array::Span::<(core::integer::u8, core::integer::u32, core::integer::u32)>)>"
+        },
+        {
+          "name": "items_length",
+          "type": "core::integer::u32"
+        },
+        {
+          "name": "player_buffs",
+          "type": "core::array::Span::<core::integer::u32>"
+        },
+        {
+          "name": "dummy_buffs",
+          "type": "core::array::Span::<core::integer::u32>"
+        },
+        {
+          "name": "player_on_hit_items",
+          "type": "core::array::Span::<(core::integer::u8, core::integer::u32, core::integer::u32)>"
+        },
+        {
+          "name": "dummy_on_hit_items",
+          "type": "core::array::Span::<(core::integer::u8, core::integer::u32, core::integer::u32)>"
+        },
+        {
+          "name": "player_on_attack_items",
+          "type": "core::array::Span::<(core::integer::u8, core::integer::u32, core::integer::u32)>"
+        },
+        {
+          "name": "dummy_on_attack_items",
+          "type": "core::array::Span::<(core::integer::u8, core::integer::u32, core::integer::u32)>"
+        },
+        {
+          "name": "winner",
+          "type": "core::felt252"
+        },
+        {
+          "name": "seconds",
+          "type": "core::integer::u8"
+        }
+      ]
+    },
+    {
+      "type": "event",
+      "name": "warpack_masters::models::Fight::e_BattleLogDetail::Event",
+      "kind": "enum",
+      "variants": []
+    },
+    {
+      "type": "event",
+      "name": "warpack_masters::models::Fight::m_BattleLog::Event",
+      "kind": "enum",
+      "variants": []
+    },
+    {
+      "type": "event",
+      "name": "warpack_masters::models::Fight::m_BattleLogCounter::Event",
+      "kind": "enum",
+      "variants": []
+    },
+    {
+      "type": "struct",
+      "name": "warpack_masters::models::Game::GameConfig",
+      "members": [
+        {
+          "name": "id",
+          "type": "core::felt252"
+        },
+        {
+          "name": "strk_address",
+          "type": "core::starknet::contract_address::ContractAddress"
+        },
+        {
+          "name": "rebirth_fee",
+          "type": "core::integer::u256"
+        }
+      ]
+    },
+    {
+      "type": "struct",
+      "name": "warpack_masters::models::Game::GameConfigValue",
+      "members": [
+        {
+          "name": "strk_address",
+          "type": "core::starknet::contract_address::ContractAddress"
+        },
+        {
+          "name": "rebirth_fee",
+          "type": "core::integer::u256"
+        }
+      ]
+    },
+    {
+      "type": "event",
+      "name": "warpack_masters::models::Game::m_GameConfig::Event",
+      "kind": "enum",
+      "variants": []
+    },
+    {
+      "type": "struct",
+      "name": "warpack_masters::models::Item::Item",
+      "members": [
+        {
+          "name": "id",
+          "type": "core::integer::u32"
+        },
+        {
+          "name": "name",
+          "type": "core::byte_array::ByteArray"
+        },
+        {
+          "name": "itemType",
+          "type": "core::integer::u8"
+        },
+        {
+          "name": "rarity",
+          "type": "core::integer::u8"
+        },
+        {
+          "name": "width",
+          "type": "core::integer::u32"
+        },
+        {
+          "name": "height",
+          "type": "core::integer::u32"
+        },
+        {
+          "name": "price",
+          "type": "core::integer::u32"
+        },
+        {
+          "name": "effectType",
+          "type": "core::integer::u8"
+        },
+        {
+          "name": "effectStacks",
+          "type": "core::integer::u32"
+        },
+        {
+          "name": "effectActivationType",
+          "type": "core::integer::u8"
+        },
+        {
+          "name": "chance",
+          "type": "core::integer::u32"
+        },
+        {
+          "name": "cooldown",
+          "type": "core::integer::u8"
+        },
+        {
+          "name": "energyCost",
+          "type": "core::integer::u8"
+        },
+        {
+          "name": "isPlugin",
+          "type": "core::bool"
+        },
+        {
+          "name": "enabled",
+          "type": "core::bool"
+        }
+      ]
+    },
+    {
+      "type": "struct",
+      "name": "warpack_masters::models::Item::ItemValue",
+      "members": [
+        {
+          "name": "name",
+          "type": "core::byte_array::ByteArray"
+        },
+        {
+          "name": "itemType",
+          "type": "core::integer::u8"
+        },
+        {
+          "name": "rarity",
+          "type": "core::integer::u8"
+        },
+        {
+          "name": "width",
+          "type": "core::integer::u32"
+        },
+        {
+          "name": "height",
+          "type": "core::integer::u32"
+        },
+        {
+          "name": "price",
+          "type": "core::integer::u32"
+        },
+        {
+          "name": "effectType",
+          "type": "core::integer::u8"
+        },
+        {
+          "name": "effectStacks",
+          "type": "core::integer::u32"
+        },
+        {
+          "name": "effectActivationType",
+          "type": "core::integer::u8"
+        },
+        {
+          "name": "chance",
+          "type": "core::integer::u32"
+        },
+        {
+          "name": "cooldown",
+          "type": "core::integer::u8"
+        },
+        {
+          "name": "energyCost",
+          "type": "core::integer::u8"
+        },
+        {
+          "name": "isPlugin",
+          "type": "core::bool"
+        },
+        {
+          "name": "enabled",
+          "type": "core::bool"
+        }
+      ]
+    },
+    {
+      "type": "struct",
+      "name": "warpack_masters::models::Item::ItemsCounter",
+      "members": [
+        {
+          "name": "id",
+          "type": "core::felt252"
+        },
+        {
+          "name": "count",
+          "type": "core::integer::u32"
+        }
+      ]
+    },
+    {
+      "type": "struct",
+      "name": "warpack_masters::models::Item::ItemsCounterValue",
+      "members": [
+        {
+          "name": "count",
+          "type": "core::integer::u32"
+        }
+      ]
+    },
+    {
+      "type": "event",
+      "name": "warpack_masters::models::Item::m_Item::Event",
+      "kind": "enum",
+      "variants": []
+    },
+    {
+      "type": "event",
+      "name": "warpack_masters::models::Item::m_ItemsCounter::Event",
+      "kind": "enum",
+      "variants": []
+    },
+    {
+      "type": "struct",
+      "name": "warpack_masters::models::Recipe::RecipeV2",
+      "members": [
+        {
+          "name": "id",
+          "type": "core::integer::u32"
+        },
+        {
+          "name": "item_ids",
+          "type": "core::array::Array::<core::integer::u32>"
+        },
+        {
+          "name": "item_amounts",
+          "type": "core::array::Array::<core::integer::u32>"
+        },
+        {
+          "name": "result_item_id",
+          "type": "core::integer::u32"
+        },
+        {
+          "name": "enabled",
+          "type": "core::bool"
+        }
+      ]
+    },
+    {
+      "type": "struct",
+      "name": "warpack_masters::models::Recipe::RecipeV2Value",
+      "members": [
+        {
+          "name": "item_ids",
+          "type": "core::array::Array::<core::integer::u32>"
+        },
+        {
+          "name": "item_amounts",
+          "type": "core::array::Array::<core::integer::u32>"
+        },
+        {
+          "name": "result_item_id",
+          "type": "core::integer::u32"
+        },
+        {
+          "name": "enabled",
+          "type": "core::bool"
+        }
+      ]
+    },
+    {
+      "type": "struct",
+      "name": "warpack_masters::models::Recipe::RecipesCounter",
+      "members": [
+        {
+          "name": "id",
+          "type": "core::felt252"
+        },
+        {
+          "name": "count",
+          "type": "core::integer::u32"
+        }
+      ]
+    },
+    {
+      "type": "struct",
+      "name": "warpack_masters::models::Recipe::RecipesCounterValue",
+      "members": [
+        {
+          "name": "count",
+          "type": "core::integer::u32"
+        }
+      ]
+    },
+    {
+      "type": "event",
+      "name": "warpack_masters::models::Recipe::m_RecipeV2::Event",
+      "kind": "enum",
+      "variants": []
+    },
+    {
+      "type": "event",
+      "name": "warpack_masters::models::Recipe::m_RecipesCounter::Event",
+      "kind": "enum",
+      "variants": []
+    },
+    {
+      "type": "struct",
+      "name": "warpack_masters::models::Shop::Shop",
+      "members": [
+        {
+          "name": "player",
+          "type": "core::starknet::contract_address::ContractAddress"
+        },
+        {
+          "name": "item1",
+          "type": "core::integer::u32"
+        },
+        {
+          "name": "item2",
+          "type": "core::integer::u32"
+        },
+        {
+          "name": "item3",
+          "type": "core::integer::u32"
+        },
+        {
+          "name": "item4",
+          "type": "core::integer::u32"
+        }
+      ]
+    },
+    {
+      "type": "struct",
+      "name": "warpack_masters::models::Shop::ShopValue",
+      "members": [
+        {
+          "name": "item1",
+          "type": "core::integer::u32"
+        },
+        {
+          "name": "item2",
+          "type": "core::integer::u32"
+        },
+        {
+          "name": "item3",
+          "type": "core::integer::u32"
+        },
+        {
+          "name": "item4",
+          "type": "core::integer::u32"
+        }
+      ]
+    },
+    {
+      "type": "event",
+      "name": "warpack_masters::models::Shop::m_Shop::Event",
+      "kind": "enum",
+      "variants": []
+    },
+    {
+      "type": "struct",
+      "name": "warpack_masters::models::TokenRegistry::TokenRegistry",
+      "members": [
+        {
+          "name": "item_id",
+          "type": "core::integer::u32"
+        },
+        {
+          "name": "name",
+          "type": "core::byte_array::ByteArray"
+        },
+        {
+          "name": "symbol",
+          "type": "core::byte_array::ByteArray"
+        },
+        {
+          "name": "token_address",
+          "type": "core::starknet::contract_address::ContractAddress"
+        },
+        {
+          "name": "is_active",
+          "type": "core::bool"
+        },
+        {
+          "name": "is_legacy",
+          "type": "core::bool"
+        }
+      ]
+    },
+    {
+      "type": "struct",
+      "name": "warpack_masters::models::TokenRegistry::TokenRegistryValue",
+      "members": [
+        {
+          "name": "name",
+          "type": "core::byte_array::ByteArray"
+        },
+        {
+          "name": "symbol",
+          "type": "core::byte_array::ByteArray"
+        },
+        {
+          "name": "token_address",
+          "type": "core::starknet::contract_address::ContractAddress"
+        },
+        {
+          "name": "is_active",
+          "type": "core::bool"
+        },
+        {
+          "name": "is_legacy",
+          "type": "core::bool"
+        }
+      ]
+    },
+    {
+      "type": "event",
+      "name": "warpack_masters::models::TokenRegistry::m_TokenRegistry::Event",
+      "kind": "enum",
+      "variants": []
+    },
+    {
+      "type": "struct",
+      "name": "warpack_masters::models::backpack::BackpackGrids",
+      "members": [
+        {
+          "name": "player",
+          "type": "core::starknet::contract_address::ContractAddress"
+        },
+        {
+          "name": "x",
+          "type": "core::integer::u32"
+        },
+        {
+          "name": "y",
+          "type": "core::integer::u32"
+        },
+        {
+          "name": "enabled",
+          "type": "core::bool"
+        },
+        {
+          "name": "occupied",
+          "type": "core::bool"
+        },
+        {
+          "name": "inventoryItemId",
+          "type": "core::integer::u32"
+        },
+        {
+          "name": "itemId",
+          "type": "core::integer::u32"
+        },
+        {
+          "name": "isWeapon",
+          "type": "core::bool"
+        },
+        {
+          "name": "isPlugin",
+          "type": "core::bool"
+        }
+      ]
+    },
+    {
+      "type": "struct",
+      "name": "warpack_masters::models::backpack::BackpackGridsValue",
+      "members": [
+        {
+          "name": "enabled",
+          "type": "core::bool"
+        },
+        {
+          "name": "occupied",
+          "type": "core::bool"
+        },
+        {
+          "name": "inventoryItemId",
+          "type": "core::integer::u32"
+        },
+        {
+          "name": "itemId",
+          "type": "core::integer::u32"
+        },
+        {
+          "name": "isWeapon",
+          "type": "core::bool"
+        },
+        {
+          "name": "isPlugin",
+          "type": "core::bool"
+        }
+      ]
+    },
+    {
+      "type": "event",
+      "name": "warpack_masters::models::backpack::m_BackpackGrids::Event",
+      "kind": "enum",
+      "variants": []
+    },
+    {
+      "type": "struct",
+      "name": "warpack_masters::prdefined_dummies::PredefinedItem",
+      "members": [
+        {
+          "name": "itemId",
+          "type": "core::integer::u32"
+        },
+        {
+          "name": "position",
+          "type": "warpack_masters::models::CharacterItem::Position"
+        },
+        {
+          "name": "rotation",
+          "type": "core::integer::u32"
+        },
+        {
+          "name": "plugins",
+          "type": "core::array::Span::<(core::integer::u8, core::integer::u32, core::integer::u32)>"
+        }
+      ]
+    },
+    {
+      "type": "interface",
+      "name": "warpack_masters::systems::actions::IActions",
+      "items": [
+        {
+          "type": "function",
+          "name": "spawn",
+          "inputs": [
+            {
+              "name": "name",
+              "type": "core::felt252"
+            },
+            {
+              "name": "wmClass",
+              "type": "warpack_masters::models::Character::WMClass"
+            }
+          ],
+          "outputs": [],
+          "state_mutability": "external"
+        },
+        {
+          "type": "function",
+          "name": "rebirth",
+          "inputs": [],
+          "outputs": [],
+          "state_mutability": "external"
+        },
+        {
+          "type": "function",
+          "name": "move_item_from_storage_to_inventory",
+          "inputs": [
+            {
+              "name": "storage_item_id",
+              "type": "core::integer::u32"
+            },
+            {
+              "name": "x",
+              "type": "core::integer::u32"
+            },
+            {
+              "name": "y",
+              "type": "core::integer::u32"
+            },
+            {
+              "name": "rotation",
+              "type": "core::integer::u32"
+            }
+          ],
+          "outputs": [],
+          "state_mutability": "external"
+        },
+        {
+          "type": "function",
+          "name": "move_item_from_inventory_to_storage",
+          "inputs": [
+            {
+              "name": "inventory_item_id",
+              "type": "core::integer::u32"
+            }
+          ],
+          "outputs": [],
+          "state_mutability": "external"
+        },
+        {
+          "type": "function",
+          "name": "move_item_from_inventory_to_storage_at",
+          "inputs": [
+            {
+              "name": "inventory_item_id",
+              "type": "core::integer::u32"
+            },
+            {
+              "name": "storage_slot",
+              "type": "core::integer::u32"
+            }
+          ],
+          "outputs": [],
+          "state_mutability": "external"
+        },
+        {
+          "type": "function",
+          "name": "get_balance",
+          "inputs": [],
+          "outputs": [
+            {
+              "type": "core::integer::u256"
+            }
+          ],
+          "state_mutability": "view"
+        },
+        {
+          "type": "function",
+          "name": "withdraw_strk",
+          "inputs": [
+            {
+              "name": "amount",
+              "type": "core::integer::u256"
+            },
+            {
+              "name": "recipient",
+              "type": "core::starknet::contract_address::ContractAddress"
+            }
+          ],
+          "outputs": [],
+          "state_mutability": "external"
+        },
+        {
+          "type": "function",
+          "name": "move_item_within_inventory",
+          "inputs": [
+            {
+              "name": "inventory_item_id",
+              "type": "core::integer::u32"
+            },
+            {
+              "name": "x",
+              "type": "core::integer::u32"
+            },
+            {
+              "name": "y",
+              "type": "core::integer::u32"
+            },
+            {
+              "name": "rotation",
+              "type": "core::integer::u32"
+            }
+          ],
+          "outputs": [],
+          "state_mutability": "external"
+        },
+        {
+          "type": "function",
+          "name": "move_item_from_shop_to_storage",
+          "inputs": [
+            {
+              "name": "item_id",
+              "type": "core::integer::u32"
+            }
+          ],
+          "outputs": [],
+          "state_mutability": "external"
+        },
+        {
+          "type": "function",
+          "name": "move_item_from_shop_to_storage_at",
+          "inputs": [
+            {
+              "name": "item_id",
+              "type": "core::integer::u32"
+            },
+            {
+              "name": "storage_slot",
+              "type": "core::integer::u32"
+            }
+          ],
+          "outputs": [],
+          "state_mutability": "external"
+        },
+        {
+          "type": "function",
+          "name": "move_item_from_storage_to_shop",
+          "inputs": [
+            {
+              "name": "storage_item_id",
+              "type": "core::integer::u32"
+            }
+          ],
+          "outputs": [],
+          "state_mutability": "external"
+        },
+        {
+          "type": "function",
+          "name": "move_item_from_shop_to_inventory",
+          "inputs": [
+            {
+              "name": "item_id",
+              "type": "core::integer::u32"
+            },
+            {
+              "name": "x",
+              "type": "core::integer::u32"
+            },
+            {
+              "name": "y",
+              "type": "core::integer::u32"
+            },
+            {
+              "name": "rotation",
+              "type": "core::integer::u32"
+            }
+          ],
+          "outputs": [],
+          "state_mutability": "external"
+        },
+        {
+          "type": "function",
+          "name": "move_item_from_inventory_to_shop",
+          "inputs": [
+            {
+              "name": "inventory_item_id",
+              "type": "core::integer::u32"
+            }
+          ],
+          "outputs": [],
+          "state_mutability": "external"
+        },
+        {
+          "type": "function",
+          "name": "craft_item",
+          "inputs": [
+            {
+              "name": "recipe_id",
+              "type": "core::integer::u32"
+            },
+            {
+              "name": "storage_ids",
+              "type": "core::array::Array::<core::integer::u32>"
+            }
+          ],
+          "outputs": [],
+          "state_mutability": "external"
+        }
+      ]
+    },
+    {
+      "type": "struct",
+      "name": "warpack_masters::systems::actions::actions::BuyItem",
+      "members": [
+        {
+          "name": "player",
+          "type": "core::starknet::contract_address::ContractAddress"
+        },
+        {
+          "name": "itemId",
+          "type": "core::integer::u32"
+        },
+        {
+          "name": "cost",
+          "type": "core::integer::u32"
+        },
+        {
+          "name": "itemRarity",
+          "type": "core::integer::u8"
+        },
+        {
+          "name": "birthCount",
+          "type": "core::integer::u32"
+        }
+      ]
+    },
+    {
+      "type": "struct",
+      "name": "warpack_masters::systems::actions::actions::BuyItemValue",
+      "members": [
+        {
+          "name": "itemId",
+          "type": "core::integer::u32"
+        },
+        {
+          "name": "cost",
+          "type": "core::integer::u32"
+        },
+        {
+          "name": "itemRarity",
+          "type": "core::integer::u8"
+        },
+        {
+          "name": "birthCount",
+          "type": "core::integer::u32"
+        }
+      ]
+    },
+    {
+      "type": "event",
+      "name": "warpack_masters::systems::actions::actions::Event",
+      "kind": "enum",
+      "variants": [
+        {
+          "name": "UpgradeableEvent",
+          "type": "dojo::contract::components::upgradeable::upgradeable_cpt::Event",
+          "kind": "nested"
+        },
+        {
+          "name": "WorldProviderEvent",
+          "type": "dojo::contract::components::world_provider::world_provider_cpt::Event",
+          "kind": "nested"
+        }
+      ]
+    },
+    {
+      "type": "struct",
+      "name": "warpack_masters::systems::actions::actions::SellItem",
+      "members": [
+        {
+          "name": "player",
+          "type": "core::starknet::contract_address::ContractAddress"
+        },
+        {
+          "name": "itemId",
+          "type": "core::integer::u32"
+        },
+        {
+          "name": "price",
+          "type": "core::integer::u32"
+        },
+        {
+          "name": "itemRarity",
+          "type": "core::integer::u8"
+        },
+        {
+          "name": "birthCount",
+          "type": "core::integer::u32"
+        }
+      ]
+    },
+    {
+      "type": "struct",
+      "name": "warpack_masters::systems::actions::actions::SellItemValue",
+      "members": [
+        {
+          "name": "itemId",
+          "type": "core::integer::u32"
+        },
+        {
+          "name": "price",
+          "type": "core::integer::u32"
+        },
+        {
+          "name": "itemRarity",
+          "type": "core::integer::u8"
+        },
+        {
+          "name": "birthCount",
+          "type": "core::integer::u32"
+        }
+      ]
+    },
+    {
+      "type": "event",
+      "name": "warpack_masters::systems::actions::actions::e_BuyItem::Event",
+      "kind": "enum",
+      "variants": []
+    },
+    {
+      "type": "event",
+      "name": "warpack_masters::systems::actions::actions::e_SellItem::Event",
+      "kind": "enum",
+      "variants": []
+    },
+    {
+      "type": "interface",
+      "name": "warpack_masters::systems::config::IConfig",
+      "items": [
+        {
+          "type": "function",
+          "name": "set_rebirth_fee",
+          "inputs": [
+            {
+              "name": "rebirth_fee",
+              "type": "core::integer::u256"
+            }
+          ],
+          "outputs": [],
+          "state_mutability": "external"
+        }
+      ]
+    },
+    {
+      "type": "event",
+      "name": "warpack_masters::systems::config::config_system::Event",
+      "kind": "enum",
+      "variants": [
+        {
+          "name": "UpgradeableEvent",
+          "type": "dojo::contract::components::upgradeable::upgradeable_cpt::Event",
+          "kind": "nested"
+        },
+        {
+          "name": "WorldProviderEvent",
+          "type": "dojo::contract::components::world_provider::world_provider_cpt::Event",
+          "kind": "nested"
+        }
+      ]
+    },
+    {
+      "type": "interface",
+      "name": "warpack_masters::systems::dummy::IDummy",
+      "items": [
+        {
+          "type": "function",
+          "name": "prefine_dummy",
+          "inputs": [
+            {
+              "name": "level",
+              "type": "core::integer::u32"
+            },
+            {
+              "name": "name",
+              "type": "core::felt252"
+            },
+            {
+              "name": "wmClass",
+              "type": "warpack_masters::models::Character::WMClass"
+            },
+            {
+              "name": "items",
+              "type": "core::array::Array::<warpack_masters::prdefined_dummies::PredefinedItem>"
+            }
+          ],
+          "outputs": [],
+          "state_mutability": "external"
+        },
+        {
+          "type": "function",
+          "name": "update_prefine_dummy",
+          "inputs": [
+            {
+              "name": "dummyCharId",
+              "type": "core::integer::u32"
+            },
+            {
+              "name": "level",
+              "type": "core::integer::u32"
+            },
+            {
+              "name": "name",
+              "type": "core::felt252"
+            },
+            {
+              "name": "wmClass",
+              "type": "warpack_masters::models::Character::WMClass"
+            },
+            {
+              "name": "items",
+              "type": "core::array::Array::<warpack_masters::prdefined_dummies::PredefinedItem>"
+            }
+          ],
+          "outputs": [],
+          "state_mutability": "external"
+        }
+      ]
+    },
+    {
+      "type": "event",
+      "name": "warpack_masters::systems::dummy::dummy_system::Event",
+      "kind": "enum",
+      "variants": [
+        {
+          "name": "UpgradeableEvent",
+          "type": "dojo::contract::components::upgradeable::upgradeable_cpt::Event",
+          "kind": "nested"
+        },
+        {
+          "name": "WorldProviderEvent",
+          "type": "dojo::contract::components::world_provider::world_provider_cpt::Event",
+          "kind": "nested"
+        }
+      ]
+    },
+    {
+      "type": "interface",
+      "name": "warpack_masters::systems::fight::IFight",
+      "items": [
+        {
+          "type": "function",
+          "name": "match_dummy",
+          "inputs": [],
+          "outputs": [],
+          "state_mutability": "external"
+        },
+        {
+          "type": "function",
+          "name": "fight",
+          "inputs": [],
+          "outputs": [],
+          "state_mutability": "external"
+        }
+      ]
+    },
+    {
+      "type": "event",
+      "name": "warpack_masters::systems::fight::fight_system::Event",
+      "kind": "enum",
+      "variants": [
+        {
+          "name": "UpgradeableEvent",
+          "type": "dojo::contract::components::upgradeable::upgradeable_cpt::Event",
+          "kind": "nested"
+        },
+        {
+          "name": "WorldProviderEvent",
+          "type": "dojo::contract::components::world_provider::world_provider_cpt::Event",
+          "kind": "nested"
+        }
+      ]
+    },
+    {
+      "type": "interface",
+      "name": "warpack_masters::systems::item::IItem",
+      "items": [
+        {
+          "type": "function",
+          "name": "add_item",
+          "inputs": [
+            {
+              "name": "id",
+              "type": "core::integer::u32"
+            },
+            {
+              "name": "name",
+              "type": "core::byte_array::ByteArray"
+            },
+            {
+              "name": "itemType",
+              "type": "core::integer::u8"
+            },
+            {
+              "name": "rarity",
+              "type": "core::integer::u8"
+            },
+            {
+              "name": "width",
+              "type": "core::integer::u32"
+            },
+            {
+              "name": "height",
+              "type": "core::integer::u32"
+            },
+            {
+              "name": "price",
+              "type": "core::integer::u32"
+            },
+            {
+              "name": "effectType",
+              "type": "core::integer::u8"
+            },
+            {
+              "name": "effectStacks",
+              "type": "core::integer::u32"
+            },
+            {
+              "name": "effectActivationType",
+              "type": "core::integer::u8"
+            },
+            {
+              "name": "chance",
+              "type": "core::integer::u32"
+            },
+            {
+              "name": "cooldown",
+              "type": "core::integer::u8"
+            },
+            {
+              "name": "energyCost",
+              "type": "core::integer::u8"
+            },
+            {
+              "name": "isPlugin",
+              "type": "core::bool"
+            }
+          ],
+          "outputs": [],
+          "state_mutability": "external"
+        },
+        {
+          "type": "function",
+          "name": "batch_add_items",
+          "inputs": [],
+          "outputs": [],
+          "state_mutability": "external"
+        },
+        {
+          "type": "function",
+          "name": "update_item_enabled",
+          "inputs": [
+            {
+              "name": "id",
+              "type": "core::integer::u32"
+            },
+            {
+              "name": "enabled",
+              "type": "core::bool"
+            }
+          ],
+          "outputs": [],
+          "state_mutability": "external"
+        }
+      ]
+    },
+    {
+      "type": "event",
+      "name": "warpack_masters::systems::item::item_system::Event",
+      "kind": "enum",
+      "variants": [
+        {
+          "name": "UpgradeableEvent",
+          "type": "dojo::contract::components::upgradeable::upgradeable_cpt::Event",
+          "kind": "nested"
+        },
+        {
+          "name": "WorldProviderEvent",
+          "type": "dojo::contract::components::world_provider::world_provider_cpt::Event",
+          "kind": "nested"
+        }
+      ]
+    },
+    {
+      "type": "interface",
+      "name": "warpack_masters::systems::recipe::IRecipe",
+      "items": [
+        {
+          "type": "function",
+          "name": "add_recipe",
+          "inputs": [
+            {
+              "name": "item_ids",
+              "type": "core::array::Array::<core::integer::u32>"
+            },
+            {
+              "name": "item_amounts",
+              "type": "core::array::Array::<core::integer::u32>"
+            },
+            {
+              "name": "result_item_id",
+              "type": "core::integer::u32"
+            }
+          ],
+          "outputs": [],
+          "state_mutability": "external"
+        }
+      ]
+    },
+    {
+      "type": "event",
+      "name": "warpack_masters::systems::recipe::recipe_system::Event",
+      "kind": "enum",
+      "variants": [
+        {
+          "name": "UpgradeableEvent",
+          "type": "dojo::contract::components::upgradeable::upgradeable_cpt::Event",
+          "kind": "nested"
+        },
+        {
+          "name": "WorldProviderEvent",
+          "type": "dojo::contract::components::world_provider::world_provider_cpt::Event",
+          "kind": "nested"
+        }
+      ]
+    },
+    {
+      "type": "interface",
+      "name": "warpack_masters::systems::shop::IShop",
+      "items": [
+        {
+          "type": "function",
+          "name": "reroll_shop",
+          "inputs": [],
+          "outputs": [],
+          "state_mutability": "external"
+        }
+      ]
+    },
+    {
+      "type": "event",
+      "name": "warpack_masters::systems::shop::shop_system::Event",
+      "kind": "enum",
+      "variants": [
+        {
+          "name": "UpgradeableEvent",
+          "type": "dojo::contract::components::upgradeable::upgradeable_cpt::Event",
+          "kind": "nested"
+        },
+        {
+          "name": "WorldProviderEvent",
+          "type": "dojo::contract::components::world_provider::world_provider_cpt::Event",
+          "kind": "nested"
+        }
+      ]
+    },
+    {
+      "type": "interface",
+      "name": "warpack_masters::systems::storage_bridge::IStorageBridge",
+      "items": [
+        {
+          "type": "function",
+          "name": "deposit_item",
+          "inputs": [
+            {
+              "name": "storage_item_id",
+              "type": "core::integer::u32"
+            }
+          ],
+          "outputs": [],
+          "state_mutability": "external"
+        },
+        {
+          "type": "function",
+          "name": "withdraw_item",
+          "inputs": [
+            {
+              "name": "item_id",
+              "type": "core::integer::u32"
+            }
+          ],
+          "outputs": [],
+          "state_mutability": "external"
+        }
+      ]
+    },
+    {
+      "type": "struct",
+      "name": "warpack_masters::systems::storage_bridge::storage_bridge::DepositItem",
+      "members": [
+        {
+          "name": "player",
+          "type": "core::starknet::contract_address::ContractAddress"
+        },
+        {
+          "name": "itemId",
+          "type": "core::integer::u32"
+        },
+        {
+          "name": "tokenAmount",
+          "type": "core::integer::u256"
+        }
+      ]
+    },
+    {
+      "type": "struct",
+      "name": "warpack_masters::systems::storage_bridge::storage_bridge::DepositItemValue",
+      "members": [
+        {
+          "name": "itemId",
+          "type": "core::integer::u32"
+        },
+        {
+          "name": "tokenAmount",
+          "type": "core::integer::u256"
+        }
+      ]
+    },
+    {
+      "type": "event",
+      "name": "warpack_masters::systems::storage_bridge::storage_bridge::Event",
+      "kind": "enum",
+      "variants": [
+        {
+          "name": "UpgradeableEvent",
+          "type": "dojo::contract::components::upgradeable::upgradeable_cpt::Event",
+          "kind": "nested"
+        },
+        {
+          "name": "WorldProviderEvent",
+          "type": "dojo::contract::components::world_provider::world_provider_cpt::Event",
+          "kind": "nested"
+        }
+      ]
+    },
+    {
+      "type": "struct",
+      "name": "warpack_masters::systems::storage_bridge::storage_bridge::StorageSlotUpdated",
+      "members": [
+        {
+          "name": "player",
+          "type": "core::starknet::contract_address::ContractAddress"
+        },
+        {
+          "name": "slot",
+          "type": "core::integer::u32"
+        },
+        {
+          "name": "itemId",
+          "type": "core::integer::u32"
+        }
+      ]
+    },
+    {
+      "type": "struct",
+      "name": "warpack_masters::systems::storage_bridge::storage_bridge::StorageSlotUpdatedValue",
+      "members": [
+        {
+          "name": "itemId",
+          "type": "core::integer::u32"
+        }
+      ]
+    },
+    {
+      "type": "struct",
+      "name": "warpack_masters::systems::storage_bridge::storage_bridge::WithdrawItem",
+      "members": [
+        {
+          "name": "player",
+          "type": "core::starknet::contract_address::ContractAddress"
+        },
+        {
+          "name": "itemId",
+          "type": "core::integer::u32"
+        },
+        {
+          "name": "tokenAmount",
+          "type": "core::integer::u256"
+        }
+      ]
+    },
+    {
+      "type": "struct",
+      "name": "warpack_masters::systems::storage_bridge::storage_bridge::WithdrawItemValue",
+      "members": [
+        {
+          "name": "itemId",
+          "type": "core::integer::u32"
+        },
+        {
+          "name": "tokenAmount",
+          "type": "core::integer::u256"
+        }
+      ]
+    },
+    {
+      "type": "event",
+      "name": "warpack_masters::systems::storage_bridge::storage_bridge::e_DepositItem::Event",
+      "kind": "enum",
+      "variants": []
+    },
+    {
+      "type": "event",
+      "name": "warpack_masters::systems::storage_bridge::storage_bridge::e_StorageSlotUpdated::Event",
+      "kind": "enum",
+      "variants": []
+    },
+    {
+      "type": "event",
+      "name": "warpack_masters::systems::storage_bridge::storage_bridge::e_WithdrawItem::Event",
+      "kind": "enum",
+      "variants": []
+    },
+    {
+      "type": "interface",
+      "name": "warpack_masters::systems::token_factory::ITokenFactory",
+      "items": [
+        {
+          "type": "function",
+          "name": "create_token_for_item",
+          "inputs": [
+            {
+              "name": "item_id",
+              "type": "core::integer::u32"
+            },
+            {
+              "name": "name",
+              "type": "core::byte_array::ByteArray"
+            },
+            {
+              "name": "symbol",
+              "type": "core::byte_array::ByteArray"
+            },
+            {
+              "name": "owner",
+              "type": "core::starknet::contract_address::ContractAddress"
+            },
+            {
+              "name": "erc20_class_hash",
+              "type": "core::starknet::class_hash::ClassHash"
+            }
+          ],
+          "outputs": [
+            {
+              "type": "core::starknet::contract_address::ContractAddress"
+            }
+          ],
+          "state_mutability": "external"
+        },
+        {
+          "type": "function",
+          "name": "get_token_address",
+          "inputs": [
+            {
+              "name": "item_id",
+              "type": "core::integer::u32"
+            }
+          ],
+          "outputs": [
+            {
+              "type": "core::starknet::contract_address::ContractAddress"
+            }
+          ],
+          "state_mutability": "view"
+        },
+        {
+          "type": "function",
+          "name": "batch_create_tokens_for_items",
+          "inputs": [
+            {
+              "name": "owner",
+              "type": "core::starknet::contract_address::ContractAddress"
+            },
+            {
+              "name": "erc20_class_hash",
+              "type": "core::starknet::class_hash::ClassHash"
+            }
+          ],
+          "outputs": [],
+          "state_mutability": "external"
+        },
+        {
+          "type": "function",
+          "name": "create_gold_token",
+          "inputs": [
+            {
+              "name": "admin",
+              "type": "core::starknet::contract_address::ContractAddress"
+            },
+            {
+              "name": "minter",
+              "type": "core::starknet::contract_address::ContractAddress"
+            },
+            {
+              "name": "upgrade",
+              "type": "core::starknet::contract_address::ContractAddress"
+            },
+            {
+              "name": "erc20_class_hash",
+              "type": "core::starknet::class_hash::ClassHash"
+            }
+          ],
+          "outputs": [
+            {
+              "type": "core::starknet::contract_address::ContractAddress"
+            }
+          ],
+          "state_mutability": "external"
+        },
+        {
+          "type": "function",
+          "name": "reigster_gold",
+          "inputs": [
+            {
+              "name": "gold_address",
+              "type": "core::starknet::contract_address::ContractAddress"
+            }
+          ],
+          "outputs": [],
+          "state_mutability": "external"
+        },
+        {
+          "type": "function",
+          "name": "register_token_for_item",
+          "inputs": [
+            {
+              "name": "item_id",
+              "type": "core::integer::u32"
+            },
+            {
+              "name": "name",
+              "type": "core::byte_array::ByteArray"
+            },
+            {
+              "name": "symbol",
+              "type": "core::byte_array::ByteArray"
+            },
+            {
+              "name": "token_address",
+              "type": "core::starknet::contract_address::ContractAddress"
+            },
+            {
+              "name": "is_legacy",
+              "type": "core::bool"
+            }
+          ],
+          "outputs": [],
+          "state_mutability": "external"
+        },
+        {
+          "type": "function",
+          "name": "update_token_for_item",
+          "inputs": [
+            {
+              "name": "item_id",
+              "type": "core::integer::u32"
+            },
+            {
+              "name": "token_address",
+              "type": "core::starknet::contract_address::ContractAddress"
+            },
+            {
+              "name": "is_legacy",
+              "type": "core::bool"
+            }
+          ],
+          "outputs": [],
+          "state_mutability": "external"
+        }
+      ]
+    },
+    {
+      "type": "event",
+      "name": "warpack_masters::systems::token_factory::token_factory::Event",
+      "kind": "enum",
+      "variants": [
+        {
+          "name": "UpgradeableEvent",
+          "type": "dojo::contract::components::upgradeable::upgradeable_cpt::Event",
+          "kind": "nested"
+        },
+        {
+          "name": "WorldProviderEvent",
+          "type": "dojo::contract::components::world_provider::world_provider_cpt::Event",
+          "kind": "nested"
+        }
+      ]
+    }
+  ]
+}

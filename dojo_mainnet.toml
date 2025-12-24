@@ -1,0 +1,34 @@
+[world]
+name = "Warpack Masters"
+description = "Warpack Masters is a competitive game that combines inventory management and autobattler mechanics within a captivating fantasy theme."
+cover_uri = "https://raw.githubusercontent.com/0xKube/Warpack-Masters/main/assets/cover.png"
+icon_uri = "https://raw.githubusercontent.com/0xKube/Warpack-Masters/main/assets/icon.png"
+website = "https://warpacks.app"
+seed = "warpack_masters_1"
+
+[world.socials]
+x = "https://x.com/WarpackMasters"
+discord = "https://discord.gg/tjJJHc7JtP"
+github = "https://github.com/0xKube/Warpack-Masters/"
+telegram = "https://t.me/+p0ywxOYCrwAyYjVi"
+
+[namespace]
+default = "Warpacks"
+
+[env]
+rpc_url="https://api.cartridge.gg/x/starknet/mainnet"
+account_address=""
+private_key=""
+
+[writers]
+"Warpacks" = ["Warpacks-actions", "Warpacks-dummy_system", "Warpacks-fight_system", 
+    "Warpacks-item_system", "Warpacks-shop_system", "Warpacks-recipe_system", 
+    "Warpacks-config_system", "Warpacks-token_factory", "Warpacks-storage_bridge"]
+
+[init_call_args]
+"Warpacks-config_system" = ["0x04718f5a0fc34cc1af16a1cdee98ffb20c31f5cd61d6ab07201858f4287c938d"]
+
+[migration]
+skip_contracts = [
+    "warpack_masters::externals::erc20",
+]

@@ -26,3 +26,6 @@ dojo_cairo_test = { git = "https://github.com/dojoengine/dojo.git", tag = "v1.8.
 
 [tool.scarb]
 allow-prebuilt-plugins = ["dojo_cairo_macros"]
+
+[profile.mainnet]
+inherits = "release"
