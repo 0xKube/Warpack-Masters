@@ -1,0 +1,21 @@
+world_address = "0x05a709be85a3f656230e4887a1c212fdf90d50e7b67c047cf5c153e030603e61"
+rpc = "https://api.cartridge.gg/x/starknet/mainnet"
+
+[indexing]
+preconfirmed = true
+namespaces = ["Warpacks"]
+external_contracts = true
+
+[server]
+http_addr = "0.0.0.0"
+http_port = 8080
+http_cors_origins = ["*"]
+
+[relay]
+port = 9090
+webrtc_port = 9091
+websocket_port = 9092
+
+[grpc]
+grpc_addr = "0.0.0.0"
+grpc_port = 50051

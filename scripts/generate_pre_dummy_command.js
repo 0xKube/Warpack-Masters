@@ -3,6 +3,17 @@ const path = require('path');
 
 const encodeShortString = (s) => '0x' + Buffer.from(s, 'ascii').toString('hex');
 
+const args = process.argv.slice(2);
+const env = args[0] || 'release';
+const action = args[1] || 'update_prefine_dummy';
+const allowedActions = new Set(['update_prefine_dummy', 'prefine_dummy']);
+if (!allowedActions.has(action)) {
+  console.error(
+    `Usage: node scripts/generate_pre_dummy_command.js [env] [update_prefine_dummy|prefine_dummy]`,
+  );
+  process.exit(1);
+}
+
 const predefinedDummiesContent = fs.readFileSync(
   path.join(__dirname, '../src/prdefined_dummies.cairo'),
   'utf-8',
@@ -126,13 +137,22 @@ while ((match = dummyRegex.exec(predefinedDummiesContent)) !== null) {
     .join(' ');
 
   const dummyId = 1; // single dummy per level
-  const commandLine = `sozo execute -P release Warpacks-dummy_system update_prefine_dummy ${dummyId} ${level} ${encodedName} ${wmClass} ${itemCount} ${flattened} --wait --rpc-url $STARKNET_RPC_URL`;
+  const baseArgs =
+    action === 'update_prefine_dummy'
+      ? `${dummyId} ${level} ${encodedName} ${wmClass} ${itemCount} ${flattened}`
+      : `${level} ${encodedName} ${wmClass} ${itemCount} ${flattened}`;
+  const commandLine = `sozo execute -P ${env} Warpacks-dummy_system ${action} ${baseArgs} --wait --rpc-url $STARKNET_RPC_URL`;
   commands.push(commandLine);
 }
 
 const outputDir = path.join(__dirname, 'generated');
 fs.mkdirSync(outputDir, { recursive: true });
-const outputFilePath = path.join(outputDir, 'update_pre_dummies_release.sh');
+const outputBaseByAction = {
+  update_prefine_dummy: 'update_pre_dummies',
+  prefine_dummy: 'prefine_dummies',
+};
+const outputBase = outputBaseByAction[action] || `dummies_${action}`;
+const outputFilePath = path.join(outputDir, `${outputBase}_${env}.sh`);
 const header = [
   '#!/bin/bash',
   'set -euo pipefail',
